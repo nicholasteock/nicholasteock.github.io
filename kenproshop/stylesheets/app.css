@@ -6088,17 +6088,17 @@ a {
 .shopDescription .title {
   font-size: 20px;
 }
-.gallery .yearPanel {
+.yearPanel {
   padding-bottom: 20px;
   border-bottom: 1px solid #F7F7F7;
 }
-.gallery .yearPanel:last-child {
+.yearPanel:last-child {
   border: none;
 }
-.gallery .galleryThumbnail {
+.galleryThumbnail {
   padding: 0;
 }
-.gallery .photo {
+.photo {
   min-width: 95px;
   min-height: 95px;
   width: 100%;
@@ -6124,20 +6124,20 @@ a {
 .panel-products .photo {
   width: 230px;
 }
-.panel-services {
+.panel-custom {
   color: #232323;
 }
-.panel-services .title {
+.panel-custom .title {
   font-size: 20px;
   font-weight: bold;
 }
-.panel-services .sub-title {
+.panel-custom .sub-title {
   font-size: 17px;
 }
-.panel-services a {
+.panel-custom a {
   color: #232323;
 }
-.panel-services .photo {
+.panel-custom .photo {
   width: 100%;
   height: 100%;
   background: url(../images/loading.gif);

@@ -294,8 +294,196 @@ module.exports = Backbone.Router.extend({
 });
 
 ;require.register("lib/view_helper", function(exports, require, module) {
-// Put handlebars.js helpers here
+// HANDLEBARS HELPERS
 
+/******************************************************************************
+// Photo Gallery Helper
+******************************************************************************/
+
+Handlebars.registerHelper( 'galleryList', function(galleryObject, options) {
+	var output = "";
+
+	for( var i=0, iLen=galleryObject.length; i<iLen; i++ ) {
+		var yearHtml = '<div class="yearPanel clearfix"><h1 class="text-center">' + galleryObject[i].year + '</h1><div class="panel"><div class="panel-body thumbnails">';
+
+		for( var j=0, jLen=galleryObject[i].items.length; j<jLen; j++ ) {
+			yearHtml += '<a class="galleryThumbnail col-xs-4" href="' + galleryObject[i].items[j].image + '" data-lightbox="gallery' + galleryObject[i].year + '" data-title="<h3>' + galleryObject[i].items[j].date + '</h3><hr>'+ galleryObject[i].items[j].description +'">\
+							<img class="photo" src="' + galleryObject[i].items[j].image + '">\
+						</a>';
+		}
+
+		yearHtml +=	'</div></div></div>';
+
+		output += yearHtml;
+	}
+
+	return output;
+});
+
+/******************************************************************************
+// Hall Of Fame Helper
+******************************************************************************/
+
+Handlebars.registerHelper( 'hallOfFameList', function(hallOfFameObject, options) {
+	var output = "";
+
+	for( var i=0, iLen=hallOfFameObject.length; i<iLen; i++ ) {
+		var yearHtml = '<div class="yearPanel clearfix"><h1 class="text-center">' + hallOfFameObject[i].year + '</h1><div class="panel"><div class="panel-body thumbnails">';
+
+		for( var j=0, jLen=hallOfFameObject[i].items.length; j<jLen; j++ ) {
+			yearHtml += '<a class="galleryThumbnail col-xs-4" href="' + hallOfFameObject[i].items[j].image + '" data-lightbox="gallery' + hallOfFameObject[i].year + '" data-title="<h3>' + hallOfFameObject[i].items[j].descriptionTitle + '</h3><hr>'+ hallOfFameObject[i].items[j].description +'">\
+							<img class="photo" src="' + hallOfFameObject[i].items[j].image + '">\
+						</a>';
+		}
+									
+		yearHtml +=	'</div></div></div>';
+
+		output += yearHtml;
+	}
+
+	return output;
+});
+
+/******************************************************************************
+ Services List Helper
+******************************************************************************/
+
+Handlebars.registerHelper( 'servicesList', function(servicesObject, options) {
+	var output = "";
+
+	for( var i=0, iLen=servicesObject.length; i<iLen; i++ ) {
+		var dataToggleName = "collapseServices" + i;
+		output += '<div class="panel panel-custom">\
+					<div class="panel-heading">\
+						<div class="title text-center">' + servicesObject[i].title + '</div>\
+					</div>\
+					<div class="panel-body">\
+						<img class="photo" src="' + servicesObject[i].image + '">\
+						<div class="' + dataToggleName + ' panel-collapse collapse">\
+					        <hr>\
+					        <a data-toggle="collapse" data-parent=".panel-custom" href=".' + dataToggleName + '">\
+								<div class="text-center">\
+									<span class="glyphicon glyphicon-chevron-up"></span>\
+								</div>\
+							</a>\
+					        <h3>' + servicesObject[i].descriptionTitle + '</h3>' + servicesObject[i].description + '\
+					    </div>\
+					</div>\
+					<a data-toggle="collapse" data-parent=".panel-custom" href=".' + dataToggleName + '">\
+						<div class="panel-footer text-center">\
+							<span class="glyphicon glyphicon-info-sign"></span>\
+						</div>\
+					</a>\
+				</div>';
+	}
+
+	return output;
+});
+
+/******************************************************************************
+ Promotions List Helper
+******************************************************************************/
+
+Handlebars.registerHelper( 'promotionsList', function(promotionsObject, options) {
+	var output = "";
+
+	for( var i=0, iLen=promotionsObject.length; i<iLen; i++ ) {
+		var dataToggleName = "collapsePromotions" + i;
+		output += '<div class="panel panel-custom">\
+					<div class="panel-heading">\
+						<div class="title text-center">' + promotionsObject[i].title + '</div>\
+					</div>\
+					<div class="panel-body">\
+						<img class="photo" src="' + promotionsObject[i].image + '">\
+						<div class="' + dataToggleName + ' panel-collapse collapse">\
+					        <hr>\
+					        <a data-toggle="collapse" data-parent=".panel-custom" href=".' + dataToggleName + '">\
+								<div class="text-center">\
+									<span class="glyphicon glyphicon-chevron-up"></span>\
+								</div>\
+							</a>\
+					        <h3>' + promotionsObject[i].descriptionTitle + '</h3>' + promotionsObject[i].description + '\
+					    </div>\
+					</div>\
+					<a data-toggle="collapse" data-parent=".panel-custom" href=".' + dataToggleName + '">\
+						<div class="panel-footer text-center">\
+							<span class="glyphicon glyphicon-info-sign"></span>\
+						</div>\
+					</a>\
+				</div>';
+	}
+
+	return output;
+});
+
+/******************************************************************************
+ Events List Helper
+******************************************************************************/
+
+Handlebars.registerHelper( 'eventsList', function(eventsObject, options) {
+	var output = "";
+
+	for( var i=0, iLen=eventsObject.length; i<iLen; i++ ) {
+		var dataToggleName = "collapseEvents" + i;
+		output += '<div class="panel panel-custom">\
+					<div class="panel-heading">\
+						<div class="title text-center">' + eventsObject[i].title + '</div>\
+					</div>\
+					<div class="panel-body">\
+						<img class="photo" src="' + eventsObject[i].image + '">\
+						<div class="' + dataToggleName + ' panel-collapse collapse">\
+					        <hr>\
+					        <a data-toggle="collapse" data-parent=".panel-custom" href=".' + dataToggleName + '">\
+								<div class="text-center">\
+									<span class="glyphicon glyphicon-chevron-up"></span>\
+								</div>\
+							</a>\
+					        <h3>' + eventsObject[i].descriptionTitle + '</h3>' + eventsObject[i].description + '\
+					    </div>\
+					</div>\
+					<a data-toggle="collapse" data-parent=".panel-custom" href=".' + dataToggleName + '">\
+						<div class="panel-footer text-center">\
+							<span class="glyphicon glyphicon-info-sign"></span>\
+						</div>\
+					</a>\
+				</div>';
+	}
+
+	return output;
+});
+
+/******************************************************************************
+// Contact Details Helper
+******************************************************************************/
+
+Handlebars.registerHelper( 'contactDetails', function(contactsObject, options) {
+	var output 			= "",
+		address 		= contactsObject.address.join("</div><div>"),
+		operatingHours 	= contactsObject.operatingHours.join("</div><div>"),
+		contact 		= contactsObject.contact.join("</div><div>");
+
+	address 		= "<div>" + address + "</div>";
+	operatingHours 	= "<div>" + operatingHours + "</div>";
+	contact 		= "<div>" + contact + "</div>";
+
+
+	var output 	= '<div class="contactDetails top col-xs-12 col-md-4 col-md-offset-1">\
+						<div class="address top">\
+							<div class="title">Address</div>\
+							<div class="description top">' + address + '</div>\
+						</div>\
+						<div class="operatingHours top">\
+							<div class="title">Operating Hours</div>\
+							<div class="description top">' + operatingHours + '</div>\
+						</div>\
+						<div class="contactNumber top">\
+							<div class="title">Reach Us @</div>\
+							<div class="description top">' + contact + '</div>\
+						</div>\
+					</div>';
+
+	return output;
+});
 });
 
 ;require.register("models/collection", function(exports, require, module) {
@@ -341,11 +529,35 @@ var afterRender = function() {
 	Application.updateBreadcrumb('contact');
 };
 
-module.exports = View.extend({
-    className: 'contact-view',
-    template: template,
+var getRenderData = function() {
+	return {
+			"result" : "success",
+			"data" : {
+				"contactDetails": {
+					"address" 			: [
+						"Leisure Park Kallang",
+						"5 Stadium Walk #02-23",
+						"Singapore 397693"
+					],
+					"operatingHours"	: [
+						"Mon - Sat: 1330hrs - 2200hrs",
+						"Sun & PH: 1330hrs - 2100hrs"
+					],
+					"contact" 	: [
+						"Phone : (+65) 6346-1811",
+						"Mobile : (+65) 9615-6988",
+						"Email&nbsp;&nbsp; : ken@kenproshop.com"
+					]
+				},
+			}
+		}.data;
+};
 
-    afterRender: afterRender
+module.exports = View.extend({
+    className 		: 'contact-view',
+    template 		: template,
+    getRenderData 	: getRenderData,
+    afterRender 	: afterRender
 });
 
 });
@@ -359,11 +571,27 @@ var afterRender = function() {
 	Application.updateBreadcrumb('events');
 };
 
-module.exports = View.extend({
-    className: 'events-view',
-    template: template,
+var getRenderData = function() {
+	return {
+			"result" : "success",
+			"data" : {
+				"events": [
+					{
+						"image" 			: "images/events/demoday.jpg",
+						"title" 			: "Track / Columbia Ball Demo Day",
+						"descriptionTitle" 	: "",
+						"description" 		: "<p>Ken Pro Shop is bringing back the Demo Day where everyone can attend and try out the new balls from Track and Columbia 300. Anyone can sign up and join and there are no obligations to purchase any ball from us. There will be lucky draws during the event itself. Please come if any of you are interested to try out the new balls.</p>"
+					},
+				]
+			}
+		}.data;
+};
 
-    afterRender: afterRender
+module.exports = View.extend({
+    className 		: 'events-view',
+    template 		: template,
+    getRenderData 	: getRenderData,
+    afterRender 	: afterRender
 });
 
 });
@@ -374,16 +602,54 @@ var View     = require('./view'),
 
 var afterRender = function() {
 	console.log("RENDERED GALLERY VIEW");
-	Application.updateBreadcrumb('gallery');
+	Application.updateBreadcrumb('gallery');	
+};
 
-	
+var getRenderData = function() {
+	return {
+			"result" : "success",
+			"data" : {
+				"gallery": [
+					{	
+						"year" 				: "2013",
+						"items" 			: [
+							{
+								"image" : "images/gallery/bowlexpochris.gif",
+								"date" : "21 July 2013",
+								"description" : "Today marks the end of the National League Master Event! Congrats to all winners and participants!",
+							},
+							{
+								"image" : "images/gallery/bowlexpobilloneil.gif",
+								"date" : "21 July 2013",
+								"description" : "Today marks the end of the National League Master Event! Congrats to all winners and participants!",
+							}
+						]
+					},
+					{	
+						"year" 				: "2012",
+						"items" 			: [
+							{
+								"image" : "images/gallery/bowlexpochris.gif",
+								"date" : "21 July 2012",
+								"description" : "Today marks the end of the National League Master Event! Congrats to all winners and participants!",
+							},
+							{
+								"image" : "images/gallery/bowlexpobilloneil.gif",
+								"date" : "21 July 2012",
+								"description" : "Today marks the end of the National League Master Event! Congrats to all winners and participants!",
+							}
+						]
+					},
+				]
+			}
+		}.data;
 };
 
 module.exports = View.extend({
-    className: 'gallery-view',
-    template: template,
-
-    afterRender: afterRender
+    className 		: 'gallery-view',
+    template 		: template,
+    getRenderData 	: getRenderData,
+    afterRender 	: afterRender
 });
 });
 
@@ -396,11 +662,51 @@ var afterRender = function() {
 	Application.updateBreadcrumb('hall-of-fame');
 };
 
-module.exports = View.extend({
-    className: 'hall-of-fame-view',
-    template: template,
+var getRenderData = function() {
+	return {
+			"result" : "success",
+			"data" : {
+				"hallOfFame": [
+					{	
+						"year" 				: "2013",
+						"items" 			: [
+							{
+								"image" 			: "images/gallery/bowlexpochris.gif",
+								"descriptionTitle" 	: "Ramsey Lim",
+								"description" 		: "Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood",
+							},
+							{
+								"image" 			: "images/gallery/bowlexpobilloneil.gif",
+								"descriptionTitle"	: "Ramsey Lim",
+								"description" 		: "Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood",
+							}
+						]
+					},
+					{	
+						"year" 				: "2012",
+						"items" 			: [
+							{
+								"image" 			: "images/gallery/bowlexpochris.gif",
+								"descriptionTitle" 	: "Ramsey Lim",
+								"description" 		: "Singapore<br>28th July 2012 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood",
+							},
+							{
+								"image" 			: "images/gallery/bowlexpobilloneil.gif",
+								"descriptionTitle"	: "Ramsey Lim",
+								"description" 		: "Singapore<br>28th July 2012 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood",
+							}
+						]
+					},
+				]
+			}
+		}.data;
+};
 
-    afterRender: afterRender
+module.exports = View.extend({
+    className 		: 'hall-of-fame-view',
+    template 		: template,
+    getRenderData 	: getRenderData,
+    afterRender 	: afterRender
 });
 
 });
@@ -522,11 +828,27 @@ var afterRender = function() {
 	Application.updateBreadcrumb('promotions');
 };
 
-module.exports = View.extend({
-    className: 'promotions-view',
-    template: template,
+var getRenderData = function() {
+	return {
+			"result" : "success",
+			"data" : {
+				"promotions": [
+					{
+						"image" 			: "images/promotions/offerset.gif",
+						"title" 			: "Offer Set Promotion",
+						"descriptionTitle" 	: "Offer Set promotion for beginner/advance bowlers",
+						"description" 		: "<p>Columbia 300 bowling ball + bowling shoes + single ball bag + ball polisher @ S$175</p><p>Ebonite bowling ball + bowling shoes + single ball bag + ball polisher @ S$255</p>"
+					},
+				]
+			}
+		}.data;
+};
 
-    afterRender: afterRender
+module.exports = View.extend({
+    className 		: 'promotions-view',
+    template 		: template,
+    getRenderData 	: getRenderData,
+    afterRender 	: afterRender
 });
 
 });
@@ -540,10 +862,38 @@ var afterRender = function() {
 	Application.updateBreadcrumb('services');
 };
 
+var getRenderData = function() {
+	return {
+			"result" : "success",
+			"data" : {
+				"services": [
+					{
+						"image": "images/services/thewave.png",
+						"title": "The Wave by PowerHouse",
+						"descriptionTitle": "",
+						"description": "Please visit <a href='http://powerhousebowling.com/products/product_detail/the_wave'><strong>The Wave</strong></a> for more information."
+					},
+					{
+						"image": "images/services/hookrestoration.jpg",
+						"title": "Bowling Ball Hook Restoration",
+						"descriptionTitle": "Ebonite PowerHouse Hook Again Treatment",
+						"description": "<p>The first and ONLY proven formula to actually restore hook to 'dead' bowling balls!</p><p>Brings as much as 99.8% performance back.</p><p>Performance tested, safe for reactive and particle balls.</p><p>Quick Recovery - Works in 24 hours.</p>"
+					},
+					{
+						"image": "images/services/resurfacing.jpg",
+						"title": "Bowling Ball Resurfacing",
+						"descriptionTitle": "Haus Resurfacing System",
+						"description": "<p>After numerous games on wood or synthetic lanes, your ball will loose consistent cover reaction.</p><p>Regular resurfacing with the Haus Resurfacing System can:<ul><li><h6><strong>IMPROVE YOUR GAME</strong></h6>Bowling consistency requires consistent cover reaction. Regular resurfacing can help you achieve that critical consistency.</li><li><h6><strong>LENGTHEN YOUR BALL'S LIFE</strong></h6>By resurfacing your ball, minimal ball surface is removed, avoiding the need to remove deep track and drop areas, and extending the length of time your ball meets ABC specifications.</li><li><h6><strong>ASSURE YOU OF RESURFACING CONSISTENCY</strong></h6>Consistent &amp; accurate results, time after time. Unlike manually resurfaced balls, our automatic system maintains and returns your ball back to it's original manufacturers' specifications or better. Operator error is virtually eliminated. Your entire ball surface is refinished, not just the drop and track areas.</li></p>"
+					},
+				]
+			}
+		}.data;
+};
+
 module.exports = View.extend({
     className: 'services-view',
     template: template,
-
+    getRenderData: getRenderData,
     afterRender: afterRender
 });
 
@@ -573,10 +923,18 @@ if (typeof define === 'function' && define.amd) {
 var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var buffer = "", stack1, helper, options, self=this, helperMissing=helpers.helperMissing;
+
+function program1(depth0,data) {
   
+  var buffer = "";
+  return buffer;
+  }
 
-
-  return "<div class=\"googleMap col-xs-12 col-md-4 col-md-offset-1\">\n	<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.7899527906447!2d103.87663900000003!3d1.3009019999999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31da184ed7a58d11%3A0x42d0ff6024aef2b7!2sKen+Pro+Shop!5e0!3m2!1sen!2s!4v1404980560364\" width=\"100%\" height=\"260px\" frameborder=\"0\" style=\"border:0\"></iframe>\n</div>\n<div class=\"contactDetails top col-xs-12 col-md-4 col-md-offset-1\">\n	<div class=\"address top\">\n		<div class=\"title\">\n			Address\n		</div>\n		<div class=\"description top\">\n			<div>5 Stadium Walk #02-23</div>\n			<div>Leisure Park Kallang</div>\n			<div>Singapore 397693</div>\n		</div>\n	</div>\n\n	<div class=\"operatingHours top\">\n		<div class=\"title\">\n			Operating Hours\n		</div>\n		<div class=\"description top\">\n			<div>Mon - Sat: 1330hrs - 2200hrs</div>\n			<div>Sun & PH: 1330hrs - 2100hrs</div>\n		</div>\n	</div>\n\n	<div class=\"contactNumber top\">\n		<div class=\"title\">\n			Reach Us @\n		</div>\n		<div class=\"description top\">\n			<div>Phone : (+65) 6346-1811</div> \n			<div>Mobile : (+65) 9615-6988</div>\n			<div>Email&nbsp;&nbsp; : ken@kenproshop.com</div>\n		</div>\n	</div>\n</div>";
+  buffer += "<div class=\"googleMap col-xs-12 col-md-4 col-md-offset-1\">\n	<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.7899527906447!2d103.87663900000003!3d1.3009019999999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31da184ed7a58d11%3A0x42d0ff6024aef2b7!2sKen+Pro+Shop!5e0!3m2!1sen!2s!4v1404980560364\" width=\"100%\" height=\"260px\" frameborder=\"0\" style=\"border:0\"></iframe>\n</div>\n\n";
+  stack1 = (helper = helpers.contactDetails || (depth0 && depth0.contactDetails),options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data},helper ? helper.call(depth0, (depth0 && depth0.contactDetails), options) : helperMissing.call(depth0, "contactDetails", (depth0 && depth0.contactDetails), options));
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  return buffer;
   });
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -593,10 +951,17 @@ if (typeof define === 'function' && define.amd) {
 var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var stack1, helper, options, self=this, helperMissing=helpers.helperMissing;
+
+function program1(depth0,data) {
   
+  var buffer = "";
+  return buffer;
+  }
 
-
-  return "<div class=\"panel panel-services\">\n	<div class=\"panel-heading\">\n		<div class=\"title text-center\">\n			Track / Columbia Ball Demo Day\n		</div>\n	</div>\n	<div class=\"panel-body\">\n		<img class=\"photo\" src=\"images/events/demoday.jpg\">\n		<div class=\"collapseDemoDay panel-collapse collapse\">\n			<hr>\n	         <a data-toggle=\"collapse\" data-parent=\".panel-services\" href=\".collapseDemoDay\">\n				<div class=\"text-center\">\n					<span class=\"glyphicon glyphicon-chevron-up\"></span>\n				</div>\n			</a>\n	        <hr>\n	        Ken Pro Shop is bringing back the Demo Day where everyone can attend and try out the new balls from Track and Columbia 300. Anyone can sign up and join and there are no obligations to purchase any ball from us. There will be lucky draws during the event itself. Please come if any of you are interested to try out the new balls.\n	    </div>\n	</div>\n\n	<a data-toggle=\"collapse\" data-parent=\".panel-services\" href=\".collapseDemoDay\">\n		<div class=\"panel-footer text-center\">\n			<span class=\"glyphicon glyphicon-info-sign\"></span>\n		</div>\n	</a>\n</div>";
+  stack1 = (helper = helpers.eventsList || (depth0 && depth0.eventsList),options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data},helper ? helper.call(depth0, (depth0 && depth0.events), options) : helperMissing.call(depth0, "eventsList", (depth0 && depth0.events), options));
+  if(stack1 || stack1 === 0) { return stack1; }
+  else { return ''; }
   });
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -613,10 +978,17 @@ if (typeof define === 'function' && define.amd) {
 var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var stack1, helper, options, self=this, helperMissing=helpers.helperMissing;
+
+function program1(depth0,data) {
   
+  var buffer = "";
+  return buffer;
+  }
 
-
-  return "<div class=\"gallery\">\n	<div class=\"yearPanel clearfix\">\n		<h1 class=\"text-center\">2013</h1>\n		<div class=\"panel\">\n			<div class=\"panel-body thumbnails\">\n				<a class=\"galleryThumbnail col-xs-4\" href=\"images/gallery/bowlexpochris.gif\" data-lightbox=\"gallery2013\" data-title=\"<h3>21 July 2013</h3><hr>Today marks the end of the National League Master Event! Congrats to all winners and participants!\">\n					<img class=\"photo\" src=\"images/gallery/bowlexpochris.gif\">\n				</a>\n				<a class=\"galleryThumbnail col-xs-4\" href=\"images/gallery/bowlexpobilloneil.gif\" data-lightbox=\"gallery2013\" data-title=\"<h3>21 July 2013</h3><hr>Today marks the end of the National League Master Event! Congrats to all winners and participants!\">\n					<img class=\"photo\" src=\"images/gallery/bowlexpobilloneil.gif\">\n				</a>\n				<a class=\"galleryThumbnail col-xs-4\" href=\"images/gallery/owenalicia.gif\" data-lightbox=\"gallery2013\" data-title=\"<h3>21 July 2013</h3><hr>Today marks the end of the National League Master Event! Congrats to all winners and participants!\">\n					<img class=\"photo\" src=\"images/gallery/owenalicia.gif\">\n				</a>\n				<a class=\"galleryThumbnail col-xs-4\" href=\"images/gallery/masterleague.gif\" data-lightbox=\"gallery2013\" data-title=\"<h3>21 July 2013</h3><hr>Today marks the end of the National League Master Event! Congrats to all winners and participants!\">\n					<img class=\"photo\" src=\"images/gallery/masterleague.gif\">\n				</a>\n				<a class=\"galleryThumbnail col-xs-4\" href=\"images/gallery/bowlexpochris.gif\" data-lightbox=\"gallery2013\" data-title=\"<h3>21 July 2013</h3><hr>Today marks the end of the National League Master Event! Congrats to all winners and participants!\">\n					<img class=\"photo\" src=\"images/gallery/bowlexpochris.gif\">\n				</a>\n				<a class=\"galleryThumbnail col-xs-4\" href=\"images/gallery/bowlexpobilloneil.gif\" data-lightbox=\"gallery2013\" data-title=\"<h3>21 July 2013</h3><hr>Today marks the end of the National League Master Event! Congrats to all winners and participants!\">\n					<img class=\"photo\" src=\"images/gallery/bowlexpobilloneil.gif\">\n				</a>\n				<a class=\"galleryThumbnail col-xs-4\" href=\"images/gallery/owenalicia.gif\" data-lightbox=\"gallery2013\" data-title=\"<h3>21 July 2013</h3><hr>Today marks the end of the National League Master Event! Congrats to all winners and participants!\">\n					<img class=\"photo\" src=\"images/gallery/owenalicia.gif\">\n				</a>\n			</div>\n		</div>\n	</div>\n	<div class=\"yearPanel clearfix\">\n		<h1 class=\"text-center\">2012</h1>\n		<div class=\"panel\">\n			<div class=\"panel-body thumbnails\">\n				<a class=\"galleryThumbnail col-xs-4\" href=\"images/gallery/bowlexpochris.gif\" data-lightbox=\"gallery2012\" data-title=\"<h3>21 July 2013</h3><hr>Today marks the end of the National League Master Event! Congrats to all winners and participants!\">\n					<img class=\"photo\" src=\"images/gallery/bowlexpochris.gif\">\n				</a>\n				<a class=\"galleryThumbnail col-xs-4\" href=\"images/gallery/bowlexpobilloneil.gif\" data-lightbox=\"gallery2012\" data-title=\"<h3>21 July 2013</h3><hr>Today marks the end of the National League Master Event! Congrats to all winners and participants!\">\n					<img class=\"photo\" src=\"images/gallery/bowlexpobilloneil.gif\">\n				</a>\n				<a class=\"galleryThumbnail col-xs-4\" href=\"images/gallery/owenalicia.gif\" data-lightbox=\"gallery2012\" data-title=\"<h3>21 July 2013</h3><hr>Today marks the end of the National League Master Event! Congrats to all winners and participants!\">\n					<img class=\"photo\" src=\"images/gallery/owenalicia.gif\">\n				</a>\n				<a class=\"galleryThumbnail col-xs-4\" href=\"images/gallery/masterleague.gif\" data-lightbox=\"gallery2012\" data-title=\"<h3>21 July 2013</h3><hr>Today marks the end of the National League Master Event! Congrats to all winners and participants!\">\n					<img class=\"photo\" src=\"images/gallery/masterleague.gif\">\n				</a>\n				<a class=\"galleryThumbnail col-xs-4\" href=\"images/gallery/bowlexpochris.gif\" data-lightbox=\"gallery2012\" data-title=\"<h3>21 July 2013</h3><hr>Today marks the end of the National League Master Event! Congrats to all winners and participants!\">\n					<img class=\"photo\" src=\"images/gallery/bowlexpochris.gif\">\n				</a>\n				<a class=\"galleryThumbnail col-xs-4\" href=\"images/gallery/bowlexpobilloneil.gif\" data-lightbox=\"gallery2012\" data-title=\"<h3>21 July 2013</h3><hr>Today marks the end of the National League Master Event! Congrats to all winners and participants!\">\n					<img class=\"photo\" src=\"images/gallery/bowlexpobilloneil.gif\">\n				</a>\n				<a class=\"galleryThumbnail col-xs-4\" href=\"images/gallery/owenalicia.gif\" data-lightbox=\"gallery2012\" data-title=\"<h3>21 July 2013</h3><hr>Today marks the end of the National League Master Event! Congrats to all winners and participants!\">\n					<img class=\"photo\" src=\"images/gallery/owenalicia.gif\">\n				</a>\n			</div>\n		</div>\n	</div>\n	<div class=\"yearPanel clearfix\">\n		<h1 class=\"text-center\">2011</h1>\n		<div class=\"panel\">\n			<div class=\"panel-body thumbnails\">\n				<a class=\"galleryThumbnail col-xs-4\" href=\"images/gallery/bowlexpochris.gif\" data-lightbox=\"gallery2011\" data-title=\"<h3>21 July 2013</h3><hr>Today marks the end of the National League Master Event! Congrats to all winners and participants!\">\n					<img class=\"photo\" src=\"images/gallery/bowlexpochris.gif\">\n				</a>\n				<a class=\"galleryThumbnail col-xs-4\" href=\"images/gallery/bowlexpobilloneil.gif\" data-lightbox=\"gallery2011\" data-title=\"<h3>21 July 2013</h3><hr>Today marks the end of the National League Master Event! Congrats to all winners and participants!\">\n					<img class=\"photo\" src=\"images/gallery/bowlexpobilloneil.gif\">\n				</a>\n				<a class=\"galleryThumbnail col-xs-4\" href=\"images/gallery/owenalicia.gif\" data-lightbox=\"gallery2011\" data-title=\"<h3>21 July 2013</h3><hr>Today marks the end of the National League Master Event! Congrats to all winners and participants!\">\n					<img class=\"photo\" src=\"images/gallery/owenalicia.gif\">\n				</a>\n				<a class=\"galleryThumbnail col-xs-4\" href=\"images/gallery/masterleague.gif\" data-lightbox=\"gallery2011\" data-title=\"<h3>21 July 2013</h3><hr>Today marks the end of the National League Master Event! Congrats to all winners and participants!\">\n					<img class=\"photo\" src=\"images/gallery/masterleague.gif\">\n				</a>\n				<a class=\"galleryThumbnail col-xs-4\" href=\"images/gallery/owenalicia.gif\" data-lightbox=\"gallery2011\" data-title=\"<h3>21 July 2013</h3><hr>Today marks the end of the National League Master Event! Congrats to all winners and participants!\">\n					<img class=\"photo\" src=\"images/gallery/owenalicia.gif\">\n				</a>\n			</div>\n		</div>\n	</div>\n</div>";
+  stack1 = (helper = helpers.galleryList || (depth0 && depth0.galleryList),options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data},helper ? helper.call(depth0, (depth0 && depth0.gallery), options) : helperMissing.call(depth0, "galleryList", (depth0 && depth0.gallery), options));
+  if(stack1 || stack1 === 0) { return stack1; }
+  else { return ''; }
   });
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -633,10 +1005,17 @@ if (typeof define === 'function' && define.amd) {
 var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var stack1, helper, options, self=this, helperMissing=helpers.helperMissing;
+
+function program1(depth0,data) {
   
+  var buffer = "";
+  return buffer;
+  }
 
-
-  return "<div class=\"gallery\">\n	<div class=\"yearPanel clearfix\">\n		<h2 class=\"text-center\">2013</h2>\n		<div class=\"thumbnails\">\n			<a class=\"galleryThumbnail col-xs-4\" rel=\"lightbox\" href=\"images/gallery/bowlexpochris.gif\" data-lightbox=\"gallery2013\" data-title=\"<h3>Ramsey Lim</h3><hr>Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood\">\n				<img class=\"photo\" src=\"images/gallery/bowlexpochris.gif\">\n			</a>\n			<a class=\"galleryThumbnail col-xs-4\" rel=\"lightbox\" href=\"images/gallery/bowlexpochris.gif\" data-lightbox=\"gallery2013\" data-title=\"<h3>Ramsey Lim</h3><hr>Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood\">\n				<img class=\"photo\" src=\"images/gallery/bowlexpobilloneil.gif\">\n			</a>\n			<a class=\"galleryThumbnail col-xs-4\" rel=\"lightbox\" href=\"images/gallery/bowlexpochris.gif\" data-lightbox=\"gallery2013\" data-title=\"<h3>Ramsey Lim</h3><hr>Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood\">\n				<img class=\"photo\" src=\"images/gallery/owenalicia.gif\">\n			</a>\n			<a class=\"galleryThumbnail col-xs-4\" rel=\"lightbox\" href=\"images/gallery/bowlexpochris.gif\" data-lightbox=\"gallery2013\" data-title=\"<h3>Ramsey Lim</h3><hr>Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood\">\n				<img class=\"photo\" src=\"images/gallery/masterleague.gif\">\n			</a>\n			<a class=\"galleryThumbnail col-xs-4\" rel=\"lightbox\" href=\"images/gallery/bowlexpochris.gif\" data-lightbox=\"gallery2013\" data-title=\"<h3>Ramsey Lim</h3><hr>Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood\">\n				<img class=\"photo\" src=\"images/gallery/bowlexpochris.gif\">\n			</a>\n			<a class=\"galleryThumbnail col-xs-4\" rel=\"lightbox\" href=\"images/gallery/bowlexpochris.gif\" data-lightbox=\"gallery2013\" data-title=\"<h3>Ramsey Lim</h3><hr>Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood\">\n				<img class=\"photo\" src=\"images/gallery/bowlexpobilloneil.gif\">\n			</a>\n			<a class=\"galleryThumbnail col-xs-4\" rel=\"lightbox\" href=\"images/gallery/bowlexpochris.gif\" data-lightbox=\"gallery2013\" data-title=\"<h3>Ramsey Lim</h3><hr>Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood\">\n				<img class=\"photo\" src=\"images/gallery/owenalicia.gif\">\n			</a>\n		</div>\n	</div>\n	<div class=\"yearPanel clearfix\">\n		<h2 class=\"text-center\">2012</h2>\n		<div class=\"thumbnails\">\n			<a class=\"galleryThumbnail col-xs-4\" rel=\"lightbox\" href=\"images/gallery/bowlexpochris.gif\" data-lightbox=\"gallery2013\" data-title=\"<h3>Ramsey Lim</h3><hr>Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood\">\n				<img class=\"photo\" src=\"images/gallery/bowlexpochris.gif\">\n			</a>\n			<a class=\"galleryThumbnail col-xs-4\" rel=\"lightbox\" href=\"images/gallery/bowlexpochris.gif\" data-lightbox=\"gallery2013\" data-title=\"<h3>Ramsey Lim</h3><hr>Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood\">\n				<img class=\"photo\" src=\"images/gallery/bowlexpobilloneil.gif\">\n			</a>\n			<a class=\"galleryThumbnail col-xs-4\" rel=\"lightbox\" href=\"images/gallery/bowlexpochris.gif\" data-lightbox=\"gallery2013\" data-title=\"<h3>Ramsey Lim</h3><hr>Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood\">\n				<img class=\"photo\" src=\"images/gallery/owenalicia.gif\">\n			</a>\n			<a class=\"galleryThumbnail col-xs-4\" rel=\"lightbox\" href=\"images/gallery/bowlexpochris.gif\" data-lightbox=\"gallery2013\" data-title=\"<h3>Ramsey Lim</h3><hr>Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood\">\n				<img class=\"photo\" src=\"images/gallery/masterleague.gif\">\n			</a>\n			<a class=\"galleryThumbnail col-xs-4\" rel=\"lightbox\" href=\"images/gallery/bowlexpochris.gif\" data-lightbox=\"gallery2013\" data-title=\"<h3>Ramsey Lim</h3><hr>Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood\">\n				<img class=\"photo\" src=\"images/gallery/bowlexpochris.gif\">\n			</a>\n			<a class=\"galleryThumbnail col-xs-4\" rel=\"lightbox\" href=\"images/gallery/bowlexpochris.gif\" data-lightbox=\"gallery2013\" data-title=\"<h3>Ramsey Lim</h3><hr>Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood\">\n				<img class=\"photo\" src=\"images/gallery/bowlexpobilloneil.gif\">\n			</a>\n			<a class=\"galleryThumbnail col-xs-4\" rel=\"lightbox\" href=\"images/gallery/bowlexpochris.gif\" data-lightbox=\"gallery2013\" data-title=\"<h3>Ramsey Lim</h3><hr>Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood\">\n				<img class=\"photo\" src=\"images/gallery/owenalicia.gif\">\n			</a>\n		</div>\n	</div>\n	<div class=\"yearPanel clearfix\">\n		<h2 class=\"text-center\">2011</h2>\n		<div class=\"thumbnails\">\n			<a class=\"galleryThumbnail col-xs-4\" rel=\"lightbox\" href=\"images/gallery/bowlexpochris.gif\" data-lightbox=\"gallery2013\" data-title=\"<h3>Ramsey Lim</h3><hr>Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood\">\n				<img class=\"photo\" src=\"images/gallery/bowlexpochris.gif\">\n			</a>\n			<a class=\"galleryThumbnail col-xs-4\" rel=\"lightbox\" href=\"images/gallery/bowlexpochris.gif\" data-lightbox=\"gallery2013\" data-title=\"<h3>Ramsey Lim</h3><hr>Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood\">\n				<img class=\"photo\" src=\"images/gallery/bowlexpobilloneil.gif\">\n			</a>\n			<a class=\"galleryThumbnail col-xs-4\" rel=\"lightbox\" href=\"images/gallery/bowlexpochris.gif\" data-lightbox=\"gallery2013\" data-title=\"<h3>Ramsey Lim</h3><hr>Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood\">\n				<img class=\"photo\" src=\"images/gallery/owenalicia.gif\">\n			</a>\n			<a class=\"galleryThumbnail col-xs-4\" rel=\"lightbox\" href=\"images/gallery/bowlexpochris.gif\" data-lightbox=\"gallery2013\" data-title=\"<h3>Ramsey Lim</h3><hr>Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood\">\n				<img class=\"photo\" src=\"images/gallery/masterleague.gif\">\n			</a>\n			<a class=\"galleryThumbnail col-xs-4\" rel=\"lightbox\" href=\"images/gallery/bowlexpochris.gif\" data-lightbox=\"gallery2013\" data-title=\"<h3>Ramsey Lim</h3><hr>Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood\">\n				<img class=\"photo\" src=\"images/gallery/owenalicia.gif\">\n			</a>\n		</div>\n	</div>\n</div>";
+  stack1 = (helper = helpers.hallOfFameList || (depth0 && depth0.hallOfFameList),options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data},helper ? helper.call(depth0, (depth0 && depth0.hallOfFame), options) : helperMissing.call(depth0, "hallOfFameList", (depth0 && depth0.hallOfFame), options));
+  if(stack1 || stack1 === 0) { return stack1; }
+  else { return ''; }
   });
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -774,10 +1153,17 @@ if (typeof define === 'function' && define.amd) {
 var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var stack1, helper, options, self=this, helperMissing=helpers.helperMissing;
+
+function program1(depth0,data) {
   
+  var buffer = "";
+  return buffer;
+  }
 
-
-  return "<div class=\"panel panel-services\">\n	<div class=\"panel-heading\">\n		<div class=\"title text-center\">\n			Offer Set Promotion\n		</div>\n	</div>\n	<div class=\"panel-body\">\n		<img class=\"photo\" src=\"images/promotions/offerset.gif\">\n		<div class=\"collapseOfferSet panel-collapse collapse\">\n			<hr>\n	         <a data-toggle=\"collapse\" data-parent=\".panel-services\" href=\".collapseOfferSet\">\n				<div class=\"text-center\">\n					<span class=\"glyphicon glyphicon-chevron-up\"></span>\n				</div>\n			</a>\n	        <hr>\n	        <h3>Offer Set promotion for beginner/advance bowlers</h3>\n	        <p>\n	        	Columbia 300 bowling ball + bowling shoes + single ball bag + ball polisher @ S$175\n	        </p>\n	        <p>\n	        	Ebonite bowling ball + bowling shoes + single ball bag + ball polisher @ S$255\n	        </p>\n	    </div>\n	</div>\n\n	<a data-toggle=\"collapse\" data-parent=\".panel-services\" href=\".collapseOfferSet\">\n		<div class=\"panel-footer text-center\">\n			<span class=\"glyphicon glyphicon-info-sign\"></span>\n		</div>\n	</a>\n</div>";
+  stack1 = (helper = helpers.promotionsList || (depth0 && depth0.promotionsList),options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data},helper ? helper.call(depth0, (depth0 && depth0.promotions), options) : helperMissing.call(depth0, "promotionsList", (depth0 && depth0.promotions), options));
+  if(stack1 || stack1 === 0) { return stack1; }
+  else { return ''; }
   });
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -794,10 +1180,18 @@ if (typeof define === 'function' && define.amd) {
 var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var buffer = "", stack1, helper, options, self=this, helperMissing=helpers.helperMissing;
+
+function program1(depth0,data) {
   
+  var buffer = "";
+  return buffer;
+  }
 
-
-  return "<div class=\"panel panel-services\">\n	<div class=\"panel-heading\">\n		<div class=\"title text-center\">\n			The Wave by PowerHouse\n		</div>\n	</div>\n	<div class=\"panel-body\">\n		<img class=\"photo\" src=\"images/services/thewave.png\">\n		<div class=\"collapseTheWave panel-collapse collapse\">\n			<hr>\n	         <a data-toggle=\"collapse\" data-parent=\".panel-services\" href=\".collapseTheWave\">\n				<div class=\"text-center\">\n					<span class=\"glyphicon glyphicon-chevron-up\"></span>\n				</div>\n			</a>\n	        <hr>\n	        Please visit <a href=\"http://powerhousebowling.com/products/product_detail/the_wave\"><strong>The Wave</strong></a> for more information.\n	    </div>\n	</div>\n\n	<a data-toggle=\"collapse\" data-parent=\".panel-services\" href=\".collapseTheWave\">\n		<div class=\"panel-footer text-center\">\n			<span class=\"glyphicon glyphicon-info-sign\"></span>\n		</div>\n	</a>\n</div>\n\n<div class=\"panel panel-services\">\n	<div class=\"panel-heading\">\n		<div class=\"title text-center\">\n			Bowling Ball Hook Restoration\n		</div>\n	</div>\n	<div class=\"panel-body\">\n		<img class=\"photo\" src=\"images/services/hookrestoration.jpg\">\n		<div class=\"collapseHookRestoration panel-collapse collapse\">\n	        <hr>\n	        <a data-toggle=\"collapse\" data-parent=\".panel-services\" href=\".collapseHookRestoration\">\n				<div class=\"text-center\">\n					<span class=\"glyphicon glyphicon-chevron-up\"></span>\n				</div>\n			</a>\n	        <h3>Ebonite PowerHouse Hook Again Treatment</h3>\n	        <p>\n	        	The first and ONLY proven formula to actually restore hook to 'dead' bowling balls!\n	        </p>\n	        <p>\n	        	Brings as much as 99.8% performance back.\n	        </p>\n	        <p>\n	        	Performance tested, safe for reactive and particle balls.\n	        </p>\n	        <p>\n	        	Quick Recovery - Works in 24 hours.\n	        </p>\n	    </div>\n	</div>\n\n	<a data-toggle=\"collapse\" data-parent=\".panel-services\" href=\".collapseHookRestoration\">\n		<div class=\"panel-footer text-center\">\n			<span class=\"glyphicon glyphicon-info-sign\"></span>\n		</div>\n	</a>\n</div>\n\n<div class=\"panel panel-services\">\n	<div class=\"panel-heading\">\n		<div class=\"title text-center\">\n			Bowling Ball Resurfacing\n		</div>\n	</div>\n	<div class=\"panel-body\">\n		<img class=\"photo\" src=\"images/services/resurfacing.jpg\">\n		<div class=\"collapseResurfacing panel-collapse collapse\">\n	        <hr>\n	        <a data-toggle=\"collapse\" data-parent=\".panel-services\" href=\".collapseResurfacing\">\n				<div class=\"text-center\">\n					<span class=\"glyphicon glyphicon-chevron-up\"></span>\n				</div>\n			</a>\n	        <h3>Haus Resurfacing System</h3>\n	        <p>\n	        	After numerous games on wood or synthetic lanes, your ball will loose consistent cover reaction.\n	        </p>\n	        <p>\n	        	Regular resurfacing with the Haus Resurfacing System can:\n        		<ul>\n        			<li>\n        				<h6><strong>IMPROVE YOUR GAME</strong></h6>\n        				Bowling consistency requires consistent cover reaction. Regular resurfacing can help you achieve that critical consistency.\n        			</li>\n        			<li>\n        				<h6><strong>LENGTHEN YOUR BALL'S LIFE</strong></h6>\n        				By resurfacing your ball, minimal ball surface is removed, avoiding the need to remove deep track and drop areas, and extending the length of time your ball meets ABC specifications.\n        			</li>\n        			<li>\n        				<h6><strong>ASSURE YOU OF RESURFACING CONSISTENCY</strong></h6>\n        				Consistent &amp; accurate results, time after time. Unlike manually resurfaced balls, our automatic system maintains and returns your ball back to it's original manufacturers' specifications or better. Operator error is virtually eliminated. Your entire ball surface is refinished, not just the drop and track areas.\n        			</li>\n	        </p>\n	    </div>\n	</div>\n\n	<a data-toggle=\"collapse\" data-parent=\".panel-services\" href=\".collapseResurfacing\">\n		<div class=\"panel-footer text-center\">\n			<span class=\"glyphicon glyphicon-info-sign\"></span>\n		</div>\n	</a>\n</div>\n\n<div class=\"panel panel-services\">\n 	<div class=\"panel-heading\">\n  		<div class=\"title text-center\">\n			Other Services\n		</div>\n 	</div>\n 	<div class=\"panel-content\">\n 		<div class=\"panel-group otherServices\">\n 			<div class=\"panel\">\n		    	<div class=\"panel-heading\">\n		    		<div class=\"sub-title text-center\">\n		        		<a data-toggle=\"collapse\" data-parent=\".otherServices\" href=\".collapseReplug\">\n		        			Replug\n		        		</a>\n		    		</div>\n		    	</div>\n		    	<div class=\"collapseReplug panel-collapse collapse\">\n		      		<div class=\"panel-body\">\n		        		Ball grip feeling stretched? Having blisters on your thumb or fingers? Thumb or finger pitch (angle) may not be the correct fit for your hand. Bring your bowling ball down for a no obligation inspection by the professional.\n		      		</div>\n		    	</div>\n		    </div>\n\n			<div class=\"panel\">\n		    	<div class=\"panel-heading\">\n			      	<div class=\"sub-title text-center\">\n			        	<a data-toggle=\"collapse\" data-parent=\".otherServices\" href=\".collapseInserts\">\n			          		Thumb/Rubber inserts changing\n			        	</a>\n			    	</div>\n			    </div>\n			    <div class=\"collapseInserts panel-collapse collapse\">\n			    	<div class=\"panel-body\">\n			        	Just like car tyres, rubber inserts do wear out as well. Get your grip back and produce the same ball revolution consistently.\n			    	</div>\n			    </div>\n			</div>\n\n			<div class=\"panel\">\n				<div class=\"panel-heading\">\n			    	<div class=\"sub-title text-center\">\n			        	<a data-toggle=\"collapse\" data-parent=\".otherServices\" href=\".collapseDrilling\">\n			          		Drilling\n			    		</a>\n			    	</div>\n			    </div>\n			    <div class=\"collapseDrilling panel-collapse collapse\">\n			    	<div class=\"panel-body\">\n			        	Bought a bowling ball somewhere else? Get Kenneth to advise you on the most suitable drilling pattern and drill the bowling ball professionally. After all, he is Singapore's ONLY IBPSIA certified bowling ball driller.\n			    	</div>\n			    </div>\n			</div>\n\n			<div class=\"panel\">\n				<div class=\"panel-heading\">\n			    	<div class=\"sub-title text-center\">\n			        	<a data-toggle=\"collapse\" data-parent=\".otherServices\" href=\".collapseCoaching\">\n			          		Coaching\n			        	</a>\n			      	</div>\n			    </div>\n			    <div class=\"collapseCoaching panel-collapse collapse\">\n			    	<div class=\"panel-body\">\n			        	Learn to bowl correctly from the professionals! We have classes for Beginners, intermediate and advanced bowlers for all ages, companies and school. Our team of dedicated coaches are qualified bowling coaches certified by Singapore Bowling Federation (SBF) and United States Bowling Congress (USBC). For enquiries, please call 9615 6988.\n			    	</div>\n			    </div>\n			</div>\n		</div>\n 	</div>\n</div>\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+  stack1 = (helper = helpers.servicesList || (depth0 && depth0.servicesList),options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data},helper ? helper.call(depth0, (depth0 && depth0.services), options) : helperMissing.call(depth0, "servicesList", (depth0 && depth0.services), options));
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n\n<div class=\"panel panel-custom\">\n 	<div class=\"panel-heading\">\n  		<div class=\"title text-center\">\n			Other Services\n		</div>\n 	</div>\n 	<div class=\"panel-content\">\n 		<div class=\"panel-group otherServices\">\n 			<div class=\"panel\">\n		    	<div class=\"panel-heading\">\n		    		<div class=\"sub-title text-center\">\n		        		<a data-toggle=\"collapse\" data-parent=\".otherServices\" href=\".collapseReplug\">\n		        			Replug\n		        		</a>\n		    		</div>\n		    	</div>\n		    	<div class=\"collapseReplug panel-collapse collapse\">\n		      		<div class=\"panel-body\">\n		        		Ball grip feeling stretched? Having blisters on your thumb or fingers? Thumb or finger pitch (angle) may not be the correct fit for your hand. Bring your bowling ball down for a no obligation inspection by the professional.\n		      		</div>\n		    	</div>\n		    </div>\n\n			<div class=\"panel\">\n		    	<div class=\"panel-heading\">\n			      	<div class=\"sub-title text-center\">\n			        	<a data-toggle=\"collapse\" data-parent=\".otherServices\" href=\".collapseInserts\">\n			          		Thumb/Rubber inserts changing\n			        	</a>\n			    	</div>\n			    </div>\n			    <div class=\"collapseInserts panel-collapse collapse\">\n			    	<div class=\"panel-body\">\n			        	Just like car tyres, rubber inserts do wear out as well. Get your grip back and produce the same ball revolution consistently.\n			    	</div>\n			    </div>\n			</div>\n\n			<div class=\"panel\">\n				<div class=\"panel-heading\">\n			    	<div class=\"sub-title text-center\">\n			        	<a data-toggle=\"collapse\" data-parent=\".otherServices\" href=\".collapseDrilling\">\n			          		Drilling\n			    		</a>\n			    	</div>\n			    </div>\n			    <div class=\"collapseDrilling panel-collapse collapse\">\n			    	<div class=\"panel-body\">\n			        	Bought a bowling ball somewhere else? Get Kenneth to advise you on the most suitable drilling pattern and drill the bowling ball professionally. After all, he is Singapore's ONLY IBPSIA certified bowling ball driller.\n			    	</div>\n			    </div>\n			</div>\n\n			<div class=\"panel\">\n				<div class=\"panel-heading\">\n			    	<div class=\"sub-title text-center\">\n			        	<a data-toggle=\"collapse\" data-parent=\".otherServices\" href=\".collapseCoaching\">\n			          		Coaching\n			        	</a>\n			      	</div>\n			    </div>\n			    <div class=\"collapseCoaching panel-collapse collapse\">\n			    	<div class=\"panel-body\">\n			        	Learn to bowl correctly from the professionals! We have classes for Beginners, intermediate and advanced bowlers for all ages, companies and school. Our team of dedicated coaches are qualified bowling coaches certified by Singapore Bowling Federation (SBF) and United States Bowling Congress (USBC). For enquiries, please call 9615 6988.\n			    	</div>\n			    </div>\n			</div>\n		</div>\n 	</div>\n</div>\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+  return buffer;
   });
 if (typeof define === 'function' && define.amd) {
   define([], function() {
