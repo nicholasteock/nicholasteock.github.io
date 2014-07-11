@@ -297,48 +297,23 @@ module.exports = Backbone.Router.extend({
 // HANDLEBARS HELPERS
 
 /******************************************************************************
-// Photo Gallery Helper
+ Products List Helper
 ******************************************************************************/
 
-Handlebars.registerHelper( 'galleryList', function(galleryObject, options) {
+Handlebars.registerHelper( 'productsList', function(productsObject, options) {
 	var output = "";
 
-	for( var i=0, iLen=galleryObject.length; i<iLen; i++ ) {
-		var yearHtml = '<div class="yearPanel clearfix"><h1 class="text-center">' + galleryObject[i].year + '</h1><div class="panel"><div class="panel-body thumbnails">';
+	for( var i=0, iLen=productsObject.length; i<iLen; i++ ) {
+		var brandHtml = '<div class="panel panel-products"><div class="panel-heading"><img class="center-block logo" src="' + productsObject[i].brandImage + '" alt="' + productsObject[i].brand + '"></div><div class="panel-body"><ul class="list-group">';
 
-		for( var j=0, jLen=galleryObject[i].items.length; j<jLen; j++ ) {
-			yearHtml += '<a class="galleryThumbnail col-xs-4" href="' + galleryObject[i].items[j].image + '" data-lightbox="gallery' + galleryObject[i].year + '" data-title="<h3>' + galleryObject[i].items[j].date + '</h3><hr>'+ galleryObject[i].items[j].description +'">\
-							<img class="photo" src="' + galleryObject[i].items[j].image + '">\
-						</a>';
-		}
 
-		yearHtml +=	'</div></div></div>';
-
-		output += yearHtml;
-	}
-
-	return output;
-});
-
-/******************************************************************************
-// Hall Of Fame Helper
-******************************************************************************/
-
-Handlebars.registerHelper( 'hallOfFameList', function(hallOfFameObject, options) {
-	var output = "";
-
-	for( var i=0, iLen=hallOfFameObject.length; i<iLen; i++ ) {
-		var yearHtml = '<div class="yearPanel clearfix"><h1 class="text-center">' + hallOfFameObject[i].year + '</h1><div class="panel"><div class="panel-body thumbnails">';
-
-		for( var j=0, jLen=hallOfFameObject[i].items.length; j<jLen; j++ ) {
-			yearHtml += '<a class="galleryThumbnail col-xs-4" href="' + hallOfFameObject[i].items[j].image + '" data-lightbox="gallery' + hallOfFameObject[i].year + '" data-title="<h3>' + hallOfFameObject[i].items[j].descriptionTitle + '</h3><hr>'+ hallOfFameObject[i].items[j].description +'">\
-							<img class="photo" src="' + hallOfFameObject[i].items[j].image + '">\
-						</a>';
+		for( var j=0, jLen=productsObject[i].items.length; j<jLen; j++ ) {
+			brandHtml += "<li class='list-group-item'><img class='photo center-block' src='" + productsObject[i].items[j].image + "'><div class='text-center'>" + productsObject[i].items[j].description + "</div></li>";
 		}
 									
-		yearHtml +=	'</div></div></div>';
+		brandHtml += '</ul></div></div>';
 
-		output += yearHtml;
+		output += brandHtml;
 	}
 
 	return output;
@@ -453,6 +428,54 @@ Handlebars.registerHelper( 'eventsList', function(eventsObject, options) {
 });
 
 /******************************************************************************
+// Hall Of Fame Helper
+******************************************************************************/
+
+Handlebars.registerHelper( 'hallOfFameList', function(hallOfFameObject, options) {
+	var output = "";
+
+	for( var i=0, iLen=hallOfFameObject.length; i<iLen; i++ ) {
+		var yearHtml = '<div class="yearPanel clearfix"><h1 class="text-center">' + hallOfFameObject[i].year + '</h1><div class="panel"><div class="panel-body thumbnails">';
+
+		for( var j=0, jLen=hallOfFameObject[i].items.length; j<jLen; j++ ) {
+			yearHtml += '<a class="galleryThumbnail col-xs-4" href="' + hallOfFameObject[i].items[j].image + '" data-lightbox="gallery' + hallOfFameObject[i].year + '" data-title="<h3>' + hallOfFameObject[i].items[j].descriptionTitle + '</h3><hr>'+ hallOfFameObject[i].items[j].description +'">\
+							<img class="photo" src="' + hallOfFameObject[i].items[j].image + '">\
+						</a>';
+		}
+									
+		yearHtml +=	'</div></div></div>';
+
+		output += yearHtml;
+	}
+
+	return output;
+});
+
+/******************************************************************************
+// Photo Gallery Helper
+******************************************************************************/
+
+Handlebars.registerHelper( 'galleryList', function(galleryObject, options) {
+	var output = "";
+
+	for( var i=0, iLen=galleryObject.length; i<iLen; i++ ) {
+		var yearHtml = '<div class="yearPanel clearfix"><h1 class="text-center">' + galleryObject[i].year + '</h1><div class="panel"><div class="panel-body thumbnails">';
+
+		for( var j=0, jLen=galleryObject[i].items.length; j<jLen; j++ ) {
+			yearHtml += '<a class="galleryThumbnail col-xs-4" href="' + galleryObject[i].items[j].image + '" data-lightbox="gallery' + galleryObject[i].year + '" data-title="<h3>' + galleryObject[i].items[j].date + '</h3><hr>'+ galleryObject[i].items[j].description +'">\
+							<img class="photo" src="' + galleryObject[i].items[j].image + '">\
+						</a>';
+		}
+
+		yearHtml +=	'</div></div></div>';
+
+		output += yearHtml;
+	}
+
+	return output;
+});
+
+/******************************************************************************
 // Contact Details Helper
 ******************************************************************************/
 
@@ -522,35 +545,15 @@ module.exports = View.extend({
 
 ;require.register("views/contact_view", function(exports, require, module) {
 var View     = require('./view'),
-	template = require('./templates/contact');
+	template = require('./templates/contact'),
+	data 	 = require('./data/contact_details');
 
 var afterRender = function() {
-	console.log("RENDERED CONTACT VIEW");
 	Application.updateBreadcrumb('contact');
 };
 
 var getRenderData = function() {
-	return {
-			"result" : "success",
-			"data" : {
-				"contactDetails": {
-					"address" 			: [
-						"Leisure Park Kallang",
-						"5 Stadium Walk #02-23",
-						"Singapore 397693"
-					],
-					"operatingHours"	: [
-						"Mon - Sat: 1330hrs - 2200hrs",
-						"Sun & PH: 1330hrs - 2100hrs"
-					],
-					"contact" 	: [
-						"Phone : (+65) 6346-1811",
-						"Mobile : (+65) 9615-6988",
-						"Email&nbsp;&nbsp; : ken@kenproshop.com"
-					]
-				},
-			}
-		}.data;
+	return data;
 };
 
 module.exports = View.extend({
@@ -562,9 +565,277 @@ module.exports = View.extend({
 
 });
 
+;require.register("views/data/contact_details", function(exports, require, module) {
+module.exports = {
+
+	"contactDetails": {
+		"address" 			: [
+			"Leisure Park Kallang",
+			"5 Stadium Walk #02-23",
+			"Singapore 397693"
+		],
+		"operatingHours"	: [
+			"Mon - Sat: 1330hrs - 2200hrs",
+			"Sun & PH: 1330hrs - 2100hrs"
+		],
+		"contact" 	: [
+			"Phone : (+65) 6346-1811",
+			"Mobile : (+65) 9615-6988",
+			"Email&nbsp;&nbsp; : ken@kenproshop.com"
+		]
+	}
+
+};
+});
+
+;require.register("views/data/events", function(exports, require, module) {
+module.exports = {
+
+	"events": [
+		{
+			"image" 			: "img/events/demoday.jpg",
+			"title" 			: "Track / Columbia Ball Demo Day",
+			"descriptionTitle" 	: "",
+			"description" 		: "<p>Ken Pro Shop is bringing back the Demo Day where everyone can attend and try out the new balls from Track and Columbia 300. Anyone can sign up and join and there are no obligations to purchase any ball from us. There will be lucky draws during the event itself. Please come if any of you are interested to try out the new balls.</p>"
+		},
+	]
+	
+};
+});
+
+;require.register("views/data/gallery", function(exports, require, module) {
+module.exports = {
+
+	"gallery": [
+		{	
+			"year" 				: "2013",
+			"items" 			: [
+				{
+					"image" : "img/gallery/bowlexpochris.gif",
+					"date" : "21 July 2013",
+					"description" : "Today marks the end of the National League Master Event! Congrats to all winners and participants!",
+				},
+				{
+					"image" : "img/gallery/bowlexpobilloneil.gif",
+					"date" : "21 July 2013",
+					"description" : "Today marks the end of the National League Master Event! Congrats to all winners and participants!",
+				}
+			]
+		},
+		{	
+			"year" 				: "2012",
+			"items" 			: [
+				{
+					"image" : "img/gallery/bowlexpochris.gif",
+					"date" : "21 July 2012",
+					"description" : "Today marks the end of the National League Master Event! Congrats to all winners and participants!",
+				},
+				{
+					"image" : "img/gallery/bowlexpobilloneil.gif",
+					"date" : "21 July 2012",
+					"description" : "Today marks the end of the National League Master Event! Congrats to all winners and participants!",
+				}
+			]
+		},
+	]
+
+};
+});
+
+;require.register("views/data/hall_of_fame", function(exports, require, module) {
+module.exports = {
+
+	"hallOfFame": [
+		{	
+			"year" 				: "2013",
+			"items" 			: [
+				{
+					"image" 			: "img/gallery/bowlexpochris.gif",
+					"descriptionTitle" 	: "Ramsey Lim",
+					"description" 		: "Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood",
+				},
+				{
+					"image" 			: "img/gallery/bowlexpobilloneil.gif",
+					"descriptionTitle"	: "Ramsey Lim",
+					"description" 		: "Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood",
+				}
+			]
+		},
+		{	
+			"year" 				: "2012",
+			"items" 			: [
+				{
+					"image" 			: "img/gallery/bowlexpochris.gif",
+					"descriptionTitle" 	: "Ramsey Lim",
+					"description" 		: "Singapore<br>28th July 2012 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood",
+				},
+				{
+					"image" 			: "img/gallery/bowlexpobilloneil.gif",
+					"descriptionTitle"	: "Ramsey Lim",
+					"description" 		: "Singapore<br>28th July 2012 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood",
+				}
+			]
+		},
+	]
+	
+};
+});
+
+;require.register("views/data/products_accessories", function(exports, require, module) {
+
+});
+
+;require.register("views/data/products_bags", function(exports, require, module) {
+module.exports = {
+	"bags": [
+		{	
+			"brand"				: "Brunswick",
+			"brandImage" 		: "img/brands/brunswick.jpg",
+			"items" 			: [
+				{
+					"image" : "img/bags/brunswickkoolerbag.gif",
+					"description" : "Kooler Bag"
+				},
+				{
+					"image" : "img/bags/teambrunswickslimtriple.gif",
+					"description" : "Team Brunswick Slim Triple with shoe compartment"
+				}
+			]
+		},
+		{	
+			"brand"				: "Global 900",
+			"brandImage" 		: "img/brands/global900.jpg",
+			"items" 			: [
+				{
+					"image" : "img/bags/Global9003BallDeluxe.gif",
+					"description" : "900 Global Deluxe 3 Ball Triple Roller"
+				},
+			]
+		},
+	]
+};
+});
+
+;require.register("views/data/products_balls", function(exports, require, module) {
+module.exports = {
+
+	"balls": [
+		{	
+			"brand"				: "Ebonite",
+			"brandImage" 		: "img/brands/ebonite.png",
+			"items" 			: [
+				{
+					"image" : "img/balls/ebonitechampion.jpeg",
+					"description" : "Champion"
+				},
+				{
+					"image" : "img/balls/ebonitesource.png",
+					"description" : "Source"
+				}
+			]
+		},
+		{
+			"brand"				: "Hammer",
+			"brandImage" 		: "img/brands/hammer.jpg",
+			"items" 			: [
+				{
+					"image" : "img/balls/blackwidowassassin.png",
+					"description" : "Black Widow Assassin"
+				},
+				{
+					"image" : "img/balls/deadlyaim.png",
+					"description" : "Deadly Aim"
+				}
+			]
+		},
+	]
+	
+};
+});
+
+;require.register("views/data/products_shoes", function(exports, require, module) {
+module.exports = {
+
+	'shoes': [
+		{	
+			"brand"				: "Storm",
+			"brandImage" 		: "img/brands/storm.jpg",
+			"items" 			: [
+				{
+					"image" : "img/shoes/stormlightning.gif",
+					"description" : "Men's Lightning™"
+				},
+				{
+					"image" : "img/shoes/stormsp2.gif",
+					"description" : "Men's SP² 900™ (White)"
+				}
+			]
+		},
+		{	
+			"brand"				: "Dexter",
+			"brandImage" 		: "img/brands/dexter.gif",
+			"items" 			: [
+				{
+					"image" : "img/shoes/stormlightning.gif",
+					"description" : "Men's Lightning™"
+				},
+				{
+					"image" : "img/shoes/stormsp2.gif",
+					"description" : "Men's SP² 900™ (White)"
+				}
+			]
+		},
+	]
+	
+};
+});
+
+;require.register("views/data/promotions", function(exports, require, module) {
+module.exports = {
+
+	"promotions": [
+		{
+			"image" 			: "img/promotions/offerset.gif",
+			"title" 			: "Offer Set Promotion",
+			"descriptionTitle" 	: "Offer Set promotion for beginner/advance bowlers",
+			"description" 		: "<p>Columbia 300 bowling ball + bowling shoes + single ball bag + ball polisher @ S$175</p><p>Ebonite bowling ball + bowling shoes + single ball bag + ball polisher @ S$255</p>"
+		},
+	]
+
+};
+});
+
+;require.register("views/data/services", function(exports, require, module) {
+module.exports = {
+
+	"services": [
+		{
+			"image": "img/services/thewave.png",
+			"title": "The Wave by PowerHouse",
+			"descriptionTitle": "",
+			"description": "Please visit <a href='http://powerhousebowling.com/products/product_detail/the_wave'><strong>The Wave</strong></a> for more information."
+		},
+		{
+			"image": "img/services/hookrestoration.jpg",
+			"title": "Bowling Ball Hook Restoration",
+			"descriptionTitle": "Ebonite PowerHouse Hook Again Treatment",
+			"description": "<p>The first and ONLY proven formula to actually restore hook to 'dead' bowling balls!</p><p>Brings as much as 99.8% performance back.</p><p>Performance tested, safe for reactive and particle balls.</p><p>Quick Recovery - Works in 24 hours.</p>"
+		},
+		{
+			"image": "img/services/resurfacing.jpg",
+			"title": "Bowling Ball Resurfacing",
+			"descriptionTitle": "Haus Resurfacing System",
+			"description": "<p>After numerous games on wood or synthetic lanes, your ball will loose consistent cover reaction.</p><p>Regular resurfacing with the Haus Resurfacing System can:<ul><li><h6><strong>IMPROVE YOUR GAME</strong></h6>Bowling consistency requires consistent cover reaction. Regular resurfacing can help you achieve that critical consistency.</li><li><h6><strong>LENGTHEN YOUR BALL'S LIFE</strong></h6>By resurfacing your ball, minimal ball surface is removed, avoiding the need to remove deep track and drop areas, and extending the length of time your ball meets ABC specifications.</li><li><h6><strong>ASSURE YOU OF RESURFACING CONSISTENCY</strong></h6>Consistent &amp; accurate results, time after time. Unlike manually resurfaced balls, our automatic system maintains and returns your ball back to it's original manufacturers' specifications or better. Operator error is virtually eliminated. Your entire ball surface is refinished, not just the drop and track areas.</li></p>"
+		},
+	]
+	
+};
+});
+
 ;require.register("views/events_view", function(exports, require, module) {
 var View     = require('./view'),
-	template = require('./templates/events');
+	template = require('./templates/events'),
+	data 	 = require('./data/events');
 
 var afterRender = function() {
 	console.log("RENDERED EVENTS VIEW");
@@ -572,19 +843,7 @@ var afterRender = function() {
 };
 
 var getRenderData = function() {
-	return {
-			"result" : "success",
-			"data" : {
-				"events": [
-					{
-						"image" 			: "img/events/demoday.jpg",
-						"title" 			: "Track / Columbia Ball Demo Day",
-						"descriptionTitle" 	: "",
-						"description" 		: "<p>Ken Pro Shop is bringing back the Demo Day where everyone can attend and try out the new balls from Track and Columbia 300. Anyone can sign up and join and there are no obligations to purchase any ball from us. There will be lucky draws during the event itself. Please come if any of you are interested to try out the new balls.</p>"
-					},
-				]
-			}
-		}.data;
+	return data;
 };
 
 module.exports = View.extend({
@@ -598,51 +857,15 @@ module.exports = View.extend({
 
 ;require.register("views/gallery_view", function(exports, require, module) {
 var View     = require('./view'),
-	template = require('./templates/gallery');
+	template = require('./templates/gallery'),
+	data 	 = require('./data/gallery');
 
 var afterRender = function() {
-	console.log("RENDERED GALLERY VIEW");
 	Application.updateBreadcrumb('gallery');	
 };
 
 var getRenderData = function() {
-	return {
-			"result" : "success",
-			"data" : {
-				"gallery": [
-					{	
-						"year" 				: "2013",
-						"items" 			: [
-							{
-								"image" : "img/gallery/bowlexpochris.gif",
-								"date" : "21 July 2013",
-								"description" : "Today marks the end of the National League Master Event! Congrats to all winners and participants!",
-							},
-							{
-								"image" : "img/gallery/bowlexpobilloneil.gif",
-								"date" : "21 July 2013",
-								"description" : "Today marks the end of the National League Master Event! Congrats to all winners and participants!",
-							}
-						]
-					},
-					{	
-						"year" 				: "2012",
-						"items" 			: [
-							{
-								"image" : "img/gallery/bowlexpochris.gif",
-								"date" : "21 July 2012",
-								"description" : "Today marks the end of the National League Master Event! Congrats to all winners and participants!",
-							},
-							{
-								"image" : "img/gallery/bowlexpobilloneil.gif",
-								"date" : "21 July 2012",
-								"description" : "Today marks the end of the National League Master Event! Congrats to all winners and participants!",
-							}
-						]
-					},
-				]
-			}
-		}.data;
+	return data;
 };
 
 module.exports = View.extend({
@@ -655,51 +878,15 @@ module.exports = View.extend({
 
 ;require.register("views/hall_of_fame_view", function(exports, require, module) {
 var View     = require('./view'),
-	template = require('./templates/hall_of_fame');
+	template = require('./templates/hall_of_fame'),
+	data 	 = require('./data/hall_of_fame');
 
 var afterRender = function() {
-	console.log("RENDERED HALL OF FAME VIEW");
 	Application.updateBreadcrumb('hall-of-fame');
 };
 
 var getRenderData = function() {
-	return {
-			"result" : "success",
-			"data" : {
-				"hallOfFame": [
-					{	
-						"year" 				: "2013",
-						"items" 			: [
-							{
-								"image" 			: "img/gallery/bowlexpochris.gif",
-								"descriptionTitle" 	: "Ramsey Lim",
-								"description" 		: "Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood",
-							},
-							{
-								"image" 			: "img/gallery/bowlexpobilloneil.gif",
-								"descriptionTitle"	: "Ramsey Lim",
-								"description" 		: "Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood",
-							}
-						]
-					},
-					{	
-						"year" 				: "2012",
-						"items" 			: [
-							{
-								"image" 			: "img/gallery/bowlexpochris.gif",
-								"descriptionTitle" 	: "Ramsey Lim",
-								"description" 		: "Singapore<br>28th July 2012 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood",
-							},
-							{
-								"image" 			: "img/gallery/bowlexpobilloneil.gif",
-								"descriptionTitle"	: "Ramsey Lim",
-								"description" 		: "Singapore<br>28th July 2012 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood",
-							}
-						]
-					},
-				]
-			}
-		}.data;
+	return data;
 };
 
 module.exports = View.extend({
@@ -749,54 +936,66 @@ module.exports = View.extend({
 
 ;require.register("views/products_bags_view", function(exports, require, module) {
 var View     = require('./view'),
-	template = require('./templates/products_bags');
+	template = require('./templates/products_bags'),
+	data 	 = require('./data/products_bags');
 
 var afterRender = function() {
-	console.log("RENDERED PRODUCTS BAGS VIEW");
 	Application.updateBreadcrumb('products-bags');
 };
 
-module.exports = View.extend({
-    className: 'products-bags-view',
-    template: template,
+var getRenderData = function() {
+	return data;
+};
 
-    afterRender: afterRender
+module.exports = View.extend({
+    className 		: 'products-bags-view',
+    template 		: template,
+    getRenderData 	: getRenderData,
+    afterRender 	: afterRender
 });
 
 });
 
 ;require.register("views/products_balls_view", function(exports, require, module) {
 var View     = require('./view'),
-	template = require('./templates/products_balls');
+	template = require('./templates/products_balls'),
+	data 	 = require('./data/products_balls');
 
 var afterRender = function() {
-	console.log("RENDERED PRODUCTS BALLS VIEW");
 	Application.updateBreadcrumb('products-balls');
 };
 
-module.exports = View.extend({
-    className: 'products-balls-view',
-    template: template,
+var getRenderData = function() {
+	return data;
+};
 
-    afterRender: afterRender
+module.exports = View.extend({
+    className 		: 'products-balls-view',
+    template 		: template,
+    getRenderData 	: getRenderData,
+    afterRender 	: afterRender
 });
 
 });
 
 ;require.register("views/products_shoes_view", function(exports, require, module) {
 var View     = require('./view'),
-	template = require('./templates/products_shoes');
+	template = require('./templates/products_shoes'),
+	data 	 = require('./data/products_shoes');
 
 var afterRender = function() {
-	console.log("RENDERED PRODUCTS SHOES VIEW");
 	Application.updateBreadcrumb('products-shoes');
 };
 
-module.exports = View.extend({
-    className: 'products-shoes-view',
-    template: template,
+var getRenderData = function() {
+	return data;
+};
 
-    afterRender: afterRender
+module.exports = View.extend({
+    className 		: 'products-shoes-view',
+    template 		: template,
+    getRenderData 	: getRenderData,
+    afterRender 	: afterRender
 });
 
 });
@@ -821,7 +1020,8 @@ module.exports = View.extend({
 
 ;require.register("views/promotions_view", function(exports, require, module) {
 var View     = require('./view'),
-	template = require('./templates/promotions');
+	template = require('./templates/promotions'),
+	data 	 = require('./data/promotions');
 
 var afterRender = function() {
 	console.log("RENDERED PROMOTIONS VIEW");
@@ -829,19 +1029,7 @@ var afterRender = function() {
 };
 
 var getRenderData = function() {
-	return {
-			"result" : "success",
-			"data" : {
-				"promotions": [
-					{
-						"image" 			: "img/promotions/offerset.gif",
-						"title" 			: "Offer Set Promotion",
-						"descriptionTitle" 	: "Offer Set promotion for beginner/advance bowlers",
-						"description" 		: "<p>Columbia 300 bowling ball + bowling shoes + single ball bag + ball polisher @ S$175</p><p>Ebonite bowling ball + bowling shoes + single ball bag + ball polisher @ S$255</p>"
-					},
-				]
-			}
-		}.data;
+	return data;
 };
 
 module.exports = View.extend({
@@ -855,46 +1043,22 @@ module.exports = View.extend({
 
 ;require.register("views/services_view", function(exports, require, module) {
 var View     = require('./view'),
-	template = require('./templates/services');
+	template = require('./templates/services'),
+	data 	 = require('./data/services');
 
 var afterRender = function() {
-	console.log("RENDERED SERVICES VIEW");
 	Application.updateBreadcrumb('services');
 };
 
 var getRenderData = function() {
-	return {
-			"result" : "success",
-			"data" : {
-				"services": [
-					{
-						"image": "img/services/thewave.png",
-						"title": "The Wave by PowerHouse",
-						"descriptionTitle": "",
-						"description": "Please visit <a href='http://powerhousebowling.com/products/product_detail/the_wave'><strong>The Wave</strong></a> for more information."
-					},
-					{
-						"image": "img/services/hookrestoration.jpg",
-						"title": "Bowling Ball Hook Restoration",
-						"descriptionTitle": "Ebonite PowerHouse Hook Again Treatment",
-						"description": "<p>The first and ONLY proven formula to actually restore hook to 'dead' bowling balls!</p><p>Brings as much as 99.8% performance back.</p><p>Performance tested, safe for reactive and particle balls.</p><p>Quick Recovery - Works in 24 hours.</p>"
-					},
-					{
-						"image": "img/services/resurfacing.jpg",
-						"title": "Bowling Ball Resurfacing",
-						"descriptionTitle": "Haus Resurfacing System",
-						"description": "<p>After numerous games on wood or synthetic lanes, your ball will loose consistent cover reaction.</p><p>Regular resurfacing with the Haus Resurfacing System can:<ul><li><h6><strong>IMPROVE YOUR GAME</strong></h6>Bowling consistency requires consistent cover reaction. Regular resurfacing can help you achieve that critical consistency.</li><li><h6><strong>LENGTHEN YOUR BALL'S LIFE</strong></h6>By resurfacing your ball, minimal ball surface is removed, avoiding the need to remove deep track and drop areas, and extending the length of time your ball meets ABC specifications.</li><li><h6><strong>ASSURE YOU OF RESURFACING CONSISTENCY</strong></h6>Consistent &amp; accurate results, time after time. Unlike manually resurfaced balls, our automatic system maintains and returns your ball back to it's original manufacturers' specifications or better. Operator error is virtually eliminated. Your entire ball surface is refinished, not just the drop and track areas.</li></p>"
-					},
-				]
-			}
-		}.data;
+	return data;
 };
 
 module.exports = View.extend({
-    className: 'services-view',
-    template: template,
-    getRenderData: getRenderData,
-    afterRender: afterRender
+    className 		: 'services-view',
+    template 		: template,
+    getRenderData 	: getRenderData,
+    afterRender 	: afterRender
 });
 
 });
@@ -1093,10 +1257,17 @@ if (typeof define === 'function' && define.amd) {
 var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var stack1, helper, options, self=this, helperMissing=helpers.helperMissing;
+
+function program1(depth0,data) {
+  
   var buffer = "";
-
-
   return buffer;
+  }
+
+  stack1 = (helper = helpers.productsList || (depth0 && depth0.productsList),options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data},helper ? helper.call(depth0, (depth0 && depth0.bags), options) : helperMissing.call(depth0, "productsList", (depth0 && depth0.bags), options));
+  if(stack1 || stack1 === 0) { return stack1; }
+  else { return ''; }
   });
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -1113,10 +1284,17 @@ if (typeof define === 'function' && define.amd) {
 var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var stack1, helper, options, self=this, helperMissing=helpers.helperMissing;
+
+function program1(depth0,data) {
+  
   var buffer = "";
-
-
   return buffer;
+  }
+
+  stack1 = (helper = helpers.productsList || (depth0 && depth0.productsList),options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data},helper ? helper.call(depth0, (depth0 && depth0.balls), options) : helperMissing.call(depth0, "productsList", (depth0 && depth0.balls), options));
+  if(stack1 || stack1 === 0) { return stack1; }
+  else { return ''; }
   });
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -1133,10 +1311,17 @@ if (typeof define === 'function' && define.amd) {
 var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var stack1, helper, options, self=this, helperMissing=helpers.helperMissing;
+
+function program1(depth0,data) {
+  
   var buffer = "";
-
-
   return buffer;
+  }
+
+  stack1 = (helper = helpers.productsList || (depth0 && depth0.productsList),options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data},helper ? helper.call(depth0, (depth0 && depth0.shoes), options) : helperMissing.call(depth0, "productsList", (depth0 && depth0.shoes), options));
+  if(stack1 || stack1 === 0) { return stack1; }
+  else { return ''; }
   });
 if (typeof define === 'function' && define.amd) {
   define([], function() {

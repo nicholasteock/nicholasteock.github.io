@@ -6121,6 +6121,9 @@ a {
 .panel-products a {
   color: #232323;
 }
+.panel-products .logo {
+  width: 150px;
+}
 .panel-products .photo {
   width: 230px;
 }
