@@ -328,12 +328,12 @@ Handlebars.registerHelper( 'servicesList', function(servicesObject, options) {
 
 	for( var i=0, iLen=servicesObject.length; i<iLen; i++ ) {
 		var dataToggleName = "collapseServices" + i;
-		output += '<div class="panel panel-custom">\
+		output += '<div class="col-xs-12 col-md-4"><div class="panel panel-custom">\
 					<div class="panel-heading">\
 						<div class="title text-center">' + servicesObject[i].title + '</div>\
 					</div>\
 					<div class="panel-body">\
-						<img class="photo" src="' + servicesObject[i].image + '">\
+						<img class="center-block photo" src="' + servicesObject[i].image + '">\
 						<div class="' + dataToggleName + ' panel-collapse collapse">\
 					        <hr>\
 					        <a data-toggle="collapse" data-parent=".panel-custom" href=".' + dataToggleName + '">\
@@ -349,7 +349,7 @@ Handlebars.registerHelper( 'servicesList', function(servicesObject, options) {
 							<span class="glyphicon glyphicon-info-sign"></span>\
 						</div>\
 					</a>\
-				</div>';
+				</div></div>';
 	}
 
 	return output;
@@ -364,7 +364,7 @@ Handlebars.registerHelper( 'promotionsList', function(promotionsObject, options)
 
 	for( var i=0, iLen=promotionsObject.length; i<iLen; i++ ) {
 		var dataToggleName = "collapsePromotions" + i;
-		output += '<div class="panel panel-custom">\
+		output += '<div class="col-xs-12 col-md-6"><div class="panel panel-custom">\
 					<div class="panel-heading">\
 						<div class="title text-center">' + promotionsObject[i].title + '</div>\
 					</div>\
@@ -385,7 +385,7 @@ Handlebars.registerHelper( 'promotionsList', function(promotionsObject, options)
 							<span class="glyphicon glyphicon-info-sign"></span>\
 						</div>\
 					</a>\
-				</div>';
+				</div></div>';
 	}
 
 	return output;
@@ -400,7 +400,7 @@ Handlebars.registerHelper( 'eventsList', function(eventsObject, options) {
 
 	for( var i=0, iLen=eventsObject.length; i<iLen; i++ ) {
 		var dataToggleName = "collapseEvents" + i;
-		output += '<div class="panel panel-custom">\
+		output += '<div class="col-xs-12 col-md-6"><div class="panel panel-custom">\
 					<div class="panel-heading">\
 						<div class="title text-center">' + eventsObject[i].title + '</div>\
 					</div>\
@@ -421,7 +421,7 @@ Handlebars.registerHelper( 'eventsList', function(eventsObject, options) {
 							<span class="glyphicon glyphicon-info-sign"></span>\
 						</div>\
 					</a>\
-				</div>';
+				</div></div>';
 	}
 
 	return output;
@@ -438,7 +438,7 @@ Handlebars.registerHelper( 'hallOfFameList', function(hallOfFameObject, options)
 		var yearHtml = '<div class="yearPanel clearfix"><h1 class="text-center">' + hallOfFameObject[i].year + '</h1><div class="panel"><div class="panel-body thumbnails">';
 
 		for( var j=0, jLen=hallOfFameObject[i].items.length; j<jLen; j++ ) {
-			yearHtml += '<a class="galleryThumbnail col-xs-4" href="' + hallOfFameObject[i].items[j].image + '" data-lightbox="gallery' + hallOfFameObject[i].year + '" data-title="<h3>' + hallOfFameObject[i].items[j].descriptionTitle + '</h3><hr>'+ hallOfFameObject[i].items[j].description +'">\
+			yearHtml += '<a class="galleryThumbnail col-xs-4 col-md-3" href="' + hallOfFameObject[i].items[j].image + '" data-lightbox="gallery' + hallOfFameObject[i].year + '" data-title="<h3>' + hallOfFameObject[i].items[j].descriptionTitle + '</h3><hr>'+ hallOfFameObject[i].items[j].description +'">\
 							<img class="photo" src="' + hallOfFameObject[i].items[j].image + '">\
 						</a>';
 		}
@@ -462,7 +462,7 @@ Handlebars.registerHelper( 'galleryList', function(galleryObject, options) {
 		var yearHtml = '<div class="yearPanel clearfix"><h1 class="text-center">' + galleryObject[i].year + '</h1><div class="panel"><div class="panel-body thumbnails">';
 
 		for( var j=0, jLen=galleryObject[i].items.length; j<jLen; j++ ) {
-			yearHtml += '<a class="galleryThumbnail col-xs-4" href="' + galleryObject[i].items[j].image + '" data-lightbox="gallery' + galleryObject[i].year + '" data-title="<h3>' + galleryObject[i].items[j].date + '</h3><hr>'+ galleryObject[i].items[j].description +'">\
+			yearHtml += '<a class="galleryThumbnail col-xs-4 col-md-3" href="' + galleryObject[i].items[j].image + '" data-lightbox="gallery' + galleryObject[i].year + '" data-title="<h3>' + galleryObject[i].items[j].date + '</h3><hr>'+ galleryObject[i].items[j].description +'">\
 							<img class="photo" src="' + galleryObject[i].items[j].image + '">\
 						</a>';
 		}
@@ -490,8 +490,8 @@ Handlebars.registerHelper( 'contactDetails', function(contactsObject, options) {
 	contact 		= "<div>" + contact + "</div>";
 
 
-	var output 	= '<div class="contactDetails top col-xs-12 col-md-4 col-md-offset-1">\
-						<div class="address top">\
+	var output 	= '<div class="contactDetails col-xs-12 col-md-4 col-md-offset-1">\
+						<div class="address">\
 							<div class="title">Address</div>\
 							<div class="description top">' + address + '</div>\
 						</div>\
@@ -535,7 +535,7 @@ var afterRender = function() {
 };
 
 module.exports = View.extend({
-    className: 'about-view',
+    className: 'container about-view',
     template: template,
 
     afterRender: afterRender
@@ -557,7 +557,7 @@ var getRenderData = function() {
 };
 
 module.exports = View.extend({
-    className 		: 'contact-view',
+    className 		: 'container contact-view',
     template 		: template,
     getRenderData 	: getRenderData,
     afterRender 	: afterRender
@@ -658,7 +658,27 @@ module.exports = {
 					"image" 			: "img/gallery/bowlexpobilloneil.gif",
 					"descriptionTitle"	: "Ramsey Lim",
 					"description" 		: "Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood",
-				}
+				},
+				{
+					"image" 			: "img/gallery/bowlexpobilloneil.gif",
+					"descriptionTitle"	: "Ramsey Lim",
+					"description" 		: "Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood",
+				},
+				{
+					"image" 			: "img/gallery/bowlexpochris.gif",
+					"descriptionTitle" 	: "Ramsey Lim",
+					"description" 		: "Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood",
+				},
+				{
+					"image" 			: "img/gallery/bowlexpobilloneil.gif",
+					"descriptionTitle"	: "Ramsey Lim",
+					"description" 		: "Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood",
+				},
+				{
+					"image" 			: "img/gallery/bowlexpobilloneil.gif",
+					"descriptionTitle"	: "Ramsey Lim",
+					"description" 		: "Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood",
+				},
 			]
 		},
 		{	
@@ -847,7 +867,7 @@ var getRenderData = function() {
 };
 
 module.exports = View.extend({
-    className 		: 'events-view',
+    className 		: 'container events-view',
     template 		: template,
     getRenderData 	: getRenderData,
     afterRender 	: afterRender
@@ -869,7 +889,7 @@ var getRenderData = function() {
 };
 
 module.exports = View.extend({
-    className 		: 'gallery-view',
+    className 		: 'container gallery-view',
     template 		: template,
     getRenderData 	: getRenderData,
     afterRender 	: afterRender
@@ -890,7 +910,7 @@ var getRenderData = function() {
 };
 
 module.exports = View.extend({
-    className 		: 'hall-of-fame-view',
+    className 		: 'container hall-of-fame-view',
     template 		: template,
     getRenderData 	: getRenderData,
     afterRender 	: afterRender
@@ -908,7 +928,7 @@ var afterRender = function() {
 };
 
 module.exports = View.extend({
-    className: 'home-view',
+    className: 'container home-view',
     template: template,
 
     afterRender: afterRender
@@ -926,7 +946,7 @@ var afterRender = function() {
 };
 
 module.exports = View.extend({
-    className: 'products-accessories-view',
+    className: 'container products-accessories-view',
     template: template,
 
     afterRender: afterRender
@@ -948,7 +968,7 @@ var getRenderData = function() {
 };
 
 module.exports = View.extend({
-    className 		: 'products-bags-view',
+    className 		: 'container products-bags-view',
     template 		: template,
     getRenderData 	: getRenderData,
     afterRender 	: afterRender
@@ -970,7 +990,7 @@ var getRenderData = function() {
 };
 
 module.exports = View.extend({
-    className 		: 'products-balls-view',
+    className 		: 'container products-balls-view',
     template 		: template,
     getRenderData 	: getRenderData,
     afterRender 	: afterRender
@@ -992,7 +1012,7 @@ var getRenderData = function() {
 };
 
 module.exports = View.extend({
-    className 		: 'products-shoes-view',
+    className 		: 'container products-shoes-view',
     template 		: template,
     getRenderData 	: getRenderData,
     afterRender 	: afterRender
@@ -1010,7 +1030,7 @@ var afterRender = function() {
 };
 
 module.exports = View.extend({
-    className: 'products-view',
+    className: 'container products-view',
     template: template,
 
     afterRender: afterRender
@@ -1033,7 +1053,7 @@ var getRenderData = function() {
 };
 
 module.exports = View.extend({
-    className 		: 'promotions-view',
+    className 		: 'container promotions-view',
     template 		: template,
     getRenderData 	: getRenderData,
     afterRender 	: afterRender
@@ -1055,7 +1075,7 @@ var getRenderData = function() {
 };
 
 module.exports = View.extend({
-    className 		: 'services-view',
+    className 		: 'container services-view',
     template 		: template,
     getRenderData 	: getRenderData,
     afterRender 	: afterRender
@@ -1070,7 +1090,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   
 
 
-  return "<div class=\"kennethProfile row\">\n	<div class=\"col-xs-12 col-md-4\">\n		<img class=\"photo bottom center-block img-circle\" src=\"img/about/kenneth.jpg\">\n	</div>\n	<div class=\"col-xs-12 col-md-8\">\n		<div class=\"title text-center\">\n			Kenneth Chua\n		</div>\n		<ul class=\"profileList\">\n			<li>Founder</li>\n			<li>21 years in bowling business</li>\n			<li>IBPSIA Technical Certification since 1999</li>\n			<li>Singapore Special Olympic World Summer Games Bowling Coach (2007)</li>\n			<li>Catholic High School bowling coach</li>\n			<li>Catholic Primary School bowling coach</li>\n		</ul>\n	</div>\n</div>\n\n<hr>\n\n<div class=\"shopDescription\">\n	<div class=\"title text-center bottom\">\n		Founder's story\n	</div>\n	<p>Kenneth Chua, owner of Ken Pro Shop in Kallang Bowl, Singapore, is one of the first 97 bowling pro shop and instructional professionals in the world to have earned Technical Certification from the International Bowling Pro Shop & Instructors Association Inc. (IBPSIA).</p>\n\n	<p>One of some 400 candidates currently enrolled in IBPSIA's Certification Program, Kenneth completed the three-year course in less than one year.</p>\n\n	<p>To fulfill requirements of the Certification Program, Kenneth participated in a four-day, hands-on workshop during the spring of 1999; accumulated the required additional credits at the association's annual conference in Las Vegas, Nev., in July 1999; and completed written study guides and the final, written test based on the workshop and IBPSIA's 150-page \"Technical Manual.\"</p>\n\n	<p>IBPSIA's Technical Certification reflects the holder's expertise in the technology-based elements of pro shop operation - fitting and drilling techniques, product knowledge, work bench activities and customer service.</p>\n\n	<p>Kenneth specializes in retail sales of bowling equiptment, supplies, accessories and apparel; and in providing technical services such as measuring and fitting bowlers' hands to ensure the proper grip, as well as drilling, plugging and resurfacing bowling balls.</p>\n\n	<p>Founded in November 1990, IBPSIA's mission is to provide education, communication and recognition for bowling pro shop and instructional professional, in order to create a foundation for the advancement of the worldwide bowling industry. Currently, IBPSIA's membership comprises some 650 businesses throughout the world.</p>\n\n	<p>More information may be obtained by contacting IBPSIA at http://www.ibpsia.com/</p>\n\n	<p>\n		<img class=\"photo center-block\" src=\"img/about/certified.jpg\">\n	</p>\n</div>";
+  return "<div class=\"kennethProfile row\">\n	<div class=\"col-xs-12 col-md-4\">\n		<img class=\"photo bottom center-block img-circle\" src=\"img/about/kenneth.jpg\">\n	</div>\n	<div class=\"col-xs-12 col-md-8\">\n		<div class=\"title text-center\">\n			Kenneth Chua\n		</div>\n		<ul class=\"profileList\">\n			<li>Founder</li>\n			<li>21 years in bowling business</li>\n			<li>IBPSIA Technical Certification since 1999</li>\n			<li>Singapore Special Olympic World Summer Games Bowling Coach (2007)</li>\n			<li>Catholic High School bowling coach</li>\n			<li>Catholic Primary School bowling coach</li>\n		</ul>\n	</div>\n</div>\n\n<hr>\n\n<div class=\"shopDescription\">\n	<div class=\"title text-center bottom\">\n		Founder's story\n	</div>\n	<p>Kenneth Chua, owner of Ken Pro Shop in Kallang Bowl, Singapore, is one of the first 97 bowling pro shop and instructional professionals in the world to have earned Technical Certification from the International Bowling Pro Shop & Instructors Association Inc. (IBPSIA).</p>\n\n	<p>One of some 400 candidates currently enrolled in IBPSIA's Certification Program, Kenneth completed the three-year course in less than one year.</p>\n\n	<p>To fulfill requirements of the Certification Program, Kenneth participated in a four-day, hands-on workshop during the spring of 1999; accumulated the required additional credits at the association's annual conference in Las Vegas, Nev., in July 1999; and completed written study guides and the final, written test based on the workshop and IBPSIA's 150-page \"Technical Manual.\"</p>\n\n	<p>IBPSIA's Technical Certification reflects the holder's expertise in the technology-based elements of pro shop operation - fitting and drilling techniques, product knowledge, work bench activities and customer service.</p>\n\n	<p>Kenneth specializes in retail sales of bowling equiptment, supplies, accessories and apparel; and in providing technical services such as measuring and fitting bowlers' hands to ensure the proper grip, as well as drilling, plugging and resurfacing bowling balls.</p>\n\n	<p>Founded in November 1990, IBPSIA's mission is to provide education, communication and recognition for bowling pro shop and instructional professional, in order to create a foundation for the advancement of the worldwide bowling industry. Currently, IBPSIA's membership comprises some 650 businesses throughout the world.</p>\n\n	<p>More information may be obtained by contacting IBPSIA at http://www.ibpsia.com/</p>\n\n	<p class=\"col-md-offset-3\">\n		<img class=\"photo\" src=\"img/about/certified.jpg\">\n		<img class=\"photo\" src=\"img/about/ibpsia.png\">\n	</p>\n</div>";
   });
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -1220,7 +1240,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   
 
 
-  return "<div class=\"panel panel-products\">\n	<a href=\"#products/balls\">\n		<div class=\"panel-body\">\n			<img class=\"center-block photo\" src=\"img/products-balls.png\">\n		</div>\n		<div class=\"panel-footer\">\n			<div class=\"title text-center\">\n				Balls\n			</div>\n		</div>\n	</a>\n</div>\n\n<div class=\"panel panel-products\">\n	<a href=\"#products/bags\">\n		<div class=\"panel-body\">\n			<img class=\"center-block photo\" src=\"img/products-bags.png\">\n		</div>\n		<div class=\"panel-footer\">\n			<div class=\"title text-center\">\n				Bags\n			</div>\n		</div>\n	</a>\n</div>\n\n<div class=\"panel panel-products\">\n	<a href=\"#products/shoes\">\n		<div class=\"panel-body\">\n			<img class=\"center-block photo\" src=\"img/products-shoes.jpg\">\n		</div>\n		<div class=\"panel-footer\">\n			<div class=\"title text-center\">\n				Shoes\n			</div>\n		</div>\n	</a>\n</div>\n\n<div class=\"panel panel-products\">\n	<a href=\"#products/accessories\">\n		<div class=\"panel-body\">\n			<img class=\"center-block photo\" src=\"img/products-accessories.jpg\">\n		</div>\n		<div class=\"panel-footer\">\n			<div class=\"title text-center\">\n				Accessories\n			</div>\n		</div>\n	</a>\n</div>";
+  return "<div class=\"col-xs-12 col-md-3\">\n	<div class=\"panel panel-products\">\n		<a href=\"#products/balls\">\n			<div class=\"panel-body\">\n				<img class=\"center-block photo\" src=\"img/products-balls.png\">\n			</div>\n			<div class=\"panel-footer\">\n				<div class=\"title text-center\">\n					Balls\n				</div>\n			</div>\n		</a>\n	</div>\n</div>\n\n<div class=\"col-xs-12 col-md-3\">\n	<div class=\"panel panel-products\">\n		<a href=\"#products/bags\">\n			<div class=\"panel-body\">\n				<img class=\"center-block photo\" src=\"img/products-bags.png\">\n			</div>\n			<div class=\"panel-footer\">\n				<div class=\"title text-center\">\n					Bags\n				</div>\n			</div>\n		</a>\n	</div>\n</div>\n\n<div class=\"col-xs-12 col-md-3\">\n	<div class=\"panel panel-products\">\n		<a href=\"#products/shoes\">\n			<div class=\"panel-body\">\n				<img class=\"center-block photo\" src=\"img/products-shoes.jpg\">\n			</div>\n			<div class=\"panel-footer\">\n				<div class=\"title text-center\">\n					Shoes\n				</div>\n			</div>\n		</a>\n	</div>\n</div>\n\n<div class=\"col-xs-12 col-md-3\">\n	<div class=\"panel panel-products\">\n		<a href=\"#products/accessories\">\n			<div class=\"panel-body\">\n				<img class=\"center-block photo\" src=\"img/products-accessories.jpg\">\n			</div>\n			<div class=\"panel-footer\">\n				<div class=\"title text-center\">\n					Accessories\n				</div>\n			</div>\n		</a>\n	</div>\n</div>";
   });
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -1338,7 +1358,7 @@ if (typeof define === 'function' && define.amd) {
 var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
-  var stack1, helper, options, self=this, helperMissing=helpers.helperMissing;
+  var buffer = "", stack1, helper, options, self=this, helperMissing=helpers.helperMissing;
 
 function program1(depth0,data) {
   
@@ -1347,8 +1367,9 @@ function program1(depth0,data) {
   }
 
   stack1 = (helper = helpers.promotionsList || (depth0 && depth0.promotionsList),options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data},helper ? helper.call(depth0, (depth0 && depth0.promotions), options) : helperMissing.call(depth0, "promotionsList", (depth0 && depth0.promotions), options));
-  if(stack1 || stack1 === 0) { return stack1; }
-  else { return ''; }
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n";
+  return buffer;
   });
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -1375,7 +1396,7 @@ function program1(depth0,data) {
 
   stack1 = (helper = helpers.servicesList || (depth0 && depth0.servicesList),options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data},helper ? helper.call(depth0, (depth0 && depth0.services), options) : helperMissing.call(depth0, "servicesList", (depth0 && depth0.services), options));
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n\n<div class=\"panel panel-custom\">\n 	<div class=\"panel-heading\">\n  		<div class=\"title text-center\">\n			Other Services\n		</div>\n 	</div>\n 	<div class=\"panel-content\">\n 		<div class=\"panel-group otherServices\">\n 			<div class=\"panel\">\n		    	<div class=\"panel-heading\">\n		    		<div class=\"sub-title text-center\">\n		        		<a data-toggle=\"collapse\" data-parent=\".otherServices\" href=\".collapseReplug\">\n		        			Replug\n		        		</a>\n		    		</div>\n		    	</div>\n		    	<div class=\"collapseReplug panel-collapse collapse\">\n		      		<div class=\"panel-body\">\n		        		Ball grip feeling stretched? Having blisters on your thumb or fingers? Thumb or finger pitch (angle) may not be the correct fit for your hand. Bring your bowling ball down for a no obligation inspection by the professional.\n		      		</div>\n		    	</div>\n		    </div>\n\n			<div class=\"panel\">\n		    	<div class=\"panel-heading\">\n			      	<div class=\"sub-title text-center\">\n			        	<a data-toggle=\"collapse\" data-parent=\".otherServices\" href=\".collapseInserts\">\n			          		Thumb/Rubber inserts changing\n			        	</a>\n			    	</div>\n			    </div>\n			    <div class=\"collapseInserts panel-collapse collapse\">\n			    	<div class=\"panel-body\">\n			        	Just like car tyres, rubber inserts do wear out as well. Get your grip back and produce the same ball revolution consistently.\n			    	</div>\n			    </div>\n			</div>\n\n			<div class=\"panel\">\n				<div class=\"panel-heading\">\n			    	<div class=\"sub-title text-center\">\n			        	<a data-toggle=\"collapse\" data-parent=\".otherServices\" href=\".collapseDrilling\">\n			          		Drilling\n			    		</a>\n			    	</div>\n			    </div>\n			    <div class=\"collapseDrilling panel-collapse collapse\">\n			    	<div class=\"panel-body\">\n			        	Bought a bowling ball somewhere else? Get Kenneth to advise you on the most suitable drilling pattern and drill the bowling ball professionally. After all, he is Singapore's ONLY IBPSIA certified bowling ball driller.\n			    	</div>\n			    </div>\n			</div>\n\n			<div class=\"panel\">\n				<div class=\"panel-heading\">\n			    	<div class=\"sub-title text-center\">\n			        	<a data-toggle=\"collapse\" data-parent=\".otherServices\" href=\".collapseCoaching\">\n			          		Coaching\n			        	</a>\n			      	</div>\n			    </div>\n			    <div class=\"collapseCoaching panel-collapse collapse\">\n			    	<div class=\"panel-body\">\n			        	Learn to bowl correctly from the professionals! We have classes for Beginners, intermediate and advanced bowlers for all ages, companies and school. Our team of dedicated coaches are qualified bowling coaches certified by Singapore Bowling Federation (SBF) and United States Bowling Congress (USBC). For enquiries, please call 9615 6988.\n			    	</div>\n			    </div>\n			</div>\n		</div>\n 	</div>\n</div>\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+  buffer += "\n\n<div class=\"col-xs-12 col-md-12\">\n	<div class=\"panel panel-custom\">\n	 	<div class=\"panel-heading\">\n	  		<div class=\"title text-center\">\n				Other Services\n			</div>\n	 	</div>\n	 	<div class=\"panel-content\">\n	 		<div class=\"panel-group otherServices\">\n	 			<div class=\"panel\">\n			    	<div class=\"panel-heading\">\n			    		<div class=\"sub-title text-center\">\n			        		<a data-toggle=\"collapse\" data-parent=\".otherServices\" href=\".collapseReplug\">\n			        			Replug\n			        		</a>\n			    		</div>\n			    	</div>\n			    	<div class=\"collapseReplug panel-collapse collapse\">\n			      		<div class=\"panel-body\">\n			        		Ball grip feeling stretched? Having blisters on your thumb or fingers? Thumb or finger pitch (angle) may not be the correct fit for your hand. Bring your bowling ball down for a no obligation inspection by the professional.\n			      		</div>\n			    	</div>\n			    </div>\n\n				<div class=\"panel\">\n			    	<div class=\"panel-heading\">\n				      	<div class=\"sub-title text-center\">\n				        	<a data-toggle=\"collapse\" data-parent=\".otherServices\" href=\".collapseInserts\">\n				          		Thumb/Rubber inserts changing\n				        	</a>\n				    	</div>\n				    </div>\n				    <div class=\"collapseInserts panel-collapse collapse\">\n				    	<div class=\"panel-body\">\n				        	Just like car tyres, rubber inserts do wear out as well. Get your grip back and produce the same ball revolution consistently.\n				    	</div>\n				    </div>\n				</div>\n\n				<div class=\"panel\">\n					<div class=\"panel-heading\">\n				    	<div class=\"sub-title text-center\">\n				        	<a data-toggle=\"collapse\" data-parent=\".otherServices\" href=\".collapseDrilling\">\n				          		Drilling\n				    		</a>\n				    	</div>\n				    </div>\n				    <div class=\"collapseDrilling panel-collapse collapse\">\n				    	<div class=\"panel-body\">\n				        	Bought a bowling ball somewhere else? Get Kenneth to advise you on the most suitable drilling pattern and drill the bowling ball professionally. After all, he is Singapore's ONLY IBPSIA certified bowling ball driller.\n				    	</div>\n				    </div>\n				</div>\n\n				<div class=\"panel\">\n					<div class=\"panel-heading\">\n				    	<div class=\"sub-title text-center\">\n				        	<a data-toggle=\"collapse\" data-parent=\".otherServices\" href=\".collapseCoaching\">\n				          		Coaching\n				        	</a>\n				      	</div>\n				    </div>\n				    <div class=\"collapseCoaching panel-collapse collapse\">\n				    	<div class=\"panel-body\">\n				        	Learn to bowl correctly from the professionals! We have classes for Beginners, intermediate and advanced bowlers for all ages, companies and school. Our team of dedicated coaches are qualified bowling coaches certified by Singapore Bowling Federation (SBF) and United States Bowling Congress (USBC). For enquiries, please call 9615 6988.\n				    	</div>\n				    </div>\n				</div>\n			</div>\n	 	</div>\n	</div>\n</div>";
   return buffer;
   });
 if (typeof define === 'function' && define.amd) {

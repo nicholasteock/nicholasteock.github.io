@@ -6056,8 +6056,12 @@ a {
 .lb-data .lb-caption {
   font-weight: normal;
 }
+.main-carousel {
+  max-height: 400px;
+}
 .main-carousel .photo {
   width: 100%;
+  max-height: 400px;
 }
 .balls .title {
   text-align: left;
@@ -6087,6 +6091,9 @@ a {
 }
 .shopDescription .title {
   font-size: 20px;
+}
+.shopDescription .photo {
+  max-width: 230px;
 }
 .yearPanel {
   padding-bottom: 20px;
@@ -6125,7 +6132,7 @@ a {
   width: 150px;
 }
 .panel-products .photo {
-  width: 230px;
+  max-width: 230px;
 }
 .panel-custom {
   color: #232323;
