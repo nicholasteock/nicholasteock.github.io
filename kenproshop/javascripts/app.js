@@ -928,7 +928,7 @@ var afterRender = function() {
 };
 
 module.exports = View.extend({
-    className: 'container home-view',
+    className: 'home-view',
     template: template,
 
     afterRender: afterRender
