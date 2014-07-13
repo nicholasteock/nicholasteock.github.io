@@ -719,6 +719,22 @@ module.exports = {
 				{
 					"image" : "img/bags/teambrunswickslimtriple.gif",
 					"description" : "Team Brunswick Slim Triple with shoe compartment"
+				},
+				{
+					"image" : "img/bags/brunswickkoolerbag.gif",
+					"description" : "Kooler Bag"
+				},
+				{
+					"image" : "img/bags/teambrunswickslimtriple.gif",
+					"description" : "Team Brunswick Slim Triple with shoe compartment"
+				},
+				{
+					"image" : "img/bags/brunswickkoolerbag.gif",
+					"description" : "Kooler Bag"
+				},
+				{
+					"image" : "img/bags/teambrunswickslimtriple.gif",
+					"description" : "Team Brunswick Slim Triple with shoe compartment"
 				}
 			]
 		},
@@ -732,6 +748,7 @@ module.exports = {
 				},
 			]
 		},
+
 	]
 };
 });
