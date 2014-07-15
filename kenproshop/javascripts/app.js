@@ -308,9 +308,9 @@ Handlebars.registerHelper( 'productsList', function(productsObject, options) {
 
 
 		for( var j=0, jLen=productsObject[i].items.length; j<jLen; j++ ) {
-			brandHtml += "<li class='col-xs-12 col-md-4 list-group-item'><img class='photo center-block' src='" + productsObject[i].items[j].image + "'><div class='text-center'>" + productsObject[i].items[j].description + "</div></li>";
+			brandHtml += "<li class='col-xs-12 col-md-4 list-group-item product'><img class='photo center-block' src='" + productsObject[i].items[j].image + "'><div class='text-center description'>" + productsObject[i].items[j].description + "</div></li>";
 		}
-									
+
 		brandHtml += '</ul></div></div>';
 
 		output += brandHtml;
@@ -566,306 +566,875 @@ module.exports = View.extend({
 });
 
 ;require.register("views/data/contact_details", function(exports, require, module) {
+/******************************************************************************
+ Contact details data
+ ===============================================================================
+
+ Instructions: 
+ 1) Edit the relevant contents and save.
+
+******************************************************************************/
+
 module.exports = {
 
-	"contactDetails": {
-		"address" 			: [
-			"Leisure Park Kallang",
-			"5 Stadium Walk #02-23",
-			"Singapore 397693"
-		],
-		"operatingHours"	: [
-			"Mon - Sat: 1330hrs - 2200hrs",
-			"Sun & PH: 1330hrs - 2100hrs"
-		],
-		"contact" 	: [
-			"Phone : (+65) 6346-1811",
-			"Mobile : (+65) 9615-6988",
-			"Email&nbsp;&nbsp; : ken@kenproshop.com"
-		]
-	}
+    "contactDetails": {
+        "address"           : [
+            "Leisure Park Kallang",
+            "5 Stadium Walk #02-23",
+            "Singapore 397693"
+        ],
+        "operatingHours"    : [
+            "Mon - Sat: 1330hrs - 2200hrs",
+            "Sun & PH: 1330hrs - 2100hrs"
+        ],
+        "contact"           : [
+            "Phone : (+65) 6346-1811",
+            "Mobile : (+65) 9615-6988",
+            "Email&nbsp;&nbsp; : ken@kenproshop.com"
+        ]
+    }
 
 };
 });
 
 ;require.register("views/data/events", function(exports, require, module) {
+/******************************************************************************
+  Events data
+===============================================================================
+
+ Instructions for adding a new event: 
+ 1) Save the image of the event in the img/events folder.
+ 2) Copy this segment of code
+
+        {
+            "image"             : "img/events/<Event Image File Here>",
+            "title"             : "<Name Of Event Here>",
+            "descriptionTitle"  : "<Heading for event description>",
+            "description"       : "<Description of event here>",
+        },
+
+3) Paste it in the 'events' array.
+
+******************************************************************************/
+
 module.exports = {
 
-	"events": [
-		{
-			"image" 			: "img/events/demoday.jpg",
-			"title" 			: "Track / Columbia Ball Demo Day",
-			"descriptionTitle" 	: "",
-			"description" 		: "<p>Ken Pro Shop is bringing back the Demo Day where everyone can attend and try out the new balls from Track and Columbia 300. Anyone can sign up and join and there are no obligations to purchase any ball from us. There will be lucky draws during the event itself. Please come if any of you are interested to try out the new balls.</p>"
-		},
-	]
-	
+    "events": [
+        {
+            "image"             : "img/events/demoday.jpg",
+            "title"             : "Track / Columbia Ball Demo Day",
+            "descriptionTitle"  : "",
+            "description"       : "<p>Ken Pro Shop is bringing back the Demo Day where everyone can attend and try out the new balls from Track and Columbia 300. Anyone can sign up and join and there are no obligations to purchase any ball from us. There will be lucky draws during the event itself. Please come if any of you are interested to try out the new balls.</p>"
+        },
+        // Paste new event here
+    ]
+    
 };
 });
 
 ;require.register("views/data/gallery", function(exports, require, module) {
+/******************************************************************************
+ Photo gallery data
+===============================================================================
+
+ Instructions for adding a new photo: 
+ 1) Save the image of the photo in the img/gallery folder.
+ 2) Copy this segment of code
+
+        {
+            "image"         : "img/gallery/<Photo Image File Here>",
+            "date"          : "<Date Of Photo Here>",
+            "description"   : "<Photo Caption Here>"
+        },
+
+3) Paste it in the 'items' array of the respective year.
+
+===============================================================================
+
+Instructions for adding a new year:
+1)  Copy this segment of code
+
+        {   
+            "year"              : "<Year Here>",
+            "items"             : [
+                // Paste new photo for the year <Year Here> here
+            ]
+        },
+
+3)  Paste it in the 'gallery' array.
+4)  Follow the instructions for adding a new photo for that year as mentioned
+    above.
+
+===============================================================================
+
+For optimal performance
+1)  Store images in JPEG format
+
+******************************************************************************/
+
 module.exports = {
 
-	"gallery": [
-		{	
-			"year" 				: "2013",
-			"items" 			: [
-				{
-					"image" : "img/gallery/bowlexpochris.gif",
-					"date" : "21 July 2013",
-					"description" : "Today marks the end of the National League Master Event! Congrats to all winners and participants!",
-				},
-				{
-					"image" : "img/gallery/bowlexpobilloneil.gif",
-					"date" : "21 July 2013",
-					"description" : "Today marks the end of the National League Master Event! Congrats to all winners and participants!",
-				}
-			]
-		},
-		{	
-			"year" 				: "2012",
-			"items" 			: [
-				{
-					"image" : "img/gallery/bowlexpochris.gif",
-					"date" : "21 July 2012",
-					"description" : "Today marks the end of the National League Master Event! Congrats to all winners and participants!",
-				},
-				{
-					"image" : "img/gallery/bowlexpobilloneil.gif",
-					"date" : "21 July 2012",
-					"description" : "Today marks the end of the National League Master Event! Congrats to all winners and participants!",
-				}
-			]
-		},
-	]
+    "gallery": [
+        // Paste new year here
+
+        // Begin 2013 Gallery
+        //=====================================================================
+        {   
+            "year"              : "2013",
+            "items"             : [
+                {
+                    "image"         : "img/gallery/bowlexpochris.gif",
+                    "date"          : "21 July 2013",
+                    "description"   : "Today marks the end of the National League Master Event! Congrats to all winners and participants!",
+                },
+                {
+                    "image"         : "img/gallery/bowlexpobilloneil.gif",
+                    "date"          : "21 July 2013",
+                    "description"   : "Today marks the end of the National League Master Event! Congrats to all winners and participants!",
+                },
+                // Paste new photo for the year 2013 here
+            ]
+        },
+        //=====================================================================
+        // End 2013 Gallery
+
+        // Begin 2012 Gallery
+        //=====================================================================
+        {   
+            "year"              : "2012",
+            "items"             : [
+                {
+                    "image"         : "img/gallery/bowlexpochris.gif",
+                    "date"          : "21 July 2012",
+                    "description"   : "Today marks the end of the National League Master Event! Congrats to all winners and participants!",
+                },
+                {
+                    "image"         : "img/gallery/bowlexpobilloneil.gif",
+                    "date"          : "21 July 2012",
+                    "description"   : "Today marks the end of the National League Master Event! Congrats to all winners and participants!",
+                },
+                // Paste new photo for the year 2012 here
+            ]
+        },
+        // End 2012 Gallery
+        //=====================================================================
+    ]
 
 };
 });
 
 ;require.register("views/data/hall_of_fame", function(exports, require, module) {
+/******************************************************************************
+ Hall Of Fame data
+===============================================================================
+
+ Instructions for adding a new photo: 
+ 1) Save the image of the photo in the img/hall-of-fame folder.
+ 2) Copy this segment of code
+
+        {
+            "image"             : "img/hall-of-fame/<Hall Of Fame Image File Here>",
+            "descriptionTitle"  : "<Title Of Photo Caption Here>",
+            "description"       : "<Photo Caption Here>"
+        },
+
+3) Paste it in the 'items' array of the respective year.
+
+===============================================================================
+
+Instructions for adding a new year:
+1)  Copy this segment of code
+
+        {   
+            "year"              : "<Year Here>",
+            "items"             : [
+                // Paste new photo for the year <Year Here> here
+            ]
+        },
+
+3)  Paste it in the 'hallOfFame' array.
+4)  Follow the instructions for adding a new photo for that year as mentioned
+    above.
+
+===============================================================================
+
+For optimal performance
+1)  Store images in JPEG format
+
+******************************************************************************/
+
 module.exports = {
 
-	"hallOfFame": [
-		{	
-			"year" 				: "2013",
-			"items" 			: [
-				{
-					"image" 			: "img/gallery/bowlexpochris.gif",
-					"descriptionTitle" 	: "Ramsey Lim",
-					"description" 		: "Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood",
-				},
-				{
-					"image" 			: "img/gallery/bowlexpobilloneil.gif",
-					"descriptionTitle"	: "Ramsey Lim",
-					"description" 		: "Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood",
-				},
-				{
-					"image" 			: "img/gallery/bowlexpobilloneil.gif",
-					"descriptionTitle"	: "Ramsey Lim",
-					"description" 		: "Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood",
-				},
-				{
-					"image" 			: "img/gallery/bowlexpochris.gif",
-					"descriptionTitle" 	: "Ramsey Lim",
-					"description" 		: "Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood",
-				},
-				{
-					"image" 			: "img/gallery/bowlexpobilloneil.gif",
-					"descriptionTitle"	: "Ramsey Lim",
-					"description" 		: "Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood",
-				},
-				{
-					"image" 			: "img/gallery/bowlexpobilloneil.gif",
-					"descriptionTitle"	: "Ramsey Lim",
-					"description" 		: "Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood",
-				},
-			]
-		},
-		{	
-			"year" 				: "2012",
-			"items" 			: [
-				{
-					"image" 			: "img/gallery/bowlexpochris.gif",
-					"descriptionTitle" 	: "Ramsey Lim",
-					"description" 		: "Singapore<br>28th July 2012 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood",
-				},
-				{
-					"image" 			: "img/gallery/bowlexpobilloneil.gif",
-					"descriptionTitle"	: "Ramsey Lim",
-					"description" 		: "Singapore<br>28th July 2012 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood",
-				}
-			]
-		},
-	]
-	
+    "hallOfFame": [
+        {   
+            "year"              : "2013",
+            "items"             : [
+                {
+                    "image"             : "img/hall-of-fame/bowlexpochris.gif",
+                    "descriptionTitle"  : "Ramsey Lim",
+                    "description"       : "Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood",
+                },
+                {
+                    "image"             : "img/hall-of-fame/bowlexpobilloneil.gif",
+                    "descriptionTitle"  : "Ramsey Lim",
+                    "description"       : "Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood",
+                },
+                {
+                    "image"             : "img/hall-of-fame/bowlexpobilloneil.gif",
+                    "descriptionTitle"  : "Ramsey Lim",
+                    "description"       : "Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood",
+                },
+                {
+                    "image"             : "img/hall-of-fame/bowlexpochris.gif",
+                    "descriptionTitle"  : "Ramsey Lim",
+                    "description"       : "Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood",
+                },
+                {
+                    "image"             : "img/hall-of-fame/bowlexpobilloneil.gif",
+                    "descriptionTitle"  : "Ramsey Lim",
+                    "description"       : "Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood",
+                },
+                {
+                    "image"             : "img/hall-of-fame/bowlexpobilloneil.gif",
+                    "descriptionTitle"  : "Ramsey Lim",
+                    "description"       : "Singapore<br>28th July 2013 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood",
+                },
+                // Paste new photo for the year 2013 here
+            ]
+        },
+        {   
+            "year"              : "2012",
+            "items"             : [
+                {
+                    "image"             : "img/hall-of-fame/bowlexpochris.gif",
+                    "descriptionTitle"  : "Ramsey Lim",
+                    "description"       : "Singapore<br>28th July 2012 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood",
+                },
+                {
+                    "image"             : "img/hall-of-fame/bowlexpobilloneil.gif",
+                    "descriptionTitle"  : "Ramsey Lim",
+                    "description"       : "Singapore<br>28th July 2012 - PBC July Medal 2013<br>Jurong Superbowl<br>Hammer First Blood",
+                },
+                // Paste new photo for the year 2012 here
+            ]
+        },
+    ]
+    
 };
 });
 
 ;require.register("views/data/products_accessories", function(exports, require, module) {
+/******************************************************************************
+ Products - Accessories data
+===============================================================================
 
+ Instructions for adding a new accessory: 
+ 1) Save the image of the accessory in the img/accessories folder.
+ 2) Copy this segment of code
+
+        {
+            "image"         : "img/accessories/<Accessory Image File Name Here>",
+            "description"   : "<Accessory Name Here>"
+        },
+
+3) Paste it in the 'items' array of the respective brand.
+
+===============================================================================
+
+Instructions for adding a new brand:
+1)  Save the image of the brand in the img/brands folder 
+2)  Copy this segment of code
+
+        {
+            "brand"             : "<Brand Name Here>",
+            "brandImage"        : "img/brands/<Brand Image File Name Here>",
+            "items"             : []
+        },
+
+3)  Paste it in the 'accessories' array.
+4)  Follow the instructions for adding a new accessory into the brand as mentioned
+    above.
+
+===============================================================================
+
+For optimal performance
+1)  Store images in JPEG format
+2)  Brand images should be edited to width 150px
+3)  Accessory images should be edited to width 230px
+
+******************************************************************************/
+
+module.exports = {
+    "accessories": [
+        {   
+            "brand"             : "Brunswick",
+            "brandImage"        : "img/brands/brunswick.jpg",
+            "items"             : [
+                {
+                    "image"         : "img/bags/teambrunswickslimtriple.gif",
+                    "description"   : "Team Brunswick Slim Triple with shoe compartment"
+                },
+                {
+                    "image"         : "img/bags/brunswickkoolerbag.gif",
+                    "description"   : "Kooler Bag"
+                },
+                {
+                    "image"         : "img/bags/teambrunswickslimtriple.gif",
+                    "description"   : "Team Brunswick Slim Triple with shoe compartment"
+                },
+                {
+                    "image"         : "img/bags/brunswickkoolerbag.gif",
+                    "description"   : "Kooler Bag"
+                },
+                {
+                    "image" : "img/bags/teambrunswickslimtriple.gif",
+                    "description" : "Team Brunswick Slim Triple with shoe compartment"
+                },
+            ]
+        },
+        {   
+            "brand"             : "Global 900",
+            "brandImage"        : "img/brands/global900.jpg",
+            "items"             : [
+                {
+                    "image"         : "img/bags/Global9003BallDeluxe.gif",
+                    "description"   : "900 Global Deluxe 3 Ball Triple Roller"
+                },
+            ]
+        },
+
+    ]
+};
 });
 
 ;require.register("views/data/products_bags", function(exports, require, module) {
-module.exports = {
-	"bags": [
-		{	
-			"brand"				: "Brunswick",
-			"brandImage" 		: "img/brands/brunswick.jpg",
-			"items" 			: [
-				{
-					"image" : "img/bags/brunswickkoolerbag.gif",
-					"description" : "Kooler Bag"
-				},
-				{
-					"image" : "img/bags/teambrunswickslimtriple.gif",
-					"description" : "Team Brunswick Slim Triple with shoe compartment"
-				},
-				{
-					"image" : "img/bags/brunswickkoolerbag.gif",
-					"description" : "Kooler Bag"
-				},
-				{
-					"image" : "img/bags/teambrunswickslimtriple.gif",
-					"description" : "Team Brunswick Slim Triple with shoe compartment"
-				},
-				{
-					"image" : "img/bags/brunswickkoolerbag.gif",
-					"description" : "Kooler Bag"
-				},
-				{
-					"image" : "img/bags/teambrunswickslimtriple.gif",
-					"description" : "Team Brunswick Slim Triple with shoe compartment"
-				}
-			]
-		},
-		{	
-			"brand"				: "Global 900",
-			"brandImage" 		: "img/brands/global900.jpg",
-			"items" 			: [
-				{
-					"image" : "img/bags/Global9003BallDeluxe.gif",
-					"description" : "900 Global Deluxe 3 Ball Triple Roller"
-				},
-			]
-		},
+/******************************************************************************
+ Products - Bags data
+===============================================================================
 
-	]
+ Instructions for adding a new bag: 
+ 1) Save the image of the bag in the img/bags folder.
+ 2) Copy this segment of code
+
+        {
+            "image"         : "img/bag/<Bag Image File Name Here>",
+            "description"   : "<Bag Name Here>"
+        },
+
+3) Paste it in the 'items' array of the respective brand.
+
+===============================================================================
+
+Instructions for adding a new brand:
+1)  Save the image of the brand in the img/brands folder 
+2)  Copy this segment of code
+
+        {
+            "brand"             : "<Brand Name Here>",
+            "brandImage"        : "img/brands/<Brand Image File Name Here>",
+            "items"             : []
+        },
+
+3)  Paste it in the 'bags' array.
+4)  Follow the instructions for adding a new bag into the brand as mentioned
+    above.
+
+===============================================================================
+
+For optimal performance
+1)  Store images in JPEG format
+2)  Brand images should be edited to width 150px
+3)  Bag images should be edited to width 230px
+
+******************************************************************************/
+
+module.exports = {
+    "bags": [
+        {   
+            "brand"             : "Brunswick",
+            "brandImage"        : "img/brands/brunswick.jpg",
+            "items"             : [
+                {
+                    "image"         : "img/bags/brunswickkoolerbag.gif",
+                    "description"   : "Kooler Bag"
+                },
+                {
+                    "image"         : "img/bags/teambrunswickslimtriple.gif",
+                    "description"   : "Team Brunswick Slim Triple with shoe compartment"
+                },
+                {
+                    "image"         : "img/bags/brunswickkoolerbag.gif",
+                    "description"   : "Kooler Bag"
+                },
+                {
+                    "image"         : "img/bags/teambrunswickslimtriple.gif",
+                    "description"   : "Team Brunswick Slim Triple with shoe compartment"
+                },
+                {
+                    "image"         : "img/bags/brunswickkoolerbag.gif",
+                    "description"   : "Kooler Bag"
+                },
+                {
+                    "image"         : "img/bags/teambrunswickslimtriple.gif",
+                    "description"   : "Team Brunswick Slim Triple with shoe compartment"
+                },
+            ]
+        },
+        {   
+            "brand"             : "Global 900",
+            "brandImage"        : "img/brands/global900.jpg",
+            "items"             : [
+                {
+                    "image"         : "img/bags/Global9003BallDeluxe.gif",
+                    "description"   : "900 Global Deluxe 3 Ball Triple Roller"
+                },
+            ]
+        },
+
+    ]
 };
 });
 
 ;require.register("views/data/products_balls", function(exports, require, module) {
+/******************************************************************************
+ Products - Balls data
+===============================================================================
+
+ Instructions for adding a new ball: 
+ 1) Save the image of the ball in the img/balls folder.
+ 2) Copy this segment of code
+
+        {
+            "image"         : "img/balls/<Ball Image File Name Here>",
+            "description"   : "<Ball Name Here>"
+        },
+
+3) Paste it in the 'items' array of the respective brand.
+
+===============================================================================
+
+Instructions for adding a new brand:
+1)  Save the image of the brand in the img/brands folder 
+2)  Copy this segment of code
+
+        {
+            "brand"             : "<Brand Name Here>",
+            "brandImage"        : "img/brands/<Brand Image File Name Here>",
+            "items"             : []
+        },
+
+3)  Paste it in the 'balls' array.
+4)  Follow the instructions for adding a new ball into the brand as mentioned
+    above.
+
+===============================================================================
+
+For optimal performance
+1)  Store images in JPEG format
+2)  Brand images should be edited to width 150px
+3)  Ball images should be edited to width 230px
+
+******************************************************************************/
+
 module.exports = {
 
-	"balls": [
-		{	
-			"brand"				: "Ebonite",
-			"brandImage" 		: "img/brands/ebonite.jpg",
-			"items" 			: [
-				{
-					"image" : "img/balls/ebonitechampion.jpeg",
-					"description" : "Champion"
-				},
-				{
-					"image" : "img/balls/ebonitesource.png",
-					"description" : "Source"
-				}
-			]
-		},
-		{
-			"brand"				: "Hammer",
-			"brandImage" 		: "img/brands/hammer.jpg",
-			"items" 			: [
-				{
-					"image" : "img/balls/blackwidowassassin.png",
-					"description" : "Black Widow Assassin"
-				},
-				{
-					"image" : "img/balls/deadlyaim.png",
-					"description" : "Deadly Aim"
-				}
-			]
-		},
-	]
-	
+    "balls": [
+        {   
+            "brand"             : "Ebonite",
+            "brandImage"        : "img/brands/ebonite.jpg",
+            "items"             : [
+                {
+                    "image"         : "img/balls/Pivotpoint.jpg",
+                    "description"   : "Pivot Point"
+                },
+                {
+                    "image"         : "img/balls/pivot.jpg",
+                    "description"   : "Pivot"
+                },
+                {
+                    "image"         : "img/balls/source.jpg",
+                    "description"   : "Source"
+                },
+                {
+                    "image"         : "img/balls/champion.jpg",
+                    "description"   : "Champion"
+                },
+                {
+                    "image"         : "img/balls/angryred.jpg",
+                    "description"   : "Angry Bird (Red)"
+                },
+                {
+                    "image"         : "img/balls/blackbird.jpg",
+                    "description"   : "Angry Bird (Black)"
+                },
+                {
+                    "image"         : "img/balls/greenpig.jpg",
+                    "description"   : "Angry Bird (Green Pig)"
+                },
+                {
+                    "image"         : "img/balls/maxim.jpg",
+                    "description"   : "Maxim"
+                },
+                {
+                    "image"         : "img/balls/cyclone.jpg",
+                    "description"   : "Cyclone"
+                },
+            ]
+        },
+        {
+            "brand"             : "Hammer",
+            "brandImage"        : "img/brands/hammer.jpg",
+            "items"             : [
+                {
+                    "image"         : "img/balls/assasin.jpg",
+                    "description"   : "Black Widow Assassin"
+                },
+                {
+                    "image"         : "img/balls/deadlyaim.jpg",
+                    "description"   : "Deadly Aim"
+                },
+                {
+                    "image"         : "img/balls/abshook.jpg",
+                    "description"   : "Absolut Hook"
+                },
+            ]
+        },
+        {
+            "brand"             : "Columbia 300",
+            "brandImage"        : "img/brands/c300logo.jpg",
+            "items"             : [
+                {
+                    "image"         : "img/balls/insane.jpg",
+                    "description"   : "N'S@ne Antics"
+                },
+                {
+                    "image"         : "img/balls/crazy.jpg",
+                    "description"   : "Crazy Antics"
+                },              
+            ]
+        },
+        {
+        
+            "brand"             : "Track",
+            "brandImage"        : "img/brands/tracklogo.jpg",
+            "items"             : [
+                {
+                    "image"         : "img/balls/lx16.jpg",
+                    "description"   : "Lx16"
+                },
+                {
+                    "image"         : "img/balls/mx10.jpg",
+                    "description"   : "Mx10"
+                },  
+                {
+                    "image"         : "img/balls/hx05.jpg",
+                    "description"   : "Hx05"
+                },              
+                {
+                    "image"         : "img/balls/400ase.jpg",
+                    "description"   : "400A SE"
+                },              
+            ]
+        },
+        {
+        
+            "brand"             : "Brunswick",
+            "brandImage"        : "img/brands/brunswick.jpg",
+            "items"             : [
+                {
+                    "image"         : "img/balls/meleecross.jpg",
+                    "description"   : "Melee Cross"
+                },
+                {
+                    "image"         : "img/balls/exile.jpg",
+                    "description"   : "Fortera Exile"
+                },  
+                {
+                    "image"         : "img/balls/melee.jpg",
+                    "description"   : "Melee"
+                },              
+                {
+                    "image"         : "img/balls/helloblk.jpg",
+                    "description"   : "Hello Kitty Black"
+                },
+                {
+                    "image"         : "img/balls/smiley.jpg",
+                    "description"   : "Smiley Viz-a-Ball"
+                },      
+            ]
+        },
+        {
+        
+            "brand"             : "DV8",
+            "brandImage"        : "img/brands/dv8.jpg",
+            "items"             : [
+                {
+                    "image"         : "img/balls/schizo.jpg",
+                    "description"   : "Ruckus Schizo"
+                },
+                {
+                    "image"         : "img/balls/rudedude.jpg",
+                    "description"   : "Rude Dude"
+                },  
+                {
+                    "image"         : "img/balls/dude.jpg",
+                    "description"   : "Dude"
+                },                              
+            ]
+        },
+        {
+        
+            "brand"             : "Storm",
+            "brandImage"        : "img/brands/storm.jpg",
+            "items"             : [
+                {
+                    "image"         : "img/balls/optimus.jpg",
+                    "description"   : "Optimus"
+                },
+                {
+                    "image"         : "img/balls/punchout.jpg",
+                    "description"   : "Punch Out"
+                },  
+                {
+                    "image"         : "img/balls/zero.jpg",
+                    "description"   : "Zero Gravity"
+                },
+                {
+                    "image"         : "img/balls/pitchblk.jpg",
+                    "description"   : "Pitch Black"
+                },  
+                {
+                    "image"         : "img/balls/fusion.jpg",
+                    "description"   : "IQ Tour Fusion"
+                },          
+            ]
+        },
+        {
+        
+            "brand"             : "Roto Grip",
+            "brandImage"        : "img/brands/roto.jpg",
+            "items"             : [
+                {
+                    "image"         : "img/balls/sinister.jpg",
+                    "description"   : "Sinister"
+                },
+                {
+                    "image"         : "img/balls/hyper.jpg",
+                    "description"   : "Hyper Cell"
+                },  
+                {
+                    "image"         : "img/balls/asylum.jpg",
+                    "description"   : "Asylum"
+                },
+                {
+                    "image"         : "img/balls/uproar.jpg",
+                    "description"   : "Uproar"
+                },  
+            ]
+        },  
+        {
+        
+            "brand"             : "OTB",
+            "brandImage"        : "img/brands/otb.jpg",
+            "items"             : [
+                {
+                    "image"         : "img/balls/belmo.jpg",
+                    "description"   : "Jason Belmonte Bowling Foundation"
+                },  
+                {
+                    "image"         : "img/balls/splitters.jpg",
+                    "description"   : "PBA Silver Lake Atom Splitters"
+                },
+                {
+                    "image"         : "img/balls/singapore.jpg",
+                    "description"   : "Singapore Flag"
+                },
+            ]
+        },
+        {
+        
+            "brand"             : "Spinner Balls",
+            "brandImage"        : "",
+            "items"             : [
+                {
+                    "image"         : "img/balls/codered.jpg",
+                    "description"   : "Code Red"
+                },
+                {
+                    "image"         : "img/balls/champion.jpg",
+                    "description"   : "Champion"
+                },  
+                {
+                    "image"         : "img/balls/source.jpg",
+                    "description"   : "Source"
+                },
+                {
+                    "image"         : "img/balls/zero.jpg",
+                    "description"   : "Zero Gravity"
+                },
+            ]
+        }
+
+    ]
+    
 };
 });
 
 ;require.register("views/data/products_shoes", function(exports, require, module) {
+/******************************************************************************
+ Products - Shoes data
+===============================================================================
+
+ Instructions for adding a new shoe: 
+ 1) Save the image of the shoe in the img/shoes folder.
+ 2) Copy this segment of code
+
+        {
+            "image"         : "img/shoes/<Shoe Image File Name Here>",
+            "description"   : "<Shoe Name Here>"
+        },
+
+3) Paste it in the 'items' array of the respective brand.
+
+===============================================================================
+
+Instructions for adding a new brand:
+1)  Save the image of the brand in the img/brands folder 
+2)  Copy this segment of code
+
+        {
+            "brand"             : "<Brand Name Here>",
+            "brandImage"        : "img/brands/<Brand Image File Name Here>",
+            "items"             : []
+        },
+
+3)  Paste it in the 'shoes' array.
+4)  Follow the instructions for adding a new shoe into the brand as mentioned
+    above.
+
+===============================================================================
+
+For optimal performance
+1)  Store images in JPEG format
+2)  Brand images should be edited to width 150px
+3)  Shoe images should be edited to width 230px
+
+******************************************************************************/
+
 module.exports = {
 
-	'shoes': [
-		{	
-			"brand"				: "Storm",
-			"brandImage" 		: "img/brands/storm.jpg",
-			"items" 			: [
-				{
-					"image" : "img/shoes/stormlightning.gif",
-					"description" : "Men's Lightning™"
-				},
-				{
-					"image" : "img/shoes/stormsp2.gif",
-					"description" : "Men's SP² 900™ (White)"
-				}
-			]
-		},
-		{	
-			"brand"				: "Dexter",
-			"brandImage" 		: "img/brands/dexter.jpg",
-			"items" 			: [
-				{
-					"image" : "img/shoes/stormlightning.gif",
-					"description" : "Men's Lightning™"
-				},
-				{
-					"image" : "img/shoes/stormsp2.gif",
-					"description" : "Men's SP² 900™ (White)"
-				}
-			]
-		},
-	]
-	
+    'shoes': [
+        {   
+            "brand"             : "Storm",
+            "brandImage"        : "img/brands/storm.jpg",
+            "items"             : [
+                {
+                    "image"         : "img/shoes/stormlightning.gif",
+                    "description"   : "Men's Lightning™"
+                },
+                {
+                    "image"         : "img/shoes/stormsp2.gif",
+                    "description"   : "Men's SP² 900™ (White)"
+                },
+            ]
+        },
+        {   
+            "brand"             : "Dexter",
+            "brandImage"        : "img/brands/dexter.jpg",
+            "items"             : [
+                {
+                    "image"         : "img/shoes/stormlightning.gif",
+                    "description"   : "Men's Lightning™"
+                },
+                {
+                    "image"         : "img/shoes/stormsp2.gif",
+                    "description"   : "Men's SP² 900™ (White)"
+                },
+            ]
+        },
+    ]
+    
 };
 });
 
 ;require.register("views/data/promotions", function(exports, require, module) {
+/******************************************************************************
+  Promotions data
+===============================================================================
+
+ Instructions for adding a new promotion: 
+ 1) Save the image of the service in the img/promotions folder.
+ 2) Copy this segment of code
+
+        {
+            "image"             : "img/promotions/<Promotion Image File Here>",
+            "title"             : "<Name Of Promotion Here>",
+            "descriptionTitle"  : "<Heading for promotion description>",
+            "description"       : "<Description of promotion here>",
+        },
+
+3) Paste it in the 'promotions' array.
+
+******************************************************************************/
+
 module.exports = {
 
-	"promotions": [
-		{
-			"image" 			: "img/promotions/offerset.gif",
-			"title" 			: "Offer Set Promotion",
-			"descriptionTitle" 	: "Offer Set promotion for beginner/advance bowlers",
-			"description" 		: "<p>Columbia 300 bowling ball + bowling shoes + single ball bag + ball polisher @ S$175</p><p>Ebonite bowling ball + bowling shoes + single ball bag + ball polisher @ S$255</p>"
-		},
-	]
+    "promotions": [
+        {
+            "image"             : "img/promotions/offerset.gif",
+            "title"             : "Offer Set Promotion",
+            "descriptionTitle"  : "Offer Set promotion for beginner/advance bowlers",
+            "description"       : "<p>Columbia 300 bowling ball + bowling shoes + single ball bag + ball polisher @ S$175</p><p>Ebonite bowling ball + bowling shoes + single ball bag + ball polisher @ S$255</p>"
+        },
+        // Paste new promotion here
+    ]
 
 };
 });
 
 ;require.register("views/data/services", function(exports, require, module) {
+/******************************************************************************
+  Services data
+===============================================================================
+
+ Instructions for adding a new service: 
+ 1) Save the image of the service in the img/services folder.
+ 2) Copy this segment of code
+
+        {
+            "image"             : "img/services/<Service Image File Here>",
+            "title"             : "<Name Of Service Here>",
+            "descriptionTitle"  : "<Heading for service description>",
+            "description"       : "<Description of service here>",
+        },
+
+3) Paste it in the 'services' array.
+
+******************************************************************************/
+
 module.exports = {
 
-	"services": [
-		{
-			"image": "img/services/thewave.png",
-			"title": "The Wave by PowerHouse",
-			"descriptionTitle": "",
-			"description": "Please visit <a href='http://powerhousebowling.com/products/product_detail/the_wave'><strong>The Wave</strong></a> for more information."
-		},
-		{
-			"image": "img/services/hookrestoration.jpg",
-			"title": "Bowling Ball Hook Restoration",
-			"descriptionTitle": "Ebonite PowerHouse Hook Again Treatment",
-			"description": "<p>The first and ONLY proven formula to actually restore hook to 'dead' bowling balls!</p><p>Brings as much as 99.8% performance back.</p><p>Performance tested, safe for reactive and particle balls.</p><p>Quick Recovery - Works in 24 hours.</p>"
-		},
-		{
-			"image": "img/services/resurfacing.jpg",
-			"title": "Bowling Ball Resurfacing",
-			"descriptionTitle": "Haus Resurfacing System",
-			"description": "<p>After numerous games on wood or synthetic lanes, your ball will loose consistent cover reaction.</p><p>Regular resurfacing with the Haus Resurfacing System can:<ul><li><h6><strong>IMPROVE YOUR GAME</strong></h6>Bowling consistency requires consistent cover reaction. Regular resurfacing can help you achieve that critical consistency.</li><li><h6><strong>LENGTHEN YOUR BALL'S LIFE</strong></h6>By resurfacing your ball, minimal ball surface is removed, avoiding the need to remove deep track and drop areas, and extending the length of time your ball meets ABC specifications.</li><li><h6><strong>ASSURE YOU OF RESURFACING CONSISTENCY</strong></h6>Consistent &amp; accurate results, time after time. Unlike manually resurfaced balls, our automatic system maintains and returns your ball back to it's original manufacturers' specifications or better. Operator error is virtually eliminated. Your entire ball surface is refinished, not just the drop and track areas.</li></p>"
-		},
-	]
-	
+    "services": [
+        {
+            "image"             : "img/services/thewave.png",
+            "title"             : "The Wave by PowerHouse",
+            "descriptionTitle"  : "",
+            "description"       : "Please visit <a href='http://powerhousebowling.com/products/product_detail/the_wave'><strong>The Wave</strong></a> for more information."
+        },
+        {
+            "image"             : "img/services/hookrestoration.jpg",
+            "title"             : "Bowling Ball Hook Restoration",
+            "descriptionTitle"  : "Ebonite PowerHouse Hook Again Treatment",
+            "description"       : "<p>The first and ONLY proven formula to actually restore hook to 'dead' bowling balls!</p><p>Brings as much as 99.8% performance back.</p><p>Performance tested, safe for reactive and particle balls.</p><p>Quick Recovery - Works in 24 hours.</p>"
+        },
+        {
+            "image"             : "img/services/resurfacing.jpg",
+            "title"             : "Bowling Ball Resurfacing",
+            "descriptionTitle"  : "Haus Resurfacing System",
+            "description"       : "<p>After numerous games on wood or synthetic lanes, your ball will loose consistent cover reaction.</p><p>Regular resurfacing with the Haus Resurfacing System can:<ul><li><h6><strong>IMPROVE YOUR GAME</strong></h6>Bowling consistency requires consistent cover reaction. Regular resurfacing can help you achieve that critical consistency.</li><li><h6><strong>LENGTHEN YOUR BALL'S LIFE</strong></h6>By resurfacing your ball, minimal ball surface is removed, avoiding the need to remove deep track and drop areas, and extending the length of time your ball meets ABC specifications.</li><li><h6><strong>ASSURE YOU OF RESURFACING CONSISTENCY</strong></h6>Consistent &amp; accurate results, time after time. Unlike manually resurfaced balls, our automatic system maintains and returns your ball back to it's original manufacturers' specifications or better. Operator error is virtually eliminated. Your entire ball surface is refinished, not just the drop and track areas.</li></p>"
+        },
+    ]
+    
 };
 });
 
@@ -955,18 +1524,22 @@ module.exports = View.extend({
 
 ;require.register("views/products_accessories_view", function(exports, require, module) {
 var View     = require('./view'),
+	data 	 = require('./data/products_accessories'),
 	template = require('./templates/products_accessories');
 
 var afterRender = function() {
-	console.log("RENDERED PRODUCTS ACCESSORIES VIEW");
 	Application.updateBreadcrumb('products-accessories');
 };
 
-module.exports = View.extend({
-    className: 'container products-accessories-view',
-    template: template,
+var getRenderData = function() {
+	return data;
+};
 
-    afterRender: afterRender
+module.exports = View.extend({
+    className 		: 'container products-accessories-view',
+    template 		: template,
+    getRenderData 	: getRenderData,
+    afterRender 	: afterRender
 });
 
 });
@@ -1274,10 +1847,17 @@ if (typeof define === 'function' && define.amd) {
 var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var stack1, helper, options, self=this, helperMissing=helpers.helperMissing;
+
+function program1(depth0,data) {
+  
   var buffer = "";
-
-
   return buffer;
+  }
+
+  stack1 = (helper = helpers.productsList || (depth0 && depth0.productsList),options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data},helper ? helper.call(depth0, (depth0 && depth0.accessories), options) : helperMissing.call(depth0, "productsList", (depth0 && depth0.accessories), options));
+  if(stack1 || stack1 === 0) { return stack1; }
+  else { return ''; }
   });
 if (typeof define === 'function' && define.amd) {
   define([], function() {
