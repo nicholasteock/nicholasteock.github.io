@@ -1325,7 +1325,7 @@ module.exports = {
     "shoes": [
         {
             "brand": "Dexter",
-            "brandImage": "img/brands/Dexter.jpg",
+            "brandImage": "img/brands/dexter.jpg",
             "items": [
                 {
                     "image": "img/shoes/sstblkgold.jpg",
