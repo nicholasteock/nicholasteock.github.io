@@ -1044,11 +1044,11 @@ module.exports = {
             "brandImage"        : "img/brands/ebonite.jpg",
             "items"             : [
                 {
-                    "image"         : "img/balls/Pivotpoint.jpg",
+                    "image"         : "img/balls/pivotpoint.jpg",
                     "description"   : "Pivot Point"
                 },
                 {
-                    "image"         : "img/balls/pivot.jpg",
+                    "image"         : "img/balls/Pivot.jpg",
                     "description"   : "Pivot"
                 },
                 {
@@ -1322,38 +1322,132 @@ For optimal performance
 ******************************************************************************/
 
 module.exports = {
-
-    'shoes': [
-        {   
-            "brand"             : "Storm",
-            "brandImage"        : "img/brands/storm.jpg",
-            "items"             : [
+    "shoes": [
+        {
+            "brand": "Dexter",
+            "brandImage": "img/brands/Dexter.jpg",
+            "items": [
                 {
-                    "image"         : "img/shoes/stormlightning.gif",
-                    "description"   : "Men's Lightning™"
+                    "image": "img/shoes/sstblkgold.jpg",
+                    "description": "Men's SST8 Black/Gold"
                 },
                 {
-                    "image"         : "img/shoes/stormsp2.gif",
-                    "description"   : "Men's SP² 900™ (White)"
+                    "image": "img/shoes/ssttank.jpg",
+                    "description": "Men's SST Tank"
                 },
+                {
+                    "image": "img/shoes/blublk.jpg",
+                    "description": "SST 8 SE Black/Silver/Blue"
+                },
+                {
+                    "image": "img/shoes/sepurp.jpg",
+                    "description": "Women's SST 8 SE Black/Purple"
+                },
+                {
+                    "image": "img/shoes/whitegold.jpg",
+                    "description": "Men SST8 Black/White/Gold"
+                },
+                {
+                    "image": "img/shoes/redwhite.jpg",
+                    "description": "Ladies SST8 Black/White/Red"
+                },
+                {
+                    "image": "img/shoes/blkred.jpg",
+                    "description": "Men's SST8 Black/Red"
+                },
+                {
+                    "image": "img/shoes/ana.jpg",
+                    "description": "Women ANA Silver/Light Grey"
+                },
+                {
+                    "image": "img/shoes/megan.jpg",
+                    "description": "Women's Megan"
+                }
             ]
         },
-        {   
-            "brand"             : "Dexter",
-            "brandImage"        : "img/brands/dexter.jpg",
-            "items"             : [
+        {
+            "brand": "Storm",
+            "brandImage": "img/brands/Storm.jpg",
+            "items": [
                 {
-                    "image"         : "img/shoes/stormlightning.gif",
-                    "description"   : "Men's Lightning™"
+                    "image": "img/shoes/sp900b.jpg",
+                    "description": "Men's SP² 900™ - White"
                 },
                 {
-                    "image"         : "img/shoes/stormsp2.gif",
-                    "description"   : "Men's SP² 900™ (White)"
+                    "image": "img/shoes/sp900blk.jpg",
+                    "description": "Men's SP² 900™ - Black"
                 },
+                {
+                    "image": "img/shoes/602.jpg",
+                    "description": "Ladies SP² 602™"
+                },
+                {
+                    "image": "img/shoes/601.jpg",
+                    "description": "Ladies StormSP² 601™"
+                },
+                {
+                    "image": "img/shoes/lightning.jpg",
+                    "description": "Men's Lightning™"
+                },
+                {
+                    "image": "img/shoes/Electra.jpg",
+                    "description": "Ladies Electra™"
+                },
+                {
+                    "image": "img/shoes/Mariah.jpg",
+                    "description": "Ladies Mariah™"
+                }
             ]
         },
+        {
+            "brand": "Brunswick",
+            "brandImage": "img/brands/Brunswick.jpg",
+            "items": [
+                {
+                    "image": "img/shoes/curve.jpg",
+                    "description": "Curve"
+                }
+            ]
+        },
+        {
+            "brand": "Max",
+            "brandImage": "img/brands/dexter.jpg",
+            "items": [
+                {
+                    "image": "img/shoes/maxb.jpg",
+                    "description": "Max Interchangeable Shoes Orange"
+                },
+                {
+                    "image": "img/shoes/maxo.jpg",
+                    "description": "Max Interchangeable Shoes Orange"
+                }
+            ]
+        },
+        {
+            "brand": "Pro-am",
+            "brandImage": "img/brands/dexter.jpg",
+            "items": [
+                {
+                    "image": "img/shoes/s400.jpg",
+                    "description": "S-400"
+                }
+            ]
+        },
+        {
+            "brand": "Radical",
+            "brandImage": "img/brands/dexter.jpg",
+            "items": [
+                {
+                    "image": "img/shoes/radw.jpg",
+                    "description": "Basic Shoes White/Gold"
+                },
+                {
+                    "image": "img/shoes/radblk.jpg",
+                    "description": "Basic Shoes Black/Silver"
+                }
+            ]
+        }
     ]
-    
 };
 });
 
