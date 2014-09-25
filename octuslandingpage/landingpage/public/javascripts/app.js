@@ -96,14 +96,12 @@ Application = {
     initialize: function() {
 
         var HomeView 		= require('views/home_view'),
-        	Home2View 		= require('views/home2_view'),
         	FeaturesView 	= require('views/features_view'),
         	ContactView 	= require('views/contact_view'),
         	CareersView 	= require('views/careers_view'),
         	Router   		= require('lib/router')
         
         this.homeView 		= new HomeView();
-        this.home2View 		= new Home2View();
         this.featuresView 	= new FeaturesView();
         this.contactView 	= new ContactView();
         this.careersView 	= new CareersView();
@@ -136,8 +134,7 @@ var application = require('application')
 
 module.exports = Backbone.Router.extend({
     routes: {
-        '' 			: 'home2',
-        'home2' 	: 'home2',
+        '' 			: 'home',
         'features'	: 'features',
         'contact'	: 'contact',
         'careers' 	: 'careers'
@@ -145,10 +142,6 @@ module.exports = Backbone.Router.extend({
     
     home: function() {
         $('body').html(application.homeView.render().el)
-    },
-
-    home2: function() {
-    	$('body').html(application.home2View.render().el)
     },
 
     features: function() {
@@ -244,7 +237,7 @@ module.exports = View.extend({
 
 });
 
-;require.register("views/home2_view", function(exports, require, module) {
+;require.register("views/home_view", function(exports, require, module) {
 var View     = require('./view')
   , template = require('./templates/home2')
 
@@ -368,26 +361,6 @@ module.exports = View.extend({
 
 });
 
-;require.register("views/home_view", function(exports, require, module) {
-var View     = require('./view')
-  , template = require('./templates/home')
-
-// var afterRender = function() {
-//     var s = skrollr.init();
-// }
-
-var afterRender = function() {
-	$("body").removeClass("body2");
-}
-
-module.exports = View.extend({
-    id: 'home-view',
-    template: template,
-    afterRender: afterRender
-});
-
-});
-
 ;require.register("views/templates/careers", function(exports, require, module) {
 var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
@@ -469,27 +442,6 @@ if (typeof define === 'function' && define.amd) {
 });
 
 ;require.register("views/templates/home", function(exports, require, module) {
-var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
-  this.compilerInfo = [4,'>= 1.0.0'];
-helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
-  var buffer = "";
-
-
-  buffer += "<!-- Facebook Javascript SDK -->\n<div id=\"fb-root\"></div>\n<script>(function(d, s, id) {\n  var js, fjs = d.getElementsByTagName(s)[0];\n  if (d.getElementById(id)) return;\n  js = d.createElement(s); js.id = id;\n  js.src = \"//connect.facebook.net/en_US/sdk.js#xfbml=1&appId=356612794468955&version=v2.0\";\n  fjs.parentNode.insertBefore(js, fjs);\n}(document, 'script', 'facebook-jssdk'));</script>\n<!-- END -->\n\n<!-- Google+ Javascript include -->\n<script src=\"https://apis.google.com/js/platform.js\" async defer></script>\n<!-- END -->\n\n<div class=\"frontpage\">\n	<div class=\"slide slidetype-1\">\n		<div class=\"layer container\">\n			<div class=\"mobile-header visible-xs visible-sm\">\n				<img src=\"img/logo.png\">\n			</div>\n			<div class=\"header hidden-sm\">\n				<div class=\"logo col-md-2\">\n					<img src=\"img/logo.png\">\n				</div>\n				<div class=\"navHolder col-md-7 col-md-offset-3\">\n					\n				</div>\n			</div>\n			<div class=\"col-md-6\">\n				<div class=\"content content-1\">\n					<div class=\"text-heavy\">\n						Make recruiting a breeze\n					</div>\n					<div class=\"content-text\">\n						 and your business more productive\n					</div>\n					<a href=\"#/features\" class=\"btn btn-success btn-lg top corner\" role=\"button\">Here's how</a>\n				</div>\n			</div>\n		</div>\n	</div>\n\n	<div class=\"slide slidetype-2\">\n		<div class=\"layer container\">\n			<div class=\"header\">\n				<div class=\"logo col-md-2\">\n					<img src=\"img/logo.png\">\n				</div>\n				<div class=\"navHolder col-md-7 col-md-offset-3\">\n					\n				</div>\n			</div>\n			<div class=\"col-md-6\">\n			</div>\n			<div class=\"col-md-6\">\n				<div class=\"content content-2\">\n					<div class=\"text-heavy\">\n						Why are recruitment systems so difficult to use?\n					</div>\n					<div class=\"content-text\">\n						 We've been there, and we're here to solve it.\n					</div>\n				</div>\n			</div>\n		</div>\n	</div>\n\n	<div class=\"slide slidetype-3\">\n		<div class=\"layer container\">\n			<div class=\"text-center top text-heavy text-spaced\">\n				The Octus Solution\n			</div>\n		</div>\n	</div>\n\n	<div class=\"slide slidetype-2\">\n		<div class=\"layer container\">\n			<div class=\"header\">\n				<div class=\"logo col-md-2\">\n					<img src=\"img/logo.png\">\n				</div>\n				<div class=\"navHolder col-md-7 col-md-offset-3\">\n					\n				</div>\n			</div>\n			<div class=\"col-md-6\">\n				<div class=\"slide-video embed-responsive embed-responsive-16by9 content-video\">\n					<iframe width=\"560\" height=\"315\" src=\"//www.youtube.com/embed/BKorP55Aqvg\" frameborder=\"0\" allowfullscreen></iframe>\n				</div>\n			</div>\n			<div class=\"col-md-6\">\n				<div class=\"content content-2\">\n					<div class=\"text-heavy\">\n						Accessibility\n					</div>\n					<div class=\"content-text\">\n						<ul class=\"content-list\">\n							<li>Cloud hosted system</li>\n							<li>Intuitive browser based interface</li>\n							<li>Full functionality on all platforms</li>\n							<li>End to End recruitment process management</li>\n						</ul>\n					</div>\n					<a href=\"#/features\" class=\"btn btn-success btn-lg top corner pull-right\" role=\"button\">Learn more</a>\n				</div>\n			</div>\n		</div>\n	</div>\n\n	<div class=\"slide slidetype-2\">\n		<div class=\"layer container\">\n			<div class=\"header negative\">\n				<div class=\"logo col-md-2\">\n					<img src=\"img/logo.png\">\n				</div>\n				<div class=\"navHolder col-md-7 col-md-offset-3\">\n					\n				</div>\n			</div>\n			<div class=\"col-md-6\">\n				<div class=\"content content-2 negative\">\n					<div class=\"text-heavy text-right\">\n						Integration\n					</div>\n					<div class=\"content-text\">\n						<ul class=\"content-list text-right\">\n							<li>Email &amp; Calendar</li>\n							<li>Phone &amp; SMS</li>\n							<li>Job Boards</li>\n							<li>Searching</li>\n							<li>Partners - Daxtra, IKM, Psytech</li>\n						</ul>\n					</div>\n					<a href=\"#/features\" class=\"btn btn-success btn-lg top corner\" role=\"button\">Learn more</a>\n				</div>\n			</div>\n			<div class=\"col-md-6\">\n				<div class=\"slide-video embed-responsive embed-responsive-16by9 content-video\">\n					<iframe width=\"560\" height=\"315\" src=\"//www.youtube.com/embed/BKorP55Aqvg\" frameborder=\"0\" allowfullscreen></iframe>\n				</div>\n			</div>\n		</div>\n	</div>\n\n	<div class=\"slide slidetype-2\">\n		<div class=\"layer container\">\n			<div class=\"header\">\n				<div class=\"logo col-md-2\">\n					<img src=\"img/logo.png\">\n				</div>\n				<div class=\"navHolder col-md-7 col-md-offset-3\">\n					\n				</div>\n			</div>\n			<div class=\"col-md-6\">\n				<div class=\"slide-video embed-responsive embed-responsive-16by9 content-video\">\n					<iframe width=\"560\" height=\"315\" src=\"//www.youtube.com/embed/BKorP55Aqvg\" frameborder=\"0\" allowfullscreen></iframe>\n				</div>\n			</div>\n			<div class=\"col-md-6\">\n				<div class=\"content content-2\">\n					<div class=\"text-heavy\">\n						Productivity\n					</div>\n					<div class=\"content-text\">\n						<ul class=\"content-list\">\n							<li>Email &amp; Calendar</li>\n							<li>Phone &amp; SMS</li>\n							<li>Job Boards</li>\n							<li>Searching</li>\n							<li>Partners - Daxtra, IKM, Psytech</li>\n						</ul>\n						\n					</div>\n					<a href=\"#/features\" class=\"btn btn-success btn-lg top corner pull-right\" role=\"button\">Learn more</a>\n				</div>\n			</div>\n		</div>\n	</div>\n\n	<div class=\"slide slidetype-2\">\n		<div class=\"layer container\">\n			<div class=\"header negative\">\n				<div class=\"logo col-md-2\">\n					<img src=\"img/logo.png\">\n				</div>\n				<div class=\"navHolder col-md-7 col-md-offset-3\">\n					\n				</div>\n			</div>\n			<div class=\"col-md-6\">\n				<div class=\"content content-2 negative\">\n					<div class=\"text-heavy text-right\">\n						Security\n					</div>\n					<div class=\"content-text\">\n						<ul class=\"content-list text-right\">\n							<li>Flexible system restriction policies</li>\n							<li>Action logging for full audit trails</li>\n						</ul>\n					</div>\n					<a href=\"#/features\" class=\"btn btn-success btn-lg top corner pull-right\" role=\"button\">Learn more</a>\n				</div>\n			</div>\n			<div class=\"col-md-6\">\n				<div class=\"slide-video embed-responsive embed-responsive-16by9 content-video\">\n					<iframe width=\"560\" height=\"315\" src=\"//www.youtube.com/embed/BKorP55Aqvg\" frameborder=\"0\" allowfullscreen></iframe>\n				</div>\n			</div>\n		</div>\n	</div>\n\n	<div class=\"slide slidetype-2\">\n		<div class=\"layer container\">\n			<div class=\"header\">\n				<div class=\"logo col-md-2\">\n					<img src=\"img/logo.png\">\n				</div>\n				<div class=\"navHolder col-md-7 col-md-offset-3\">\n					\n				</div>\n			</div>\n			<div class=\"col-md-6\">\n				<div class=\"content content-2\">\n					<div class=\"text-heavy\">\n						Contact us for a free trial now!\n					</div>\n					<div class=\"content-text\">\n						Simply leave your details with us and our friendly sales representative will reach out to you\n					</div>\n				</div>\n			</div>\n			<div class=\"col-md-6\">\n				<div class=\"slide-contactform\">\n				</div>\n			</div>\n		</div>\n	</div>\n\n	<div class=\"footer container\">\n		<div class=\"col-md-2\">All rights reserved</div>\n		<div class=\"col-md-2\">&copy; 2014 Octus</div>\n		<div class=\"col-md-6 col-md-offset-2\">\n			<!-- Facebook like plugin -->\n			<div class=\"fb-like\" data-href=\"https://www.facebook.com/octusrecruitment\" data-layout=\"button_count\" data-action=\"like\" data-show-faces=\"false\" data-share=\"false\"></div>\n			<!-- Google+ follow plugin -->\n			<div class=\"g-follow\" data-annotation=\"bubble\" data-height=\"20\" data-href=\"https://plus.google.com/110131833217889792669\" data-rel=\"publisher\"></div>\n		</div>\n	</div>\n\n</div>";
-  return buffer;
-  });
-if (typeof define === 'function' && define.amd) {
-  define([], function() {
-    return __templateData;
-  });
-} else if (typeof module === 'object' && module && module.exports) {
-  module.exports = __templateData;
-} else {
-  __templateData;
-}
-});
-
-;require.register("views/templates/home2", function(exports, require, module) {
 var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};

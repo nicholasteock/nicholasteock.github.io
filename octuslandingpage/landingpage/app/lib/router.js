@@ -2,8 +2,7 @@ var application = require('application')
 
 module.exports = Backbone.Router.extend({
     routes: {
-        '' 			: 'home2',
-        'home2' 	: 'home2',
+        '' 			: 'home',
         'features'	: 'features',
         'contact'	: 'contact',
         'careers' 	: 'careers'
@@ -11,10 +10,6 @@ module.exports = Backbone.Router.extend({
     
     home: function() {
         $('body').html(application.homeView.render().el)
-    },
-
-    home2: function() {
-    	$('body').html(application.home2View.render().el)
     },
 
     features: function() {
