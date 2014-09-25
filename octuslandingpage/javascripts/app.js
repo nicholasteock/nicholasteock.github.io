@@ -239,7 +239,7 @@ module.exports = View.extend({
 
 ;require.register("views/home_view", function(exports, require, module) {
 var View     = require('./view')
-  , template = require('./templates/home2')
+  , template = require('./templates/home')
 
 var featureArr = [ 	
 					'toggleAccessibility',
@@ -263,7 +263,7 @@ var afterRender = function() {
 }
 
 function showPitch() {
-	console.log( "Showing pitch" );
+	// console.log( "Showing pitch" );
 
 	// Show questions
 	// $(".pitch-question").removeClass("hide").delay(9000).addClass("hide");
@@ -284,7 +284,7 @@ function showPitch() {
 }
 
 var toggleAccessibility = function() {
-	console.log('Toggling accessibility');
+	// console.log('Toggling accessibility');
 	$(".feature").addClass("visible-xs");
 	$(".feature-accessibility").removeClass("visible-xs");
 
@@ -293,7 +293,7 @@ var toggleAccessibility = function() {
 };
 
 var toggleIntegration = function() {
-	console.log('Toggling Integration');
+	// console.log('Toggling Integration');
 	$(".feature").addClass("visible-xs");
 	$(".feature-integration").removeClass("visible-xs");
 
@@ -302,7 +302,7 @@ var toggleIntegration = function() {
 };
 
 var toggleProductivity = function() {
-	console.log('Toggling Productivity');
+	// console.log('Toggling Productivity');
 	$(".feature").addClass("visible-xs");
 	$(".feature-productivity").removeClass("visible-xs");
 
@@ -311,7 +311,7 @@ var toggleProductivity = function() {
 };
 
 var toggleSecurity = function() {
-	console.log('Toggling Security');
+	// console.log('Toggling Security');
 	$(".feature").addClass("visible-xs");
 	$(".feature-security").removeClass("visible-xs");
 
@@ -349,7 +349,7 @@ var rotateFeature = function() {
 };
 
 module.exports = View.extend({
-    id 					: 'home2-view',
+    id 					: 'home-view',
     template 			: template,
     events 				: events,
     toggleAccessibility	: toggleAccessibility,
