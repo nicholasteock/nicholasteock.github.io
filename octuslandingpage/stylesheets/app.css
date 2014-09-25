@@ -5836,6 +5836,9 @@ body.body2 {
 .gray {
   color: #889596;
 }
+.white {
+  color: #FFFFFF;
+}
 .desaturate {
   -webkit-filter: grayscale(100%);
   -moz-filter: grayscale(100%);
@@ -5848,6 +5851,9 @@ body.body2 {
 }
 /*****************************************************************************/
 /*****************************************************************************/
+.modal-header {
+  background-color: #c43825;
+}
 .frontpage-navbar {
   min-height: 70px;
   background-color: #FFF;
