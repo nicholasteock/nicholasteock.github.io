@@ -5819,6 +5819,11 @@ body.body2 {
 .corner {
   border-radius: 0;
 }
+.btn-danger {
+  background-image: linear-gradient(to top, #db5c42, #f26649);
+  font-weight: bold;
+  color: #FFF;
+}
 .bold {
   font-weight: bold;
 }
@@ -5864,9 +5869,6 @@ body.body2 {
 }
 .frontpage-navbar li:last-child {
   padding-top: 0px;
-}
-.frontpage-navbar .btn-trial {
-  background-image: linear-gradient(to top, #db5c42, #f26649);
 }
 .slide-panel {
   width: 100%;
@@ -5961,7 +5963,7 @@ body.body2 {
   }
 }
 .slide-panel.panel-3 {
-  height: 2300px;
+  height: 1800px;
   background-color: #F8F9F8;
   padding-top: 5%;
 }
@@ -6042,12 +6044,9 @@ body.body2 {
   color: #FFF;
 }
 .slide-panel.panel-5 button {
-  background-image: linear-gradient(to top, #db5c42, #f26649);
   margin-top: 5%;
   padding: 29px;
   font-size: 15px;
-  font-weight: bold;
-  color: #FFF;
 }
 @media (min-width: 768px) {
   .slide-panel.panel-5 button {
