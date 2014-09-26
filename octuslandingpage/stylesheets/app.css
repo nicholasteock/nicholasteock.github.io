@@ -5789,11 +5789,15 @@ header h1 {
 body {
   background-color: #FFF;
   color: #2c3e50;
-  font-family: 'Open Sans', 'HelveticaNeue', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Avenir New', 'Muli';
 }
 body.body2 {
   padding-top: 110px;
   background-color: #ECF0F1;
+}
+input:focus {
+  border-color: #c43825 !important;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px #c43825 !important;
 }
 @media (max-width: 767px) {
   header {
@@ -5822,16 +5826,19 @@ body.body2 {
 .btn-danger {
   background-image: linear-gradient(to top, #c43825, #db422c);
   font-weight: bold;
-  color: #FFF;
+  color: #FFFFFF;
+}
+.contact-error {
+  color: #C0392B;
 }
 .bold {
   font-weight: bold;
 }
 .red {
-  color: #c43825;
+  color: #C43825;
 }
 .navy {
-  color: #34495e;
+  color: #34495E;
 }
 .gray {
   color: #889596;
