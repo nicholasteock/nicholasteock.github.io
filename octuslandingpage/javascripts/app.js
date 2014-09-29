@@ -95,12 +95,15 @@ require.register("application", function(exports, require, module) {
 Application = {
     initialize: function() {
 
+        // var ContactModel    = require('models/contact_model');
+
         var HomeView 		= require('views/home_view'),
             AboutView       = require('views/about_view'),
         	FeaturesView 	= require('views/features_view'),
         	CareersView 	= require('views/careers_view'),
-        	Router   		= require('lib/router')
+        	Router   		= require('lib/router');
         
+        // this.contactModel   = new ContactModel();
         this.homeView 		= new HomeView();
         this.aboutView      = new AboutView();
         this.featuresView 	= new FeaturesView();
@@ -176,6 +179,30 @@ module.exports = Backbone.Collection.extend({
     
 })
 
+});
+
+;require.register("models/contact_model", function(exports, require, module) {
+var Model = require('./model');
+
+var sendContact = function( params ) {
+	console.log( "contactModel sendMessage function", params );
+
+	$.ajax({
+		// url 		: "php/contact.php",
+		url 		: "http://192.168.0.74:8080",
+		type 		: "GET",
+		dataType 	: "json",
+		data 		: params,
+		success 	: function( response ) {
+			console.log( "good. response is : ", response );
+		}
+	});
+};
+
+module.exports = Model.extend({
+	urlRoot 	: '../php/contact.php',
+	sendContact : sendContact
+});
 });
 
 ;require.register("models/model", function(exports, require, module) {
@@ -256,16 +283,17 @@ module.exports = View.extend({
 });
 
 ;require.register("views/home_view", function(exports, require, module) {
-var View     = require('./view'),
-	template = require('./templates/home');
+var View     		= require('./view'),
+	template 		= require('./templates/home'),
+	ContactModel 	= require('models/contact_model');
 
-var events 	= {
-	    		'click .nav-accessibility' 	: 'toggleAccessibility',
-	    		'click .nav-integration' 	: 'toggleIntegration',
-	    		'click .nav-productivity' 	: 'toggleProductivity',
-	    		'click .nav-security' 		: 'toggleSecurity',
-	    		'click .contact-submit'		: 'submitContact'
-	    	};
+var events 			= {
+			    		'click .nav-accessibility' 	: 'toggleAccessibility',
+			    		'click .nav-integration' 	: 'toggleIntegration',
+			    		'click .nav-productivity' 	: 'toggleProductivity',
+			    		'click .nav-security' 		: 'toggleSecurity',
+			    		'click .contact-submit'		: 'submitContact'
+			    	};
 
 var afterRender = function() {
 	$("body").removeClass("body2");
@@ -367,12 +395,14 @@ function submitContact() {
 		request = $("input[type='radio'][name='contact-option']:checked").val(),
 		params 	= {};
 
-	console.log( "Values retrieved: " );
-	console.log( "Name: ", name );
-	console.log( "Email: ", email );
-	console.log( "Phone: ", phone );
-	console.log( "Company: ", company );
-	console.log( "Request: ", request );
+	var contactModel = new ContactModel();
+
+	// console.log( "Values retrieved: " );
+	// console.log( "Name: ", name );
+	// console.log( "Email: ", email );
+	// console.log( "Phone: ", phone );
+	// console.log( "Company: ", company );
+	// console.log( "Request: ", request );
 
 	if( !validateContactForm( name, email, phone, company) ) {
 		return;
@@ -386,7 +416,7 @@ function submitContact() {
 			request : request
 		};
 
-		sendContact( params )
+		contactModel.sendContact( params );
 	}
 };
 
@@ -433,21 +463,6 @@ function validateContactForm( name, email, phone, company ) {
 	}
 
 	return valid;
-};
-
-function sendContact( params ) {
-	console.log("sendContact. Params is ", params);
-
-	$.ajax({
-			url 		: "php/contact.php",
-			type 		: "POST",
-			data 		: params,
-			dataType 	: "json",
-			success 	: function( response ) {
-				console.log( "Response is : ", response );
-				// return response;
-			}
-	});
 };
 
 module.exports = View.extend({
