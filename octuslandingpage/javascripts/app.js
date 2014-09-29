@@ -188,7 +188,7 @@ var sendContact = function( params ) {
 	console.log( "contactModel sendMessage function", params );
 
 	$.ajax({
-		url 		: "ec2-54-69-113-238.us-west-2.compute.amazonaws.com/php/contact.php",
+		url 		: "http://ec2-54-69-113-238.us-west-2.compute.amazonaws.com/php/contact.php",
 		type 		: "POST",
 		dataType 	: "json",
 		data 		: params,
