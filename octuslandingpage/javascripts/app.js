@@ -188,9 +188,8 @@ var sendContact = function( params ) {
 	console.log( "contactModel sendMessage function", params );
 
 	$.ajax({
-		// url 		: "php/contact.php",
-		url 		: "http://192.168.0.74:8080",
-		type 		: "GET",
+		url 		: "ec2-54-69-113-238.us-west-2.compute.amazonaws.com/php/contact.php",
+		type 		: "POST",
 		dataType 	: "json",
 		data 		: params,
 		success 	: function( response ) {
@@ -200,7 +199,6 @@ var sendContact = function( params ) {
 };
 
 module.exports = Model.extend({
-	urlRoot 	: '../php/contact.php',
 	sendContact : sendContact
 });
 });
