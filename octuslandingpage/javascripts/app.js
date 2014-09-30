@@ -665,7 +665,7 @@ if (typeof define === 'function' && define.amd) {
 var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
-  var stack1, helper, options, self=this, functionType="function", blockHelperMissing=helpers.blockHelperMissing;
+  var buffer = "", stack1, helper, options, self=this, functionType="function", blockHelperMissing=helpers.blockHelperMissing;
 
 function program1(depth0,data) {
   
@@ -677,8 +677,9 @@ function program1(depth0,data) {
   if (helper = helpers.globalHeader) { stack1 = helper.call(depth0, options); }
   else { helper = (depth0 && depth0.globalHeader); stack1 = typeof helper === functionType ? helper.call(depth0, options) : helper; }
   if (!helpers.globalHeader) { stack1 = blockHelperMissing.call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data}); }
-  if(stack1 || stack1 === 0) { return stack1; }
-  else { return ''; }
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n\n<div class=\"container careers-container\">\n	<div class=\"col-xs-12 col-sm-8 col-md-8 col-lg-8 col-sm-offset-2 col-md-offset-2 col-lg-offset-2\">\n		<h1>Join Our Team!</h1>\n		<p>\n			<h3>We are always keen to speak with exciting people.</h3>\n		</p>\n		<p>\n			<h3>If you have a background in technology or recruitment and would like to discuss opportunities, please get in touch!</h3>\n		</p>\n		<p>\n			<h3>Reach us at <a href=\"mailto:recruitment@octus.com.sg\">recruitment@octus.com.sg</a></h3>\n		</p>\n	</div>\n</div>";
+  return buffer;
   });
 if (typeof define === 'function' && define.amd) {
   define([], function() {

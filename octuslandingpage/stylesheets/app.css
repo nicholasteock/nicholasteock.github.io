@@ -6175,6 +6175,13 @@ textarea:focus {
     text-align: left;
   }
 }
+/*****************************************************************************/
+/*****************************************************************************/
+.careers-container {
+  padding-top: 60px;
+  font-size: 18px;
+  text-align: center;
+}
 
 
 /*# sourceMappingURL=app.css.map*/
