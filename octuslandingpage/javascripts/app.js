@@ -171,6 +171,117 @@ module.exports = Backbone.Router.extend({
 ;require.register("lib/view_helper", function(exports, require, module) {
 // Put handlebars.js helpers here
 
+// Stuffing header modals and nav here for now.
+// Can't figure out rendering multiple templates in the same view.
+Handlebars.registerHelper( 'globalHeader', function(options) {
+	var output = "<!-- Begin contact modal -->\
+					<div class=\"modal contact-modal\">\
+						<div class=\"modal-dialog\">\
+							<div class=\"modal-content\">\
+								<div class=\"modal-header\">\
+									<button type=\"button\" class=\"close\" data-dismiss=\"modal\">\
+										<span aria-hidden=\"true\">&times;</span>\
+										<span class=\"sr-only\">Close</span>\
+									</button>\
+									<h3 class=\"modal-title text-center bold white\">Contact Us</h3>\
+								</div>\
+								<div class=\"modal-body\">\
+									<form class=\"contact-form\" role=\"form\">\
+										<div class=\"form-group\">\
+											<label for=\"contact-name\">Name</label>\
+											<input type=\"text\" class=\"form-control contact-name\" value=\"nicholas\">\
+											<span class=\"pull-right contact-error contact-name-error\"></span>\
+										</div>\
+										<div class=\"form-group\">\
+											<label for=\"contact-email\">Email</label>\
+											<input type=\"email\" class=\"form-control contact-email\" value=\"nick@test.com\">\
+											<span class=\"pull-right contact-error contact-email-error\"></span>\
+										</div>\
+										<div class=\"form-group\">\
+											<label for=\"contact-phone\">Phone</label>\
+											<input type=\"text\" class=\"form-control contact-phone\" value=\"12345678\">\
+											<span class=\"pull-right contact-error contact-phone-error\"></span>\
+										</div>\
+										<div class=\"form-group\">\
+											<label for=\"contact-company\">Company / Organization</label>\
+											<input type=\"text\" class=\"form-control contact-company\" value=\"nickcompany\">\
+											<span class=\"pull-right contact-error contact-company-error\"></span>\
+										</div>\
+										<div class=\"form-group\">\
+											<label for=\"contact-message\">Message</label>\
+											<textarea rows=\"3\" class=\"form-control contact-message\"></textarea>\
+											<span class=\"pull-right contact-error contact-message-error\"></span>\
+										</div>\
+									</form>\
+								</div>\
+								<div class=\"modal-footer\">\
+									<button type=\"button\" class=\"center-block btn btn-danger btn-lg contact-submit\">Submit</button>\
+									<img class=\"center-block contact-submit-spinner hide\" src=\"img/spinner.gif\">\
+								</div>\
+							</div>\
+						</div>\
+					</div>\
+					<!-- End contact modal -->\
+					<!-- Begin contact submission success modal -->\
+					<div class=\"modal contact-submit-success-modal\">\
+						<div class=\"modal-dialog\">\
+							<div class=\"modal-content\">\
+								<div class=\"modal-header\">\
+									<button type=\"button\" class=\"close\" data-dismiss=\"modal\">\
+										<span aria-hidden=\"true\">&times;</span>\
+										<span class=\"sr-only\">Close</span>\
+									</button>\
+									<h3 class=\"modal-title text-center bold white\">Response Submitted</h3>\
+								</div>\
+								<div class=\"modal-body\">\
+									<h3 class=\"text-center\">Thank You!</h3>\
+									<h3 class=\"text-center\">We greatly appreciate your interest.</h3>\
+									<h3 class=\"text-center\">Our team will contact you very soon.</h3>\
+								</div>\
+								<div class=\"modal-footer\">\
+									<button type=\"button\" class=\"center-block btn btn-danger btn-lg\" data-dismiss=\"modal\">Close</button>\
+								</div>\
+							</div>\
+						</div>\
+					</div>\
+					<!-- End contact submission success modal -->\
+					<!-- BEGIN TOP NAVIGATION BAR -->\
+					<nav class=\"navbar navbar-default frontpage-navbar\" role=\"navigation\">\
+						<div class=\"container\">\
+							<!-- Brand and toggle get grouped for better mobile display -->\
+							<div class=\"navbar-header\">\
+								<button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#bs-example-navbar-collapse-1\">\
+									<span class=\"sr-only\">Toggle navigation</span>\
+									<span class=\"icon-bar\"></span>\
+									<span class=\"icon-bar\"></span>\
+									<span class=\"icon-bar\"></span>\
+								</button>\
+								<a class=\"navbar-brand\" href=\"#\">\
+									<img src=\"img/logo_inverse.png\">\
+								</a>\
+							</div>\
+							<!-- Collect the nav links, forms, and other content for toggling -->\
+							<div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\">\
+								<ul class=\"nav navbar-nav navbar-right\">\
+									<li><a href=\"#/about\">About</a></li>\
+									<li><a href=\"#/features\">Features</a></li>\
+									<li><a href=\"#\">News</a></li>\
+									<li><a href=\"#/careers\">Careers</a></li>\
+									<li>\
+										<a>\
+											<button class=\"btn btn-danger btn-lg btn-trial\" data-toggle=\"modal\" data-target=\".contact-modal\">\
+												Free Trial\
+											</button>\
+										</a>\
+									</li>\
+								</ul>\
+							</div>\
+						</div>\
+					</nav>\
+					<!-- END TOP NAVIGATION BAR -->";
+
+	return output;
+});
 });
 
 ;require.register("models/collection", function(exports, require, module) {
@@ -184,8 +295,8 @@ module.exports = Backbone.Collection.extend({
 ;require.register("models/contact_model", function(exports, require, module) {
 var Model = require('./model');
 
-var sendContact = function( params ) {
-	console.log( "contactModel sendMessage function", params );
+var sendContact = function( params, callback ) {
+	// console.log( "contactModel sendMessage function", params );
 
 	$.ajax({
 		url 		: "http://ec2-54-69-113-238.us-west-2.compute.amazonaws.com/php/contact.php",
@@ -193,7 +304,7 @@ var sendContact = function( params ) {
 		dataType 	: "json",
 		data 		: params,
 		success 	: function( response ) {
-			console.log( "good. response is : ", response );
+			callback(response);
 		}
 	});
 };
@@ -212,35 +323,49 @@ module.exports = Backbone.Model.extend({
 });
 
 ;require.register("views/about_view", function(exports, require, module) {
-var View     = require('./view'),
-	template = require('./templates/about');
+var View     		= require('./view'),
+	template 		= require('./templates/about'),
+	contactHelper 	= require('./sendContact_helper');
+
+var events 			= {
+						'click .contact-submit'		: contactHelper.submitContact
+			    	};
 
 var afterRender = function() {
 	console.log("RENDERED ABOUT VIEW");
 };
 
 module.exports = View.extend({
-    className: 'about-view',
-    template: template,
-
-    afterRender: afterRender
+    className 		: 'about-view',
+    template 		: template,
+    events 			: events,
+    afterRender 	: afterRender
 });
 
 });
 
 ;require.register("views/careers_view", function(exports, require, module) {
-var View     = require('./view'),
-	template = require('./templates/careers');
+var View     		= require('./view'),
+	template 		= require('./templates/careers'),
+	contactHelper 	= require('./sendContact_helper');
+
+var events 			= {
+						'click .contact-submit'		: contactHelper.submitContact
+			    	};
 
 var afterRender = function() {
 	console.log("RENDERED CAREERS VIEW");
 };
 
-module.exports = View.extend({
-    className: 'careers-view',
-    template: template,
+var submitContact = function() {
+	contactHelper.submitContact();
+};
 
-    afterRender: afterRender
+module.exports = View.extend({
+    className 		: 'careers-view',
+    template 		: template,
+    events 			: events,
+    afterRender 	: afterRender
 });
 
 });
@@ -263,9 +388,13 @@ module.exports = View.extend({
 });
 
 ;require.register("views/features_view", function(exports, require, module) {
-var View     	= require('./view'),
-	header		= require('./templates/header'),
-	template 	= require('./templates/features');
+var View     		= require('./view'),
+	template 		= require('./templates/features'),
+	contactHelper 	= require('./sendContact_helper');
+
+var events 			= {
+						'click .contact-submit'		: contactHelper.submitContact
+			    	};
 
 var afterRender = function() {
 	console.log("RENDERED FEATURES VIEW");
@@ -274,7 +403,7 @@ var afterRender = function() {
 module.exports = View.extend({
     className 		: 'features-view',
     template 		: template,
-
+    events 			: events,
     afterRender 	: afterRender
 });
 
@@ -283,14 +412,14 @@ module.exports = View.extend({
 ;require.register("views/home_view", function(exports, require, module) {
 var View     		= require('./view'),
 	template 		= require('./templates/home'),
-	ContactModel 	= require('models/contact_model');
+	contactHelper 	= require('./sendContact_helper');
 
 var events 			= {
 			    		'click .nav-accessibility' 	: 'toggleAccessibility',
 			    		'click .nav-integration' 	: 'toggleIntegration',
 			    		'click .nav-productivity' 	: 'toggleProductivity',
 			    		'click .nav-security' 		: 'toggleSecurity',
-			    		'click .contact-submit'		: 'submitContact'
+			    		'click .contact-submit'		: contactHelper.submitContact
 			    	};
 
 var afterRender = function() {
@@ -298,6 +427,35 @@ var afterRender = function() {
 
 	setTimeout( showPitch, 100 );
 	setInterval( rotateFeature, 7000 );
+};
+
+var rotateFeature = function() {
+
+	if( $("body").width() < 768 ) {
+		return;
+	}
+
+	var currentFeature = $(".feature-nav-icon:not(.desaturate)");
+
+	if( currentFeature.hasClass( 'nav-accessibility' ) ) {
+		toggleIntegration();
+		return;
+	}
+
+	if( currentFeature.hasClass( 'nav-integration' ) ) {
+		toggleProductivity();
+		return;
+	}
+
+	if( currentFeature.hasClass( 'nav-productivity' ) ) {
+		toggleSecurity();
+		return;
+	}
+
+	if( currentFeature.hasClass( 'nav-security' ) ) {
+		toggleAccessibility();
+		return;
+	}
 };
 
 function showPitch() {
@@ -356,34 +514,21 @@ var toggleSecurity = function() {
 	$(".nav-security").removeClass("desaturate");
 };
 
-var rotateFeature = function() {
+module.exports = View.extend({
+    id 					: 'home-view',
+    template 			: template,
+    events 				: events,
+    toggleAccessibility	: toggleAccessibility,
+    toggleIntegration 	: toggleIntegration,
+    toggleProductivity 	: toggleProductivity,
+    toggleSecurity 		: toggleSecurity,
+    afterRender 		: afterRender
+});
 
-	if( $("body").width() < 768 ) {
-		return;
-	}
+});
 
-	var currentFeature = $(".feature-nav-icon:not(.desaturate)");
-
-	if( currentFeature.hasClass( 'nav-accessibility' ) ) {
-		toggleIntegration();
-		return;
-	}
-
-	if( currentFeature.hasClass( 'nav-integration' ) ) {
-		toggleProductivity();
-		return;
-	}
-
-	if( currentFeature.hasClass( 'nav-productivity' ) ) {
-		toggleSecurity();
-		return;
-	}
-
-	if( currentFeature.hasClass( 'nav-security' ) ) {
-		toggleAccessibility();
-		return;
-	}
-};
+;require.register("views/sendContact_helper", function(exports, require, module) {
+var ContactModel 	= require('models/contact_model');
 
 function submitContact() {
 	var name 	= $(".contact-name").val(),
@@ -406,6 +551,8 @@ function submitContact() {
 		return;
 	}
 	else {
+		$(".contact-submit").addClass("hide");
+		$(".contact-submit-spinner").removeClass("hide");
 		params = {
 			name 	: name,
 			email 	: email,
@@ -414,7 +561,23 @@ function submitContact() {
 			request : request
 		};
 
-		contactModel.sendContact( params );
+		contactModel.sendContact( params, submitContactCallback );
+	}
+};
+
+function submitContactCallback( response ) {
+	// console.log( "in submitContactCallback. response is : ", response );
+
+	if( response.result === "success" ) {
+		$(".contact-submit").removeClass("hide");
+		$(".contact-submit-spinner").addClass("hide");
+		$(".contact-modal").modal("hide");
+		$(".contact-submit-success-modal").modal("show");
+	}
+	else {
+		$(".contact-submit").removeClass("hide");
+		$(".contact-submit-spinner").addClass("hide");
+		console.error("Contact submission failed.");
 	}
 };
 
@@ -463,29 +626,29 @@ function validateContactForm( name, email, phone, company ) {
 	return valid;
 };
 
-module.exports = View.extend({
-    id 					: 'home-view',
-    template 			: template,
-    events 				: events,
-    toggleAccessibility	: toggleAccessibility,
-    toggleIntegration 	: toggleIntegration,
-    toggleProductivity 	: toggleProductivity,
-    toggleSecurity 		: toggleSecurity,
-    submitContact		: submitContact,
-    afterRender 		: afterRender
-});
-
+module.exports = {
+	submitContact: submitContact
+}
 });
 
 ;require.register("views/templates/about", function(exports, require, module) {
 var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var stack1, helper, options, self=this, functionType="function", blockHelperMissing=helpers.blockHelperMissing;
+
+function program1(depth0,data) {
+  
   var buffer = "";
-
-
-  buffer += "  <!-- Begin contact modal -->\n  <div class=\"modal fade contact-modal\">\n    <div class=\"modal-dialog\">\n      <div class=\"modal-content\">\n        <div class=\"modal-header\">\n          <button type=\"button\" class=\"close\" data-dismiss=\"modal\">\n            <span aria-hidden=\"true\">&times;</span>\n            <span class=\"sr-only\">Close</span>\n          </button>\n          <h3 class=\"modal-title text-center bold white\">Contact Us</h3>\n        </div>\n        <div class=\"modal-body\">\n          <form role=\"form\">\n            <div class=\"form-group\">\n              <label for=\"contact-name\">Name</label>\n              <input type=\"text\" class=\"form-control contact-name\" value=\"nicholas\">\n              <span class=\"pull-right contact-error contact-name-error\"></span>\n            </div>\n            <div class=\"form-group\">\n              <label for=\"contact-email\">Email</label>\n              <input type=\"email\" class=\"form-control contact-email\" value=\"nick@test.com\">\n              <span class=\"pull-right contact-error contact-email-error\"></span>\n            </div>\n            <div class=\"form-group\">\n              <label for=\"contact-phone\">Phone</label>\n              <input type=\"text\" class=\"form-control contact-phone\" value=\"12345678\">\n              <span class=\"pull-right contact-error contact-phone-error\"></span>\n            </div>\n            <div class=\"form-group\">\n              <label for=\"contact-company\">Company / Organization</label>\n              <input type=\"text\" class=\"form-control contact-company\" value=\"nickcompany\">\n              <span class=\"pull-right contact-error contact-company-error\"></span>\n            </div>\n            <div class=\"form-group\">\n              <label for=\"contact-message\">Message</label>\n              <textarea rows=\"3\" class=\"form-control contact-message\"></textarea>\n              <span class=\"pull-right contact-error contact-message-error\"></span>\n            </div>\n            \n          </form>\n        </div>\n        <div class=\"modal-footer\">\n          <button type=\"button\" class=\"center-block btn btn-danger btn-lg contact-submit\">Submit</button>\n        </div>\n      </div>\n    </div>\n  </div>\n  <!-- End contact modal -->\n\n  <!-- BEGIN TOP NAVIGATION BAR -->\n  <nav class=\"navbar navbar-default frontpage-navbar\" role=\"navigation\">\n    <div class=\"container\">\n      <!-- Brand and toggle get grouped for better mobile display -->\n      <div class=\"navbar-header\">\n        <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#bs-example-navbar-collapse-1\">\n          <span class=\"sr-only\">Toggle navigation</span>\n          <span class=\"icon-bar\"></span>\n          <span class=\"icon-bar\"></span>\n          <span class=\"icon-bar\"></span>\n        </button>\n        <a class=\"navbar-brand\" href=\"#\">\n          <img src=\"img/logo_inverse.png\">\n        </a>\n      </div>\n\n      <!-- Collect the nav links, forms, and other content for toggling -->\n      <div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\">\n        <ul class=\"nav navbar-nav navbar-right\">\n          <li><a href=\"#/about\">About</a></li>\n          <li><a href=\"#/features\">Features</a></li>\n          <li><a href=\"#\">News</a></li>\n          <li><a href=\"#/careers\">Careers</a></li>\n          <li>\n            <a href=\"#\">\n              <button class=\"btn btn-danger btn-lg btn-trial\" data-toggle=\"modal\" data-target=\".contact-modal\">\n                Free Trial\n              </button>\n            </a>\n          </li>\n        </ul>\n      </div>\n    </div>\n  </nav>\n  <!-- END TOP NAVIGATION BAR -->";
   return buffer;
+  }
+
+  options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data}
+  if (helper = helpers.globalHeader) { stack1 = helper.call(depth0, options); }
+  else { helper = (depth0 && depth0.globalHeader); stack1 = typeof helper === functionType ? helper.call(depth0, options) : helper; }
+  if (!helpers.globalHeader) { stack1 = blockHelperMissing.call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data}); }
+  if(stack1 || stack1 === 0) { return stack1; }
+  else { return ''; }
   });
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -502,10 +665,20 @@ if (typeof define === 'function' && define.amd) {
 var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var stack1, helper, options, self=this, functionType="function", blockHelperMissing=helpers.blockHelperMissing;
+
+function program1(depth0,data) {
   
+  var buffer = "";
+  return buffer;
+  }
 
-
-  return "<div class=\"careers\">\n  \n  <!-- BEGIN TOP NAVIGATION BAR -->\n  <nav class=\"navbar navbar-default frontpage-navbar\" role=\"navigation\">\n    <div class=\"container\">\n      <!-- Brand and toggle get grouped for better mobile display -->\n      <div class=\"navbar-header\">\n        <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#bs-example-navbar-collapse-1\">\n          <span class=\"sr-only\">Toggle navigation</span>\n          <span class=\"icon-bar\"></span>\n          <span class=\"icon-bar\"></span>\n          <span class=\"icon-bar\"></span>\n        </button>\n        <a class=\"navbar-brand\" href=\"#\">\n          <img src=\"img/logo_inverse.png\">\n        </a>\n      </div>\n\n      <!-- Collect the nav links, forms, and other content for toggling -->\n      <div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\">\n        <ul class=\"nav navbar-nav navbar-right\">\n          <li><a href=\"#/about\">About</a></li>\n          <li><a href=\"#/features\">Features</a></li>\n          <li><a href=\"#\">News</a></li>\n          <li><a href=\"#/careers\">Careers</a></li>\n          <li>\n            <a href=\"#\">\n              <button class=\"btn btn-danger btn-lg btn-trial\" data-toggle=\"modal\" data-target=\".contact-modal\">\n                Free Trial\n              </button>\n            </a>\n          </li>\n        </ul>\n      </div>\n    </div>\n  </nav>\n  <!-- END TOP NAVIGATION BAR -->\n\n</div>";
+  options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data}
+  if (helper = helpers.globalHeader) { stack1 = helper.call(depth0, options); }
+  else { helper = (depth0 && depth0.globalHeader); stack1 = typeof helper === functionType ? helper.call(depth0, options) : helper; }
+  if (!helpers.globalHeader) { stack1 = blockHelperMissing.call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data}); }
+  if(stack1 || stack1 === 0) { return stack1; }
+  else { return ''; }
   });
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -542,11 +715,20 @@ if (typeof define === 'function' && define.amd) {
 var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var stack1, helper, options, self=this, functionType="function", blockHelperMissing=helpers.blockHelperMissing;
+
+function program1(depth0,data) {
+  
   var buffer = "";
-
-
-  buffer += "<!-- Begin contact modal -->\n<div class=\"modal fade contact-modal\">\n	<div class=\"modal-dialog\">\n		<div class=\"modal-content\">\n			<div class=\"modal-header\">\n				<button type=\"button\" class=\"close\" data-dismiss=\"modal\">\n					<span aria-hidden=\"true\">&times;</span>\n					<span class=\"sr-only\">Close</span>\n				</button>\n				<h3 class=\"modal-title text-center bold white\">Contact Us</h3>\n			</div>\n			<div class=\"modal-body\">\n				<form role=\"form\">\n					<div class=\"form-group\">\n						<label for=\"contact-name\">Name</label>\n						<input type=\"text\" class=\"form-control contact-name\" value=\"nicholas\">\n						<span class=\"pull-right contact-error contact-name-error\"></span>\n					</div>\n					<div class=\"form-group\">\n						<label for=\"contact-email\">Email</label>\n						<input type=\"email\" class=\"form-control contact-email\" value=\"nick@test.com\">\n						<span class=\"pull-right contact-error contact-email-error\"></span>\n					</div>\n					<div class=\"form-group\">\n						<label for=\"contact-phone\">Phone</label>\n						<input type=\"text\" class=\"form-control contact-phone\" value=\"12345678\">\n						<span class=\"pull-right contact-error contact-phone-error\"></span>\n					</div>\n					<div class=\"form-group\">\n						<label for=\"contact-company\">Company / Organization</label>\n						<input type=\"text\" class=\"form-control contact-company\" value=\"nickcompany\">\n						<span class=\"pull-right contact-error contact-company-error\"></span>\n					</div>\n					<div class=\"form-group\">\n						<label for=\"contact-message\">Message</label>\n						<textarea rows=\"3\" class=\"form-control contact-message\"></textarea>\n						<span class=\"pull-right contact-error contact-message-error\"></span>\n					</div>\n					\n				</form>\n			</div>\n			<div class=\"modal-footer\">\n				<button type=\"button\" class=\"center-block btn btn-danger btn-lg contact-submit\">Submit</button>\n			</div>\n		</div>\n	</div>\n</div>\n<!-- End contact modal -->\n\n<!-- BEGIN TOP NAVIGATION BAR -->\n<nav class=\"navbar navbar-default frontpage-navbar\" role=\"navigation\">\n	<div class=\"container\">\n		<!-- Brand and toggle get grouped for better mobile display -->\n		<div class=\"navbar-header\">\n			<button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#bs-example-navbar-collapse-1\">\n				<span class=\"sr-only\">Toggle navigation</span>\n				<span class=\"icon-bar\"></span>\n				<span class=\"icon-bar\"></span>\n				<span class=\"icon-bar\"></span>\n			</button>\n			<a class=\"navbar-brand\" href=\"#\">\n				<img src=\"img/logo_inverse.png\">\n			</a>\n		</div>\n\n		<!-- Collect the nav links, forms, and other content for toggling -->\n		<div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\">\n			<ul class=\"nav navbar-nav navbar-right\">\n				<li><a href=\"#/about\">About</a></li>\n				<li><a href=\"#/features\">Features</a></li>\n				<li><a href=\"#\">News</a></li>\n				<li><a href=\"#/careers\">Careers</a></li>\n				<li>\n					<a href=\"#\">\n						<button class=\"btn btn-danger btn-lg btn-trial\" data-toggle=\"modal\" data-target=\".contact-modal\">\n							Free Trial\n						</button>\n					</a>\n				</li>\n			</ul>\n		</div>\n	</div>\n</nav>\n<!-- END TOP NAVIGATION BAR -->\n\n<div class=\"features\">\n  <!-- BEGIN TOP NAVIGATION BAR -->\n  <nav class=\"navbar navbar-default frontpage-navbar\" role=\"navigation\">\n    <div class=\"container\">\n      <!-- Brand and toggle get grouped for better mobile display -->\n      <div class=\"navbar-header\">\n        <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#bs-example-navbar-collapse-1\">\n          <span class=\"sr-only\">Toggle navigation</span>\n          <span class=\"icon-bar\"></span>\n          <span class=\"icon-bar\"></span>\n          <span class=\"icon-bar\"></span>\n        </button>\n        <a class=\"navbar-brand\" href=\"#\">\n          <img src=\"img/logo_inverse.png\">\n        </a>\n      </div>\n\n      <!-- Collect the nav links, forms, and other content for toggling -->\n      <div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\">\n        <ul class=\"nav navbar-nav navbar-right\">\n          <li><a href=\"#/about\">About</a></li>\n          <li><a href=\"#/features\">Features</a></li>\n          <li><a href=\"#\">News</a></li>\n          <li><a href=\"#/careers\">Careers</a></li>\n          <li>\n            <a href=\"#\">\n              <button class=\"btn btn-danger btn-lg btn-trial\" data-toggle=\"modal\" data-target=\".contact-modal\">\n                Free Trial\n              </button>\n            </a>\n          </li>\n        </ul>\n      </div>\n    </div>\n  </nav>\n  <!-- END TOP NAVIGATION BAR -->\n\n</div>";
   return buffer;
+  }
+
+  options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data}
+  if (helper = helpers.globalHeader) { stack1 = helper.call(depth0, options); }
+  else { helper = (depth0 && depth0.globalHeader); stack1 = typeof helper === functionType ? helper.call(depth0, options) : helper; }
+  if (!helpers.globalHeader) { stack1 = blockHelperMissing.call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data}); }
+  if(stack1 || stack1 === 0) { return stack1; }
+  else { return ''; }
   });
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -583,10 +765,20 @@ if (typeof define === 'function' && define.amd) {
 var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var buffer = "", stack1, helper, options, self=this, functionType="function", blockHelperMissing=helpers.blockHelperMissing;
+
+function program1(depth0,data) {
+  
   var buffer = "";
+  return buffer;
+  }
 
-
-  buffer += "<!-- Begin contact modal -->\n<div class=\"modal fade contact-modal\">\n	<div class=\"modal-dialog\">\n		<div class=\"modal-content\">\n			<div class=\"modal-header\">\n				<button type=\"button\" class=\"close\" data-dismiss=\"modal\">\n					<span aria-hidden=\"true\">&times;</span>\n					<span class=\"sr-only\">Close</span>\n				</button>\n				<h3 class=\"modal-title text-center bold white\">Contact Us</h3>\n			</div>\n			<div class=\"modal-body\">\n				<form role=\"form\">\n					<div class=\"form-group\">\n						<label for=\"contact-name\">Name</label>\n						<input type=\"text\" class=\"form-control contact-name\" value=\"nicholas\">\n						<span class=\"pull-right contact-error contact-name-error\"></span>\n					</div>\n					<div class=\"form-group\">\n						<label for=\"contact-email\">Email</label>\n						<input type=\"email\" class=\"form-control contact-email\" value=\"nick@test.com\">\n						<span class=\"pull-right contact-error contact-email-error\"></span>\n					</div>\n					<div class=\"form-group\">\n						<label for=\"contact-phone\">Phone</label>\n						<input type=\"text\" class=\"form-control contact-phone\" value=\"12345678\">\n						<span class=\"pull-right contact-error contact-phone-error\"></span>\n					</div>\n					<div class=\"form-group\">\n						<label for=\"contact-company\">Company / Organization</label>\n						<input type=\"text\" class=\"form-control contact-company\" value=\"nickcompany\">\n						<span class=\"pull-right contact-error contact-company-error\"></span>\n					</div>\n					<div class=\"form-group\">\n						<label for=\"contact-message\">Message</label>\n						<textarea rows=\"3\" class=\"form-control contact-message\"></textarea>\n						<span class=\"pull-right contact-error contact-message-error\"></span>\n					</div>\n					\n				</form>\n			</div>\n			<div class=\"modal-footer\">\n				<button type=\"button\" class=\"center-block btn btn-danger btn-lg contact-submit\">Submit</button>\n			</div>\n		</div>\n	</div>\n</div>\n<!-- End contact modal -->\n\n<!-- BEGIN TOP NAVIGATION BAR -->\n<nav class=\"navbar navbar-default frontpage-navbar\" role=\"navigation\">\n	<div class=\"container\">\n		<!-- Brand and toggle get grouped for better mobile display -->\n		<div class=\"navbar-header\">\n			<button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#bs-example-navbar-collapse-1\">\n				<span class=\"sr-only\">Toggle navigation</span>\n				<span class=\"icon-bar\"></span>\n				<span class=\"icon-bar\"></span>\n				<span class=\"icon-bar\"></span>\n			</button>\n			<a class=\"navbar-brand\" href=\"#\">\n				<img src=\"img/logo_inverse.png\">\n			</a>\n		</div>\n\n		<!-- Collect the nav links, forms, and other content for toggling -->\n		<div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\">\n			<ul class=\"nav navbar-nav navbar-right\">\n				<li><a href=\"#/about\">About</a></li>\n				<li><a href=\"#/features\">Features</a></li>\n				<li><a href=\"#\">News</a></li>\n				<li><a href=\"#/careers\">Careers</a></li>\n				<li>\n					<a href=\"#\">\n						<button class=\"btn btn-danger btn-lg btn-trial\" data-toggle=\"modal\" data-target=\".contact-modal\">\n							Free Trial\n						</button>\n					</a>\n				</li>\n			</ul>\n		</div>\n	</div>\n</nav>\n<!-- END TOP NAVIGATION BAR -->\n\n<!-- Begin first panel -->\n<div class=\"slide-panel panel-1\">\n	<!-- Desktop version. Animation shown -->\n	<div class=\"col-md-6 pitch-question\">\n		<div class=\"text-right slide-content question-1\">\n			Ever used a recruitment system and thought:\n		</div>\n		<div class=\"text-right slide-content question-2\">\n			Why does this have to be so difficult?\n		</div>\n		<div class=\"text-right slide-content question-3\">\n			Us too.\n		</div>\n	</div>\n\n	<div class=\"col-md-6 pitch-features\">\n		<div class=\"text-right slide-content features-1\">\n			Accessibility\n		</div>\n		<div class=\"text-right slide-content features-2\">\n			Integration\n		</div>\n		<div class=\"text-right slide-content features-3\">\n			Productivity\n		</div>\n		<div class=\"text-right slide-content features-4\">\n			Security\n		</div>\n	</div>\n\n	<div class=\"col-md-12 pitch-logo\">\n		<img class=\"center-block\" src=\"img/logo.png\">\n	</div>\n	<!-- Mobile version. No video -->\n	<!-- <div class=\"slide-content\">\n\n	</div> -->\n</div>\n<!-- End first panel -->\n\n<!-- Begin second panel -->\n<div class=\"slide-panel panel-2\">\n	<div class=\"container slide-content\">\n		<div class=\"col-xs-12 col-md-6\">\n			<h1 class=\"col-xs-12 col-md-12 text-center red\">\n				Octus injects power into your recruitment process. \n			</h1>\n			<h3 class=\"col-xs-12 col-md-12 text-center gray\">\n				Recruiting has always been a painful process. Octus presents a stable, fast and flexible solution for your needs\n			</h3>\n		</div>\n		<div class=\"col-xs-12 col-md-6\">\n			<div class=\"center-block tablet\">\n\n				<div id=\"screenshot-carousel\" class=\"carousel slide\" data-ride=\"carousel\">\n\n					<!-- Wrapper for slides -->\n					<div class=\"carousel-inner\">\n						<div class=\"item active\">\n							<img src=\"img/dashboard.jpg\" alt=\"dashboard\">\n						</div>\n						<div class=\"item\">\n							<img src=\"img/country_monitor.jpg\" alt=\"country monitor\">\n						</div>\n						<div class=\"item\">\n							<img src=\"img/emails.jpg\" alt=\"email\">\n						</div>\n					</div>\n				</div>\n			</div>\n		</div>\n	</div>\n</div>\n<!-- End second panel -->\n\n<!-- Begin third panel -->\n<div class=\"slide-panel panel-3\">\n	<div class=\"col-xs-12 col-md-12\">\n		<h1 class=\"text-center red\">\n			Octus Solves Problems\n		</h1>\n		<h4 class=\"col-xs-12 col-md-8 col-md-offset-2 text-center navy\">\n			At Octus, we believe in stable solutions to problems. Our smart, integrated and intuitive recruitment management software armed with reliable features is the only thing you'll ever need.\n		</h4>\n	</div>\n\n	<div class=\"col-xs-12 col-md-12\">\n		<!-- Accessibility -->\n		<div class=\"feature feature-accessibility\">\n			<div class=\"col-xs-12 col-sm-12 col-md-6\">\n				<img class=\"center-block\" src=\"img/accessibility.png\">\n			</div>\n			<div class=\"col-xs-12 col-sm-12 col-md-6\">\n				<h3 class=\"red bold\">\n					Accessibility\n				</h3>\n				<ul class=\"gray\">\n					<li>Intuitive Web based UI</li>\n					<li>Full functionality on PC, MAC, Mobile, Tablet</li>\n					<li>End to End Recruitment Process Management</li>\n					<li>Cloud Hosted</li>\n				</ul>\n			</div>\n		</div>\n\n		<!-- Integration -->\n		<div class=\"feature feature-integration visible-xs\">\n			<div class=\"col-xs-12 col-sm-12 col-md-6\">\n				<img class=\"center-block\" src=\"img/integration.png\">\n			</div>\n			<div class=\"col-xs-12 col-sm-12 col-md-6\">\n				<h3 class=\"red bold\">\n					Integration\n				</h3>\n				<ul class=\"gray\">\n					<li>Email &amp; Calendar</li>\n					<li>Phone &amp; SMS</li>\n					<li>Job Boards</li>\n					<li>Searching</li>\n					<li>Partners: Daxtra, IKM, Psytech</li>\n				</ul>\n			</div>\n		</div>\n\n		<!-- Productivity -->\n		<div class=\"feature feature-productivity visible-xs\">\n			<div class=\"col-xs-12 col-sm-12 col-md-6\">\n				<img class=\"center-block\" src=\"img/productivity.png\">\n			</div>\n			<div class=\"col-xs-12 col-sm-12 col-md-6\">\n				<h3 class=\"red bold\">\n					Productivity\n				</h3>\n				<ul class=\"gray\">\n					<li>Bespoke Analytics</li>\n					<li>Save Time With Reduced Effort Duplication</li>\n					<li>Smart Calender For Timely Alerts &amp; Reminders</li>\n				</ul>\n			</div>\n		</div>\n\n		<!-- Security -->\n		<div class=\"feature feature-security visible-xs\">\n			<div class=\"col-xs-12 col-sm-12 col-md-6\">\n				<img class=\"center-block\" src=\"img/security.png\">\n			</div>\n			<div class=\"col-xs-12 col-sm-12 col-md-6\">\n				<h3 class=\"red bold\">\n					Security\n				</h3>\n				<ul class=\"col-md-8 gray\">\n					<li>Controllable Usage</li>\n					<li>Complete Data Monitoring</li>\n				</ul>\n			</div>\n		</div>\n	</div>\n\n	<div class=\"col-md-4 col-md-offset-4 feature-nav visible-md visible-lg\">\n		<div class=\"col-md-3 feature-nav-icon nav-accessibility\">\n			<img class=\"img-circle\" src=\"img/accessibility_icon.png\">\n		</div>\n		<div class=\"col-md-3 feature-nav-icon nav-integration desaturate\">\n			<img class=\"img-circle\" src=\"img/integration.png\">\n		</div>\n		<div class=\"col-md-3 feature-nav-icon nav-productivity desaturate\">\n			<img class=\"img-circle\" src=\"img/productivity.png\">\n		</div>\n		<div class=\"col-md-3 feature-nav-icon nav-security desaturate\">\n			<img class=\"img-circle\" src=\"img/security.png\">\n		</div>\n	</div>\n</div>\n<!-- End third panel -->\n\n<!-- Begin fourth panel -->\n<div class=\"slide-panel panel-4\">\n	<div class=\"col-xs-12 col-md-12\">\n		<img class=\"center-block\" src=\"img/celebrate.png\">\n	</div>\n	<div class=\"col-xs-12 col-md-12\">\n		<h1 class=\"text-center red\">\n			Recruiters, Celebrate\n		</h1>\n		<h4 class=\"col-xs-12 col-md-8 col-md-offset-2 text-center navy\">\n			Yes, Octus Is For You.\n		</h4>\n		<h4 class=\"col-xs-12 col-md-8 col-md-offset-2 text-center navy\">\n			From job posting (to job boards and social media), tracking candidates &amp; client interactions to issuing and tracking invoicing, Octus does it all.\n		</h4>\n		<h4 class=\"col-xs-12 col-md-8 col-md-offset-2 text-center navy\">\n			On top of all that, we serve detailed analytics of each process to keep you informed every step of the way.\n		</h4>\n	</div>\n</div>\n<!-- End fourth panel -->\n\n<!-- Begin fifth panel -->\n<div class=\"slide-panel panel-5\">\n	<div class=\"col-xs-12 col-md-12\">\n		<h1 class=\"text-center\">Try Us Out. You'll Like It</h1>\n		<div class=\"col-xs-12 col-md-4 col-md-offset-4\">\n			<button class=\"center-block btn btn-lg btn-danger\" data-toggle=\"modal\" data-target=\".contact-modal\">Start A Free Trial Now</button>\n		</div>\n	</div>\n</div>\n<!-- End fifth panel -->\n\n<!-- Begin sixth panel -->\n<div class=\"slide-panel panel-6\">\n	<div class=\"col-xs-12 col-md-7\">\n		<div class=\"col-xs-12 col-md-3 col-md-offset-1 text-center divider\">\n			<h5>Copyright 2014 Octus</h5>\n		</div>\n		<div class=\"col-xs-12 col-md-3 text-center divider\">\n			<h5>Terms of Service</h5>\n		</div>\n		<div class=\"col-xs-12 col-md-3 text-center divider\">\n			<h5>News / Blog</h5>\n		</div>\n		<div class=\"col-xs-12 col-md-2 text-center\">\n			<h5>Contact Us</h5>\n		</div>\n	</div>\n	<div class=\"col-xs-12 col-md-5 social-icons\">\n		<div class=\"col-xs-4 col-md-2 col-md-offset-4 social-facebook\">\n			<a href=\"https://www.facebook.com/octusrecruitment\" target=\"_blank\">\n				<img class=\"center-block img-circle red-hue\" src=\"img/fb_icon.png\">\n			</a>\n		</div>\n		<div class=\"col-xs-4 col-md-2 social-linkedin\">\n			<a href=\"https://www.linkedin.com/company/octus-pte-ltd\" target=\"_blank\">\n				<img class=\"center-block img-circle red-hue\" src=\"img/linkedin_icon.png\">\n			</a>\n		</div>\n		<div class=\"col-xs-4 col-md-2 social-googleplus\">\n			<a href=\"https://plus.google.com/u/0/110131833217889792669/about\" target=\"_blank\">\n				<img class=\"center-block img-circle red-hue\" src=\"img/gplus_icon.png\">\n			</a>\n		</div>\n	</div>\n</div>\n<!-- End sixth panel -->";
+  options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data}
+  if (helper = helpers.globalHeader) { stack1 = helper.call(depth0, options); }
+  else { helper = (depth0 && depth0.globalHeader); stack1 = typeof helper === functionType ? helper.call(depth0, options) : helper; }
+  if (!helpers.globalHeader) { stack1 = blockHelperMissing.call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data}); }
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n\n<!-- Begin first panel -->\n<div class=\"slide-panel panel-1\">\n	<!-- Desktop version. Animation shown -->\n	<div class=\"col-md-6 pitch-question\">\n		<div class=\"text-right slide-content question-1\">\n			Ever used a recruitment system and thought:\n		</div>\n		<div class=\"text-right slide-content question-2\">\n			Why does this have to be so difficult?\n		</div>\n		<div class=\"text-right slide-content question-3\">\n			Us too.\n		</div>\n	</div>\n\n	<div class=\"col-md-6 pitch-features\">\n		<div class=\"text-right slide-content features-1\">\n			Accessibility\n		</div>\n		<div class=\"text-right slide-content features-2\">\n			Integration\n		</div>\n		<div class=\"text-right slide-content features-3\">\n			Productivity\n		</div>\n		<div class=\"text-right slide-content features-4\">\n			Security\n		</div>\n	</div>\n\n	<div class=\"col-md-12 pitch-logo\">\n		<img class=\"center-block\" src=\"img/logo.png\">\n	</div>\n	<!-- Mobile version. No video -->\n	<!-- <div class=\"slide-content\">\n\n	</div> -->\n</div>\n<!-- End first panel -->\n\n<!-- Begin second panel -->\n<div class=\"slide-panel panel-2\">\n	<div class=\"container slide-content\">\n		<div class=\"col-xs-12 col-md-6\">\n			<h1 class=\"col-xs-12 col-md-12 text-center red\">\n				Octus injects power into your recruitment process. \n			</h1>\n			<h3 class=\"col-xs-12 col-md-12 text-center gray\">\n				Recruiting has always been a painful process. Octus presents a stable, fast and flexible solution for your needs\n			</h3>\n		</div>\n		<div class=\"col-xs-12 col-md-6\">\n			<div class=\"center-block tablet\">\n\n				<div id=\"screenshot-carousel\" class=\"carousel slide\" data-ride=\"carousel\">\n\n					<!-- Wrapper for slides -->\n					<div class=\"carousel-inner\">\n						<div class=\"item active\">\n							<img src=\"img/dashboard.jpg\" alt=\"dashboard\">\n						</div>\n						<div class=\"item\">\n							<img src=\"img/country_monitor.jpg\" alt=\"country monitor\">\n						</div>\n						<div class=\"item\">\n							<img src=\"img/emails.jpg\" alt=\"email\">\n						</div>\n					</div>\n				</div>\n			</div>\n		</div>\n	</div>\n</div>\n<!-- End second panel -->\n\n<!-- Begin third panel -->\n<div class=\"slide-panel panel-3\">\n	<div class=\"col-xs-12 col-md-12\">\n		<h1 class=\"text-center red\">\n			Octus Solves Problems\n		</h1>\n		<h4 class=\"col-xs-12 col-md-8 col-md-offset-2 text-center navy\">\n			At Octus, we believe in stable solutions to problems. Our smart, integrated and intuitive recruitment management software armed with reliable features is the only thing you'll ever need.\n		</h4>\n	</div>\n\n	<div class=\"col-xs-12 col-md-12\">\n		<!-- Accessibility -->\n		<div class=\"feature feature-accessibility\">\n			<div class=\"col-xs-12 col-sm-12 col-md-6\">\n				<img class=\"center-block\" src=\"img/accessibility.png\">\n			</div>\n			<div class=\"col-xs-12 col-sm-12 col-md-6\">\n				<h3 class=\"red bold\">\n					Accessibility\n				</h3>\n				<ul class=\"gray\">\n					<li>Intuitive Web based UI</li>\n					<li>Full functionality on PC, MAC, Mobile, Tablet</li>\n					<li>End to End Recruitment Process Management</li>\n					<li>Cloud Hosted</li>\n				</ul>\n			</div>\n		</div>\n\n		<!-- Integration -->\n		<div class=\"feature feature-integration visible-xs\">\n			<div class=\"col-xs-12 col-sm-12 col-md-6\">\n				<img class=\"center-block\" src=\"img/integration.png\">\n			</div>\n			<div class=\"col-xs-12 col-sm-12 col-md-6\">\n				<h3 class=\"red bold\">\n					Integration\n				</h3>\n				<ul class=\"gray\">\n					<li>Email &amp; Calendar</li>\n					<li>Phone &amp; SMS</li>\n					<li>Job Boards</li>\n					<li>Searching</li>\n					<li>Partners: Daxtra, IKM, Psytech</li>\n				</ul>\n			</div>\n		</div>\n\n		<!-- Productivity -->\n		<div class=\"feature feature-productivity visible-xs\">\n			<div class=\"col-xs-12 col-sm-12 col-md-6\">\n				<img class=\"center-block\" src=\"img/productivity.png\">\n			</div>\n			<div class=\"col-xs-12 col-sm-12 col-md-6\">\n				<h3 class=\"red bold\">\n					Productivity\n				</h3>\n				<ul class=\"gray\">\n					<li>Bespoke Analytics</li>\n					<li>Save Time With Reduced Effort Duplication</li>\n					<li>Smart Calender For Timely Alerts &amp; Reminders</li>\n				</ul>\n			</div>\n		</div>\n\n		<!-- Security -->\n		<div class=\"feature feature-security visible-xs\">\n			<div class=\"col-xs-12 col-sm-12 col-md-6\">\n				<img class=\"center-block\" src=\"img/security.png\">\n			</div>\n			<div class=\"col-xs-12 col-sm-12 col-md-6\">\n				<h3 class=\"red bold\">\n					Security\n				</h3>\n				<ul class=\"col-md-8 gray\">\n					<li>Controllable Usage</li>\n					<li>Complete Data Monitoring</li>\n				</ul>\n			</div>\n		</div>\n	</div>\n\n	<div class=\"col-md-4 col-md-offset-4 feature-nav visible-md visible-lg\">\n		<div class=\"col-md-3 feature-nav-icon nav-accessibility\">\n			<img class=\"img-circle\" src=\"img/accessibility_icon.png\">\n		</div>\n		<div class=\"col-md-3 feature-nav-icon nav-integration desaturate\">\n			<img class=\"img-circle\" src=\"img/integration.png\">\n		</div>\n		<div class=\"col-md-3 feature-nav-icon nav-productivity desaturate\">\n			<img class=\"img-circle\" src=\"img/productivity.png\">\n		</div>\n		<div class=\"col-md-3 feature-nav-icon nav-security desaturate\">\n			<img class=\"img-circle\" src=\"img/security.png\">\n		</div>\n	</div>\n</div>\n<!-- End third panel -->\n\n<!-- Begin fourth panel -->\n<div class=\"slide-panel panel-4\">\n	<div class=\"col-xs-12 col-md-12\">\n		<img class=\"center-block\" src=\"img/celebrate.png\">\n	</div>\n	<div class=\"col-xs-12 col-md-12\">\n		<h1 class=\"text-center red\">\n			Recruiters, Celebrate\n		</h1>\n		<h4 class=\"col-xs-12 col-md-8 col-md-offset-2 text-center navy\">\n			Yes, Octus Is For You.\n		</h4>\n		<h4 class=\"col-xs-12 col-md-8 col-md-offset-2 text-center navy\">\n			From job posting (to job boards and social media), tracking candidates &amp; client interactions to issuing and tracking invoicing, Octus does it all.\n		</h4>\n		<h4 class=\"col-xs-12 col-md-8 col-md-offset-2 text-center navy\">\n			On top of all that, we serve detailed analytics of each process to keep you informed every step of the way.\n		</h4>\n	</div>\n</div>\n<!-- End fourth panel -->\n\n<!-- Begin fifth panel -->\n<div class=\"slide-panel panel-5\">\n	<div class=\"col-xs-12 col-md-12\">\n		<h1 class=\"text-center\">Try Us Out. You'll Like It</h1>\n		<div class=\"col-xs-12 col-md-4 col-md-offset-4\">\n			<button class=\"center-block btn btn-lg btn-danger\" data-toggle=\"modal\" data-target=\".contact-modal\">Start A Free Trial Now</button>\n		</div>\n	</div>\n</div>\n<!-- End fifth panel -->\n\n<!-- Begin sixth panel -->\n<div class=\"slide-panel panel-6\">\n	<div class=\"col-xs-12 col-md-7\">\n		<div class=\"col-xs-12 col-md-3 col-md-offset-1 text-center divider\">\n			<h5>Copyright 2014 Octus</h5>\n		</div>\n		<div class=\"col-xs-12 col-md-3 text-center divider\">\n			<h5>Terms of Service</h5>\n		</div>\n		<div class=\"col-xs-12 col-md-3 text-center divider\">\n			<h5>News / Blog</h5>\n		</div>\n		<div class=\"col-xs-12 col-md-2 text-center\">\n			<h5>Contact Us</h5>\n		</div>\n	</div>\n	<div class=\"col-xs-12 col-md-5 social-icons\">\n		<div class=\"col-xs-4 col-md-2 col-md-offset-4 social-facebook\">\n			<a href=\"https://www.facebook.com/octusrecruitment\" target=\"_blank\">\n				<img class=\"center-block img-circle red-hue\" src=\"img/fb_icon.png\">\n			</a>\n		</div>\n		<div class=\"col-xs-4 col-md-2 social-linkedin\">\n			<a href=\"https://www.linkedin.com/company/octus-pte-ltd\" target=\"_blank\">\n				<img class=\"center-block img-circle red-hue\" src=\"img/linkedin_icon.png\">\n			</a>\n		</div>\n		<div class=\"col-xs-4 col-md-2 social-googleplus\">\n			<a href=\"https://plus.google.com/u/0/110131833217889792669/about\" target=\"_blank\">\n				<img class=\"center-block img-circle red-hue\" src=\"img/gplus_icon.png\">\n			</a>\n		</div>\n	</div>\n</div>\n<!-- End sixth panel -->";
   return buffer;
   });
 if (typeof define === 'function' && define.amd) {
@@ -607,16 +799,16 @@ require('lib/view_helper')
 module.exports = Backbone.View.extend({
     
     initialize: function(){
-        this.render = _.bind(this.render, this)
+        this.render = _.bind(this.render, this);
     },
     
     template: function(){},
     getRenderData: function(){},
     
     render: function(){
-        this.$el.html(this.template(this.getRenderData()))
-        this.afterRender()
-        return this
+        this.$el.html(this.template(this.getRenderData()));
+        this.afterRender();
+        return this;
     },
     
     afterRender: function(){},
