@@ -5856,7 +5856,7 @@ textarea:focus {
   -moz-filter: sepia(1) saturate(1) hue-rotate(300deg);
   filter: sepia(1) saturate(1) hue-rotate(300deg);
 }
-.contact-submit-spinner {
+.spinner {
   width: 45px;
   height: 45px;
 }
