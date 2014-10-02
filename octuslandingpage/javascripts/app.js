@@ -189,22 +189,22 @@ Handlebars.registerHelper( 'globalHeader', function(options) {
 									<form class=\"contact-form\" role=\"form\">\
 										<div class=\"form-group\">\
 											<label for=\"contact-name\">Name</label>\
-											<input type=\"text\" class=\"form-control contact-name\" value=\"nicholas\">\
+											<input type=\"text\" class=\"form-control contact-name\">\
 											<span class=\"pull-right contact-error contact-name-error\"></span>\
 										</div>\
 										<div class=\"form-group\">\
 											<label for=\"contact-email\">Email</label>\
-											<input type=\"email\" class=\"form-control contact-email\" value=\"nick@test.com\">\
+											<input type=\"email\" class=\"form-control contact-email\">\
 											<span class=\"pull-right contact-error contact-email-error\"></span>\
 										</div>\
 										<div class=\"form-group\">\
 											<label for=\"contact-phone\">Phone</label>\
-											<input type=\"text\" class=\"form-control contact-phone\" value=\"12345678\">\
+											<input type=\"text\" class=\"form-control contact-phone\">\
 											<span class=\"pull-right contact-error contact-phone-error\"></span>\
 										</div>\
 										<div class=\"form-group\">\
 											<label for=\"contact-company\">Company / Organization</label>\
-											<input type=\"text\" class=\"form-control contact-company\" value=\"nickcompany\">\
+											<input type=\"text\" class=\"form-control contact-company\">\
 											<span class=\"pull-right contact-error contact-company-error\"></span>\
 										</div>\
 										<div class=\"form-group\">\
