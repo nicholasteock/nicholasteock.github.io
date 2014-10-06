@@ -474,7 +474,7 @@ function showPitch() {
 	setTimeout( function() { $(".pitch-features").fadeOut(); }, 9500 );
 
 	// Show logo
-	$(".pitch-logo").delay( 11000 ).fadeIn(2000);
+	$(".pitch-logo").delay( 10000 ).fadeIn(1600);
 };
 
 var toggleAccessibility = function() {
@@ -534,7 +534,7 @@ function submitContact() {
 		email 	= $(".contact-email").val(),
 		phone 	= $(".contact-phone").val(),
 		company = $(".contact-company").val(),
-		request = $("input[type='radio'][name='contact-option']:checked").val(),
+		// request = $("input[type='radio'][name='contact-option']:checked").val(),
 		params 	= {};
 
 	var contactModel = new ContactModel();
