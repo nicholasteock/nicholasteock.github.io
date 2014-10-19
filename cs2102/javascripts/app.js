@@ -95,19 +95,19 @@ require.register("application", function(exports, require, module) {
 Application = {
     initialize: function() {
         
-        var HomeView 		= require('views/home_view'),
-        	LoginView 		= require('views/login_view'),
-        	ListingView 	= require('views/listing_view'),
-        	MovieView 		= require('views/movie_view'),
-        	BookingView 	= require('views/booking_view')
-        	Router   		= require('lib/router');
+        var ConfirmationView 	= require('views/confirmation_view'),
+        	LoginView 			= require('views/login_view'),
+        	ListingView 		= require('views/listing_view'),
+        	MovieView 			= require('views/movie_view'),
+        	BookingView 		= require('views/booking_view')
+        	Router   			= require('lib/router');
         
-        this.homeView 		= new HomeView();
-        this.loginView 		= new LoginView();
-        this.listingView 	= new ListingView();
-        this.movieView 		= new MovieView();
-        this.bookingView 	= new BookingView();
-        this.router   		= new Router();
+        this.confirmationView 	= new ConfirmationView();
+        this.loginView 			= new LoginView();
+        this.listingView 		= new ListingView();
+        this.movieView 			= new MovieView();
+        this.bookingView 		= new BookingView();
+        this.router   			= new Router();
         
         if (typeof Object.freeze === 'function') Object.freeze(this)
         
@@ -133,12 +133,12 @@ var application = require('application')
 
 module.exports 	= Backbone.Router.extend({
     routes: {
-        '' 			: 'login',
-        'login' 	: 'login',
-        'listing' 	: 'listing',
-        'movie' 	: 'movie',
-        'booking' 	: 'booking',
-        'home' 		: 'home',
+        '' 				: 'login',
+        'login' 		: 'login',
+        'listing' 		: 'listing',
+        'movie' 		: 'movie',
+        'booking' 		: 'booking',
+        'confirmation' 	: 'confirmation',
     },
     
     login: function() {
@@ -157,8 +157,8 @@ module.exports 	= Backbone.Router.extend({
         $('body').html(application.bookingView.render().el)
     },
     
-    home: function() {
-        $('body').html(application.homeView.render().el)
+    confirmation: function() {
+        $('body').html(application.confirmationView.render().el)
     },
 
 })
@@ -191,7 +191,7 @@ var View     = require('./view'),
 	template = require('./templates/booking');
 
 var events = {
-	'click .seat' 	: 'seatClicked'
+  'click .seat'  : 'seatClicked'
 };
 
 var afterRender = function() {
@@ -203,7 +203,7 @@ var afterRender = function() {
 		// var bookedSeats = [5, 10, 25];
 		// init(bookedSeats);
 		init([ "A-1", "B-10", "C-5" ]);
-	}, 100);
+	}, 1000);
 };
 
 var settings = {
@@ -244,11 +244,10 @@ var init = function (reservedSeat) {
         }
     }
     $('#place').html(str.join(''));
-
-    var seatHtmlArray = [], rowStr = "", seatNo, className;
 };
 
 var seatClicked = function( ev ) {
+  console.log("HERE", ev);
 	var $seat = $(ev.target),
 		targetClasses = "",
 		seatRow = "",
@@ -275,11 +274,22 @@ var seatClicked = function( ev ) {
 
 module.exports = View.extend({
     id: 'booking-view',
+    events: events,
     afterRender: afterRender,
     template: template,
-    events: events,
     seatClicked: seatClicked
 })
+
+});
+
+;require.register("views/confirmation_view", function(exports, require, module) {
+var View     = require('./view'),
+	template = require('./templates/confirmation');
+
+module.exports = View.extend({
+    id: 'confirmation-view',
+    template: template,
+});
 
 });
 
@@ -334,7 +344,27 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   
 
 
-  return "<section class=\"container\">\n	<div class=\"panel panel-default booking-movie-info\">\n		<div class=\"panel-heading\">\n			Movie Information\n	  	</div>\n	  	<div class=\"panel-body\">\n	  		<div class=\"col-sm-12 col-md-6 col-lg-6\">\n				<div class=\"booking-movie-venue\">\n					<span class=\"col-sm-3 col-md-3 col-lg-3\">Cineplex: </span>\n					<span class=\"col-sm-9 col-md-9 col-lg-9\">AMK Hub</span>\n				</div>\n				<div class=\"booking-movie-title\">\n					<span class=\"col-sm-3 col-md-3 col-lg-3\">Movie Title: </span>\n					<span class=\"col-sm-9 col-md-9 col-lg-9\">Rurouni Kenshin The Legend Ends</span>\n				</div>\n				<div class=\"booking-movie-date\">\n					<span class=\"col-sm-3 col-md-3 col-lg-3\">Movie Date: </span>\n					<span class=\"col-sm-9 col-md-9 col-lg-9\">18/10/2014</span>\n				</div>\n				<div class=\"booking-movie-time\">\n					<span class=\"col-sm-3 col-md-3 col-lg-3\">Movie Time: </span>\n					<span class=\"col-sm-9 col-md-9 col-lg-9\">19:10</span>\n				</div>\n			</div>\n			<div class=\"col-sm-12 col-md-6 col-lg-6 booking-movie-info\">\n				<div class=\"booking-movie-duration\">\n					<span class=\"col-sm-3 col-md-3 col-lg-3\">Duration: </span>\n					<span class=\"col-sm-9 col-md-9 col-lg-9\">135 mins</span>\n				</div>\n				<div class=\"booking-movie-rating\">\n					<span class=\"col-sm-3 col-md-3 col-lg-3\">Rating: </span>\n					<span class=\"col-sm-9 col-md-9 col-lg-9\">NC16 - Violence</span>\n				</div>\n			</div>\n		</div>\n	</div>\n</section>\n<section class=\"container\">\n	<div class=\"panel panel-default booking-movie-seats\">\n		<div class=\"panel-body\">\n			<div class=\"booking-seats-container\">\n				<div class=\"center-block text-center booking-screen\">\n					Screen\n				</div>\n				<div class=\"booking-seats\">\n					<div id=\"seats\" class=\"center-block\">\n				        <ul id=\"place\">\n				        </ul>\n				    </div>\n				</div>\n			</div>\n		</div>\n	</div>\n</section>";
+  return "<section class=\"container\">\n	<div class=\"panel panel-default booking-movie-info\">\n		<div class=\"panel-heading\">\n			Movie Information\n	  	</div>\n	  	<div class=\"panel-body\">\n	  		<div class=\"col-sm-12 col-md-6 col-lg-6\">\n				<div class=\"booking-movie-venue\">\n					<span class=\"col-sm-3 col-md-3 col-lg-3\">Cineplex: </span>\n					<span class=\"col-sm-9 col-md-9 col-lg-9\">AMK Hub</span>\n				</div>\n				<div class=\"booking-movie-title\">\n					<span class=\"col-sm-3 col-md-3 col-lg-3\">Movie Title: </span>\n					<span class=\"col-sm-9 col-md-9 col-lg-9\">Rurouni Kenshin The Legend Ends</span>\n				</div>\n				<div class=\"booking-movie-date\">\n					<span class=\"col-sm-3 col-md-3 col-lg-3\">Movie Date: </span>\n					<span class=\"col-sm-9 col-md-9 col-lg-9\">18/10/2014</span>\n				</div>\n				<div class=\"booking-movie-time\">\n					<span class=\"col-sm-3 col-md-3 col-lg-3\">Movie Time: </span>\n					<span class=\"col-sm-9 col-md-9 col-lg-9\">19:10</span>\n				</div>\n			</div>\n			<div class=\"col-sm-12 col-md-6 col-lg-6 booking-movie-info\">\n				<div class=\"booking-movie-duration\">\n					<span class=\"col-sm-3 col-md-3 col-lg-3\">Duration: </span>\n					<span class=\"col-sm-9 col-md-9 col-lg-9\">135 mins</span>\n				</div>\n				<div class=\"booking-movie-rating\">\n					<span class=\"col-sm-3 col-md-3 col-lg-3\">Rating: </span>\n					<span class=\"col-sm-9 col-md-9 col-lg-9\">NC16 - Violence</span>\n				</div>\n			</div>\n		</div>\n	</div>\n</section>\n<section class=\"container\">\n	<div class=\"panel panel-default booking-movie-seats\">\n		<div class=\"panel-body\">\n			<div class=\"booking-seats-container\">\n				<div class=\"center-block text-center booking-screen\">\n					Screen\n				</div>\n				<div class=\"booking-seats\">\n					<div id=\"seats\" class=\"center-block\">\n				        <ul id=\"place\">\n				        </ul>\n				    </div>\n				</div>\n			</div>\n		</div>\n	</div>\n</section>\n<section class=\"container\">\n	<div class=\"panel panel-default booking-movie-control\">\n	  	<div class=\"panel-body text-center\">\n		  	<a href=\"/#/confirmation\">\n			  	<button type=\"button\" class=\"btn btn-lg btn-danger\">SUBMIT BOOKING</button>\n			</a>\n		  	<a href=\"/#/listing\">\n		  		<button type=\"button\" class=\"btn btn-lg btn-info\">BACK TO MOVIE SELECTION</button>\n		  	</a>\n		</div>\n	</div>\n</section>";
+  });
+if (typeof define === 'function' && define.amd) {
+  define([], function() {
+    return __templateData;
+  });
+} else if (typeof module === 'object' && module && module.exports) {
+  module.exports = __templateData;
+} else {
+  __templateData;
+}
+});
+
+;require.register("views/templates/confirmation", function(exports, require, module) {
+var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  
+
+
+  return "<section class=\"container\">\n	<div class=\"jumbotron\">\n		<h1 class=\"text-right\">Success!</h1>\n		<div class=\"well confirmation-summary\">\n			<h2>Booking Summary</h2>\n			<table class=\"table table-hover\">\n				<thead>\n				</thead>\n				<tbody>\n					<tr>\n						<td>Cineplex:</td>\n						<td>AMK Hub</td>\n					</tr>\n					<tr>\n						<td>Movie Title:</td>\n						<td>Rurouni Kenshin The Legend Ends</td>\n					</tr>\n					<tr>\n						<td>Movie Date:</td>\n						<td>18/10/2014</td>\n					</tr>\n					<tr>\n						<td>Movie Time:</td>\n						<td>19:10</td>\n					</tr>\n					<tr>\n						<td>Duration:</td>\n						<td>135 mins</td>\n					</tr>\n					<tr>\n						<td>Rating:</td>\n						<td>NC16 - Violence</td>\n					</tr>\n					<tr>\n						<td>Seats:</td>\n						<td>A-5, C-10, C-11</td>\n					</tr>\n				</tbody>\n			</table>\n		</div>\n		<div class=\"text-center\">\n			<a href=\"/#/listing\">\n				<button type=\"button\" class=\"btn btn-lg btn-primary\">Home</button>\n			</a>\n		</div>\n	</div>\n</section>";
   });
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -394,7 +424,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   
 
 
-  return "this is the login page";
+  return "<section class=\"container\">\n	<div class=\"jumbotron text-center\">\n		<h1>CS2102 Project</h1>\n		<h1>Movie Booking System</h1>\n\n		<div class=\"container login-form\">\n			<h4>Please login to continue</h4>\n			<form role=\"form\" class=\"col-sm-12 col-md-4 col-lg-4 col-md-offset-4 col-lg-offset-4\">\n				<input type=\"email\" class=\"form-control\" id=\"login-email\" placeholder=\"Email\">\n				<input type=\"password\" class=\"form-control\" id=\"login-password\" placeholder=\"Password\">\n				<a href=\"/#/listing\">\n					<button type=\"button\" class=\"btn btn-default\">Submit</button>\n				</a>\n			</form>\n		</div>\n	</div>\n<section>";
   });
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -414,7 +444,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   
 
 
-  return "<section class=\"movie-info\">\n<div class=\"container\">\n	<div class=\"col-sm-12 col-md-5 col-lg-5 movie-poster\">\n		<img src=\"img/kenshin.jpg\">\n	</div>\n	<div class=\"col-sm-12 col-md-5 col-lg-5 movie-details\">\n		<div class=\"col-sm-12 col-md-12 col-lg-12 movie-title\">\n			Rurouni Kenshin The Legend Ends ~ 浪客剑心: 传说落幕篇\n		</div>\n		<div class=\"col-sm-12 col-md-12 col-lg-12 movie-cast\">\n			<span class=\"col-sm-3 col-md-3 col-lg-3\">Cast</span>\n			<span class=\"col-sm-9 col-md-9 col-lg-9\">Takeru Satoh</span>\n		</div>\n		<div class=\"col-sm-12 col-md-12 col-lg-12 movie-director\">\n			<span class=\"col-sm-3 col-md-3 col-lg-3\">Director</span>\n			<span class=\"col-sm-9 col-md-9 col-lg-9\">Keishi Otomo</span>\n		</div>\n		<div class=\"col-sm-12 col-md-12 col-lg-12 movie-language\">\n			<span class=\"col-sm-3 col-md-3 col-lg-3\">Language</span>\n			<span class=\"col-sm-9 col-md-9 col-lg-9\">Japanese with English Subtitles</span>\n		</div>\n		<div class=\"col-sm-12 col-md-12 col-lg-12 movie-runtime\">\n			<span class=\"col-sm-3 col-md-3 col-lg-3\">Runtime</span>\n			<span class=\"col-sm-9 col-md-9 col-lg-9\">135 mins</span>\n		</div>\n		<div class=\"col-sm-12 col-md-12 col-lg-12 movie-rating\">\n			<span class=\"col-sm-3 col-md-3 col-lg-3\">Runtime</span>\n			<span class=\"col-sm-9 col-md-9 col-lg-9\">NC16 - Violence</span>\n		</div>\n		<div class=\"col-sm-12 col-md-12 col-lg-12 movie-book\">\n			<a href=\"booking\"><button type=\"button\" class=\"btn btn-default btn-sm\">BOOK NOW</button></a>\n		</div>\n		<div class=\"col-sm-12 col-md-12 col-lg-12 movie-synopsis\">\n			To stop Makoto Shishio who aims to conquer Japan, Kenshin arrives in Kyoto and tries to face off against Shishio’s troops. However, his enemy has begun its course to start invading Tokyo with the steel-reinforced battleship. To save captured Kaoru who is thrown into the sea by Shishio’s men, Kenshin also dives in after her but is washed ashore alone, unconscious.\n			<br><br>\n			Kenshin recovers with the help of Seijuro Hiko, the master of Kenshin who happens to find him on the shore. He realises he is no match for Shishio unless he learns the ultimate technique of his sword style, and begs the master to teach him.\n			<br><br>\n			In the meantime, Shishio finds that Kenshin is still alive, and puts pressure on the government to find Kenshin and execute him in public for his sins during his days as the “Battosai the Killer”. As Kenshin faces his biggest challenge, can Kenshin really defeat his fiercest enemy Shishio, and be reunited with Kaoru?\n		</div>\n	</div>\n</div>\n</section>\n<section class=\"movie-showtimes\">\n	<div class=\"container\">\n		<h3>Showtimes</h3>\n		<div class=\"movie-showtime-container\">\n			<div class=\"movie-showtime-venue\">\n				AMK HUB\n			</div>\n			<div>\n				<ul class=\"col-sm-12 col-md-12 col-lg-12 movie-showtime-list\">\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">TODAY</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"/#/booking\">00:45</a></li>\n								<li><a href=\"/#/booking\">13:45</a></li>\n								<li><a href=\"/#/booking\">16:30</a></li>\n								<li><a href=\"/#/booking\">19:15</a></li>\n								<li><a href=\"/#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">19 OCT, SUN</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"/#/booking\">00:45</a></li>\n								<li><a href=\"/#/booking\">13:45</a></li>\n								<li><a href=\"/#/booking\">16:30</a></li>\n								<li><a href=\"/#/booking\">19:15</a></li>\n								<li><a href=\"/#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">20 OCT, MON</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"/#/booking\">00:45</a></li>\n								<li><a href=\"/#/booking\">13:45</a></li>\n								<li><a href=\"/#/booking\">16:30</a></li>\n								<li><a href=\"/#/booking\">19:15</a></li>\n								<li><a href=\"/#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">21 OCT, TUE</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"/#/booking\">00:45</a></li>\n								<li><a href=\"/#/booking\">13:45</a></li>\n								<li><a href=\"/#/booking\">16:30</a></li>\n								<li><a href=\"/#/booking\">19:15</a></li>\n								<li><a href=\"/#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">22 OCT, WED</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"/#/booking\">00:45</a></li>\n								<li><a href=\"/#/booking\">13:45</a></li>\n								<li><a href=\"/#/booking\">16:30</a></li>\n								<li><a href=\"/#/booking\">19:15</a></li>\n								<li><a href=\"/#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n				</ul>\n			</div>\n			<div class=\"movie-showtime-venue\">\n				AMK HUB\n			</div>\n			<div>\n				<ul class=\"col-sm-12 col-md-12 col-lg-12 movie-showtime-list\">\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">TODAY</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"/#/booking\">00:45</a></li>\n								<li><a href=\"/#/booking\">13:45</a></li>\n								<li><a href=\"/#/booking\">16:30</a></li>\n								<li><a href=\"/#/booking\">19:15</a></li>\n								<li><a href=\"/#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">19 OCT, SUN</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"/#/booking\">00:45</a></li>\n								<li><a href=\"/#/booking\">13:45</a></li>\n								<li><a href=\"/#/booking\">16:30</a></li>\n								<li><a href=\"/#/booking\">19:15</a></li>\n								<li><a href=\"/#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">20 OCT, MON</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"/#/booking\">00:45</a></li>\n								<li><a href=\"/#/booking\">13:45</a></li>\n								<li><a href=\"/#/booking\">16:30</a></li>\n								<li><a href=\"/#/booking\">19:15</a></li>\n								<li><a href=\"/#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">21 OCT, TUE</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"/#/booking\">00:45</a></li>\n								<li><a href=\"/#/booking\">13:45</a></li>\n								<li><a href=\"/#/booking\">16:30</a></li>\n								<li><a href=\"/#/booking\">19:15</a></li>\n								<li><a href=\"/#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">22 OCT, WED</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"/#/booking\">00:45</a></li>\n								<li><a href=\"/#/booking\">13:45</a></li>\n								<li><a href=\"/#/booking\">16:30</a></li>\n								<li><a href=\"/#/booking\">19:15</a></li>\n								<li><a href=\"/#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n				</ul>\n			</div>\n			<div class=\"movie-showtime-venue\">\n				AMK HUB\n			</div>\n			<div>\n				<ul class=\"col-sm-12 col-md-12 col-lg-12 movie-showtime-list\">\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">TODAY</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"/#/booking\">00:45</a></li>\n								<li><a href=\"/#/booking\">13:45</a></li>\n								<li><a href=\"/#/booking\">16:30</a></li>\n								<li><a href=\"/#/booking\">19:15</a></li>\n								<li><a href=\"/#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">19 OCT, SUN</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"/#/booking\">00:45</a></li>\n								<li><a href=\"/#/booking\">13:45</a></li>\n								<li><a href=\"/#/booking\">16:30</a></li>\n								<li><a href=\"/#/booking\">19:15</a></li>\n								<li><a href=\"/#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">20 OCT, MON</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"/#/booking\">00:45</a></li>\n								<li><a href=\"/#/booking\">13:45</a></li>\n								<li><a href=\"/#/booking\">16:30</a></li>\n								<li><a href=\"/#/booking\">19:15</a></li>\n								<li><a href=\"/#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">21 OCT, TUE</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"/#/booking\">00:45</a></li>\n								<li><a href=\"/#/booking\">13:45</a></li>\n								<li><a href=\"/#/booking\">16:30</a></li>\n								<li><a href=\"/#/booking\">19:15</a></li>\n								<li><a href=\"/#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">22 OCT, WED</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"/#/booking\">00:45</a></li>\n								<li><a href=\"/#/booking\">13:45</a></li>\n								<li><a href=\"/#/booking\">16:30</a></li>\n								<li><a href=\"/#/booking\">19:15</a></li>\n								<li><a href=\"/#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n				</ul>\n			</div>\n		</div>\n	</div>\n</section>";
+  return "<section class=\"movie-info\">\n<div class=\"container\">\n	<div class=\"col-sm-12 col-md-5 col-lg-5 movie-poster\">\n		<img src=\"img/kenshin.jpg\">\n	</div>\n	<div class=\"col-sm-12 col-md-5 col-lg-5 movie-details\">\n		<div class=\"col-sm-12 col-md-12 col-lg-12 movie-title\">\n			Rurouni Kenshin The Legend Ends ~ 浪客剑心: 传说落幕篇\n		</div>\n		<div class=\"col-sm-12 col-md-12 col-lg-12 movie-cast\">\n			<span class=\"col-sm-3 col-md-3 col-lg-3\">Cast</span>\n			<span class=\"col-sm-9 col-md-9 col-lg-9\">Takeru Satoh</span>\n		</div>\n		<div class=\"col-sm-12 col-md-12 col-lg-12 movie-director\">\n			<span class=\"col-sm-3 col-md-3 col-lg-3\">Director</span>\n			<span class=\"col-sm-9 col-md-9 col-lg-9\">Keishi Otomo</span>\n		</div>\n		<div class=\"col-sm-12 col-md-12 col-lg-12 movie-language\">\n			<span class=\"col-sm-3 col-md-3 col-lg-3\">Language</span>\n			<span class=\"col-sm-9 col-md-9 col-lg-9\">Japanese with English Subtitles</span>\n		</div>\n		<div class=\"col-sm-12 col-md-12 col-lg-12 movie-runtime\">\n			<span class=\"col-sm-3 col-md-3 col-lg-3\">Runtime</span>\n			<span class=\"col-sm-9 col-md-9 col-lg-9\">135 mins</span>\n		</div>\n		<div class=\"col-sm-12 col-md-12 col-lg-12 movie-rating\">\n			<span class=\"col-sm-3 col-md-3 col-lg-3\">Runtime</span>\n			<span class=\"col-sm-9 col-md-9 col-lg-9\">NC16 - Violence</span>\n		</div>\n		<div class=\"col-sm-12 col-md-12 col-lg-12 movie-book\">\n			<a href=\"/#/booking\"><button type=\"button\" class=\"btn btn-default btn-sm\">BOOK NOW</button></a>\n		</div>\n		<div class=\"col-sm-12 col-md-12 col-lg-12 movie-synopsis\">\n			To stop Makoto Shishio who aims to conquer Japan, Kenshin arrives in Kyoto and tries to face off against Shishio’s troops. However, his enemy has begun its course to start invading Tokyo with the steel-reinforced battleship. To save captured Kaoru who is thrown into the sea by Shishio’s men, Kenshin also dives in after her but is washed ashore alone, unconscious.\n			<br><br>\n			Kenshin recovers with the help of Seijuro Hiko, the master of Kenshin who happens to find him on the shore. He realises he is no match for Shishio unless he learns the ultimate technique of his sword style, and begs the master to teach him.\n			<br><br>\n			In the meantime, Shishio finds that Kenshin is still alive, and puts pressure on the government to find Kenshin and execute him in public for his sins during his days as the “Battosai the Killer”. As Kenshin faces his biggest challenge, can Kenshin really defeat his fiercest enemy Shishio, and be reunited with Kaoru?\n		</div>\n	</div>\n</div>\n</section>\n<section class=\"movie-showtimes\">\n	<div class=\"container\">\n		<h3>Showtimes</h3>\n		<div class=\"movie-showtime-container\">\n			<div class=\"movie-showtime-venue\">\n				AMK HUB\n			</div>\n			<div>\n				<ul class=\"col-sm-12 col-md-12 col-lg-12 movie-showtime-list\">\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">TODAY</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"/#/booking\">00:45</a></li>\n								<li><a href=\"/#/booking\">13:45</a></li>\n								<li><a href=\"/#/booking\">16:30</a></li>\n								<li><a href=\"/#/booking\">19:15</a></li>\n								<li><a href=\"/#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">19 OCT, SUN</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"/#/booking\">00:45</a></li>\n								<li><a href=\"/#/booking\">13:45</a></li>\n								<li><a href=\"/#/booking\">16:30</a></li>\n								<li><a href=\"/#/booking\">19:15</a></li>\n								<li><a href=\"/#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">20 OCT, MON</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"/#/booking\">00:45</a></li>\n								<li><a href=\"/#/booking\">13:45</a></li>\n								<li><a href=\"/#/booking\">16:30</a></li>\n								<li><a href=\"/#/booking\">19:15</a></li>\n								<li><a href=\"/#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">21 OCT, TUE</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"/#/booking\">00:45</a></li>\n								<li><a href=\"/#/booking\">13:45</a></li>\n								<li><a href=\"/#/booking\">16:30</a></li>\n								<li><a href=\"/#/booking\">19:15</a></li>\n								<li><a href=\"/#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">22 OCT, WED</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"/#/booking\">00:45</a></li>\n								<li><a href=\"/#/booking\">13:45</a></li>\n								<li><a href=\"/#/booking\">16:30</a></li>\n								<li><a href=\"/#/booking\">19:15</a></li>\n								<li><a href=\"/#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n				</ul>\n			</div>\n			<div class=\"movie-showtime-venue\">\n				AMK HUB\n			</div>\n			<div>\n				<ul class=\"col-sm-12 col-md-12 col-lg-12 movie-showtime-list\">\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">TODAY</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"/#/booking\">00:45</a></li>\n								<li><a href=\"/#/booking\">13:45</a></li>\n								<li><a href=\"/#/booking\">16:30</a></li>\n								<li><a href=\"/#/booking\">19:15</a></li>\n								<li><a href=\"/#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">19 OCT, SUN</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"/#/booking\">00:45</a></li>\n								<li><a href=\"/#/booking\">13:45</a></li>\n								<li><a href=\"/#/booking\">16:30</a></li>\n								<li><a href=\"/#/booking\">19:15</a></li>\n								<li><a href=\"/#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">20 OCT, MON</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"/#/booking\">00:45</a></li>\n								<li><a href=\"/#/booking\">13:45</a></li>\n								<li><a href=\"/#/booking\">16:30</a></li>\n								<li><a href=\"/#/booking\">19:15</a></li>\n								<li><a href=\"/#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">21 OCT, TUE</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"/#/booking\">00:45</a></li>\n								<li><a href=\"/#/booking\">13:45</a></li>\n								<li><a href=\"/#/booking\">16:30</a></li>\n								<li><a href=\"/#/booking\">19:15</a></li>\n								<li><a href=\"/#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">22 OCT, WED</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"/#/booking\">00:45</a></li>\n								<li><a href=\"/#/booking\">13:45</a></li>\n								<li><a href=\"/#/booking\">16:30</a></li>\n								<li><a href=\"/#/booking\">19:15</a></li>\n								<li><a href=\"/#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n				</ul>\n			</div>\n			<div class=\"movie-showtime-venue\">\n				AMK HUB\n			</div>\n			<div>\n				<ul class=\"col-sm-12 col-md-12 col-lg-12 movie-showtime-list\">\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">TODAY</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"/#/booking\">00:45</a></li>\n								<li><a href=\"/#/booking\">13:45</a></li>\n								<li><a href=\"/#/booking\">16:30</a></li>\n								<li><a href=\"/#/booking\">19:15</a></li>\n								<li><a href=\"/#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">19 OCT, SUN</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"/#/booking\">00:45</a></li>\n								<li><a href=\"/#/booking\">13:45</a></li>\n								<li><a href=\"/#/booking\">16:30</a></li>\n								<li><a href=\"/#/booking\">19:15</a></li>\n								<li><a href=\"/#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">20 OCT, MON</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"/#/booking\">00:45</a></li>\n								<li><a href=\"/#/booking\">13:45</a></li>\n								<li><a href=\"/#/booking\">16:30</a></li>\n								<li><a href=\"/#/booking\">19:15</a></li>\n								<li><a href=\"/#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">21 OCT, TUE</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"/#/booking\">00:45</a></li>\n								<li><a href=\"/#/booking\">13:45</a></li>\n								<li><a href=\"/#/booking\">16:30</a></li>\n								<li><a href=\"/#/booking\">19:15</a></li>\n								<li><a href=\"/#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">22 OCT, WED</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"/#/booking\">00:45</a></li>\n								<li><a href=\"/#/booking\">13:45</a></li>\n								<li><a href=\"/#/booking\">16:30</a></li>\n								<li><a href=\"/#/booking\">19:15</a></li>\n								<li><a href=\"/#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n				</ul>\n			</div>\n		</div>\n	</div>\n</section>";
   });
 if (typeof define === 'function' && define.amd) {
   define([], function() {
