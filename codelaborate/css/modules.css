@@ -8,14 +8,21 @@
 
 .sidebar {
 	height: 100%;
+	padding: 0;
 }
 
-#editor { 
-    /*position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;*/
+.sidebar-item {
+	padding: 10px;
+	border-top: 1px solid #C4C4C4;
+	border-bottom: 1px solid #C4C4C4;
+}
+
+.sidebar-subitem {
+	font-size: 16px;
+	cursor: pointer;
+}
+
+#editor {
     width: 100%;
     height: 200px;
 }
@@ -28,6 +35,15 @@
 	border: 2px solid #c4c4c4;
 }
 
-.language-selection {
-	margin-top: 20px;
+#collapse-language {
+	background-color: #FFCC00;
+}
+
+#collapse-language button {
+	border-radius: 0;
+	background-color: #FFF;
+}
+
+.language-selection ul {
+	width: 100%;
 }

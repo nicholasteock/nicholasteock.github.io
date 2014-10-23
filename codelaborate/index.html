@@ -14,7 +14,8 @@
         <link rel="stylesheet" href="css/bootstrap.min.css">
         <link rel="stylesheet" href="css/bootstrap-theme.min.css">
         <!-- Firepad styles -->
-		<link rel="stylesheet" href="https://cdn.firebase.com/libs/firepad/1.0.0/firepad.css" />
+		<link rel="stylesheet" href="css/firepad.css" />
+		<link rel="stylesheet" href="css/firepad-userlist.css" />
 		<!-- Custom styles -->
         <link rel="stylesheet" href="css/main.css">
         <link rel="stylesheet" href="css/modules.css">
@@ -52,6 +53,36 @@
 			</nav>
 	    	<section>
 	    		<div class="col-md-2 col-lg-2 sidebar">
+	    			<div id="sidebar-list">
+	    				<div class="sidebar-item" data-toggle="collapse" data-parent="#sidebar-list" href="#collapse-language">
+	    					<h4>
+	    						<span>Language</span>
+	    						<span class="glyphicon glyphicon-chevron-down pull-right"></span>
+	    					</h4>
+	    				</div>
+	    				<div id="collapse-language" class="collapse in sidebar-subitem">
+							<div>
+								<div class="dropdown language-selection">
+									<button type="button" class="btn btn-block" data-toggle="dropdown" href=".dropdown-menu"></button>
+									<ul class="text-center dropdown-menu" role="menu" aria-labelledby="dLabel">
+								  		<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Javascript</a></li>
+								  		<li role="presentation"><a role="menuitem" tabindex="-1" href="#">C++</a></li>
+								  		<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Java</a></li>
+									</ul>
+								</div>
+							</div>
+	    				</div>
+	    				<div class="sidebar-item" data-toggle="collapse" data-parent="#sidebar-list" href="#collapse-users">
+	    					<h4>
+	    						<span>Users</span>
+	    						<span class="glyphicon glyphicon-chevron-down pull-right"></span>
+	    					</h4>
+	    				</div>
+	    				<div id="collapse-users" class="collapse in side-subitem">
+	    					<div id="user-list">
+	    					</div>
+	    				</div>
+	    			</div>
 	    		</div>
 				<div class="col-md-5 col-lg-5 half">
 					<div id="editor" class="quarter-panel quarter-panel1"></div>
@@ -75,6 +106,7 @@
 		<script src="js/vendor/firebase/firebase.js"></script>
 		<!-- Firepad -->
 		<script src="js/vendor/firepad/firepad.js"></script>
+		<script src="js/vendor/firepad/firepad-userlist.js"></script>
 	    <script src="js/app.js"></script>
     </body>
 </html>

@@ -1,9 +1,11 @@
-var currentLanguage = "Java";
+var currentLanguage = "Javascript";
 
 var firebaseUrl = "https://codelaborate-ace.firebaseio.com/"
 var firebaseRef = null;
 var editor 		= null;
 var firepad 	= null;
+var userId 		= null;
+var userList 	= null;
 
 var $languageSelection = $(".language-selection");
 
@@ -36,13 +38,26 @@ function init() {
 	name = name.substr(1);
 	firebaseUrl += name;
 
-	editor 	= ace.edit("editor");
-	editor.setTheme("ace/theme/monokai");
-	editor.gotoLine(0,0,false);
+	if (firepad) {
+		// Clean up.
+		firepad.dispose();
+		userList.dispose();
+	}
+
 
 	firebaseRef = new Firebase(firebaseUrl);
-	firepad = Firepad.fromACE(firebaseRef, editor, {});
+	editor 	= ace.edit("editor");
+	userId 		= firebaseRef.push().name();
+	firepad 	= Firepad.fromACE(firebaseRef, editor, {userId: userId});
+	userList 	= FirepadUserList.fromDiv(
+					firebaseRef.child('users'),
+      				document.getElementById("user-list"),
+      				userId
+      			);
 
+	editor.setTheme("ace/theme/monokai");
+	editor.gotoLine(0,0,false);
+	
 	// Remove watermark created by firepad.
 	$(".powered-by-firepad").remove();
 	editor.focus();
