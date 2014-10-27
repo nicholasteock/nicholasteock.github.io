@@ -110,7 +110,7 @@ function init() {
 
 	editor.setTheme("ace/theme/monokai");
 	editor.gotoLine(0,0,false);
-	
+
 	// Remove watermark created by firepad.
 	$(".powered-by-firepad").remove();
 	editor.focus();
