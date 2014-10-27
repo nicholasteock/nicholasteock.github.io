@@ -43,13 +43,14 @@ function createNewProject() {
 		$(".newproject-error").html("All fields are required.");
 		return;
 	}
+	
+	$("#newproject-modal").modal("hide");
 
 	firebaseRef = new Firebase(firebaseUrl);
 	firebaseRef.root().child("projectLanguageRef").child(projectName).set(language);
 
 	firebaseRef.root().child("projectLanguageRef").once('child_added', function() {
 		Firebase.goOffline();
-		$("#newproject-modal").modal("hide");
 		window.location = "http://nicholasteock.github.io/codelaborate/#" + projectName + "/" + fileName;
 	});
 
@@ -105,35 +106,32 @@ function init() {
 	}
 
 	firebaseRef = new Firebase(firebaseUrl);
-	editor 		= ace.edit("editor");
-	userId 		= firebaseRef.push().name();
-	firepad 	= Firepad.fromACE(firebaseRef, editor, {userId: userId});
-	userList 	= FirepadUserList.fromDiv(
-					firebaseRef.child('users'),
-      				document.getElementById("user-list"),
-      				userId
-      			);
-
-	editor.setTheme("ace/theme/monokai");
-	editor.gotoLine(0,0,false);
-
-	// Remove watermark created by firepad.
-	$(".powered-by-firepad").remove();
-	editor.focus();
-	resizeHandler();
-
-	console.log("PROJECT NAME : ", projectName);
 
 	// Retrieves language of project and updates editor accordingly
-	firebaseRef.root().child("projectLanguageRef").child(projectName).on('value', function (snapshot) {
+	firebaseRef.root().child("projectLanguageRef").child(projectName).once('value', function (snapshot) {
+		editor 		= ace.edit("editor");
+		userId 		= firebaseRef.push().name();
+		firepad 	= Firepad.fromACE(firebaseRef, editor, {userId: userId});
+		userList 	= FirepadUserList.fromDiv(
+						firebaseRef.child('users'),
+	      				document.getElementById("user-list"),
+	      				userId
+	      			);
+
+		editor.setTheme("ace/theme/monokai");
+		editor.gotoLine(0,0,false);
+
+		// Remove watermark created by firepad.
+		$(".powered-by-firepad").remove();
+		editor.focus();
+		resizeHandler();
 		languageChange(snapshot.val());
-		console.log(snapshot.val());
-		// firebaseRef.root().child("projectLanguageRef").child(projectName).off('value');
+		$(".stage").removeClass("hide");
+		
 	}, function (errorObject) {
 		console.log('The read failed: ' + errorObject.code);
 	});
 
-	$(".stage").removeClass("hide");
 };
 
 /******************************************************************************
