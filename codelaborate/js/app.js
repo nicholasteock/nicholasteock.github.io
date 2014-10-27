@@ -50,7 +50,7 @@ function createNewProject() {
 	firebaseRef.root().child("projectLanguageRef").child(projectName).set(language);
 
 	firebaseRef.root().child("projectLanguageRef").once('child_added', function() {
-		Firebase.goOffline();
+		// Firebase.goOffline();
 		setTimeout( function() {
 			window.location = "http://nicholasteock.github.io/codelaborate/#" + projectName + "/" + fileName;
 		}, 100 );
