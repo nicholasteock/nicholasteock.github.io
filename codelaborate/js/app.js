@@ -102,6 +102,7 @@ function init() {
 
 	name 		= name.substr(1);
 	projectName = name.substring(0, name.indexOf("/"));
+	fileName 	= name.substr(name.indexOf("/")+1);
 	firebaseUrl += name;
 
 	if (firepad) {
@@ -114,7 +115,10 @@ function init() {
 
 	// Retrieves language of project and updates editor accordingly
 	firebaseRef.root().child("projectLanguageRef").child(projectName).once('value', function (snapshot) {
-		editor 		= ace.edit("editor");
+		var editorId = "editor-"+fileName;
+		$("#editor").data("codePath", name);
+		$("#editor").attr("id", editorId);
+		editor 		= ace.edit(editorId);
 		userId 		= firebaseRef.push().name();
 		firepad 	= Firepad.fromACE(firebaseRef, editor, {userId: userId});
 		userList 	= FirepadUserList.fromDiv(
@@ -128,6 +132,8 @@ function init() {
 
 		// Remove watermark created by firepad.
 		$(".powered-by-firepad").remove();
+		$(".editor-nav").append('<li class="active"><a><span>'+fileName+'</span>' +
+								'<span class="glyphicon glyphicon-remove"> </span></a></li>');
 		editor.focus();
 		resizeHandler();
 		languageChange(snapshot.val());
@@ -166,7 +172,8 @@ function changeNewProjectLanguage(ev) {
 };
 
 function resizeHandler() {
-	$('.quarter-panel').height($(window).height() / 2);
+	$('.misc-panel').height( ($(window).height()-58) / 3);
+	$(".editor-panel").height( $(window).height()-52 );
 };
 
 function languageChangeHandler(ev) {
