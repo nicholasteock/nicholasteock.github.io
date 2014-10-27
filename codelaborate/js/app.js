@@ -86,6 +86,7 @@ function init() {
 
 	if(name === "") {
 		$("#newproject-modal").modal({keyboard: false, backdrop: 'static'});
+		return;
 	}
 
 	name 		= name.substr(1);
