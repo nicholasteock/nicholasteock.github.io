@@ -45,11 +45,16 @@ function createNewProject() {
 	}
 
 	firebaseRef = new Firebase(firebaseUrl);
+
+	console.log("CHECKING1 : ", firebaseRef.toString());
+	console.log("CHECKING2 : ", projectName);
+
 	firebaseRef.child(projectName).set({
 		"language": language
 	});
 
 	Firebase.goOffline();
+	$("#newproject-modal").modal("hide");
 	
 	window.location = "http://nicholasteock.github.io/codelaborate/#" + projectName + "/" + fileName;
 };
@@ -88,6 +93,9 @@ function init() {
 		$("#newproject-modal").modal({keyboard: false, backdrop: 'static'});
 		return;
 	}
+	else {
+		$(".stage").removeClass("hide");
+	}
 
 	name 		= name.substr(1);
 	firebaseUrl += name;
@@ -122,6 +130,8 @@ function init() {
 	}, function (errorObject) {
 		console.log('The read failed: ' + errorObject.code);
 	});
+
+	$(".stage").removeClass("hide");
 };
 
 /******************************************************************************
