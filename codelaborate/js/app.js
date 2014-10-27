@@ -99,7 +99,6 @@ function init() {
 
 	firebaseRef = new Firebase(firebaseUrl);
 	editor 		= ace.edit("editor");
-	console.log("LANGUAGE : ", language);
 	userId 		= firebaseRef.push().name();
 	firepad 	= Firepad.fromACE(firebaseRef, editor, {userId: userId});
 	userList 	= FirepadUserList.fromDiv(
