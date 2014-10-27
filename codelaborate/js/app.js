@@ -24,7 +24,10 @@ function retrieveExistingProject() {
 	    	$(".loadexisting-error").html("Link is invalid. Please try again.");
 	    }
 	    else {
-	    	window.location = "http://nicholasteock.github.io/codelaborate/#" + link;
+	    	$("#newproject-modal").modal("hide");
+	    	setTimeout( function() {
+	    		window.location = "http://nicholasteock.github.io/codelaborate/#" + link;
+	    	}, 500);
 	    }
 	});
 };
@@ -53,7 +56,7 @@ function createNewProject() {
 		// Firebase.goOffline();
 		setTimeout( function() {
 			window.location = "http://nicholasteock.github.io/codelaborate/#" + projectName + "/" + fileName;
-		}, 100 );
+		}, 1000 );
 	});
 
 };
