@@ -4,7 +4,6 @@ var editor 		= null;
 var firepad 	= null;
 var userId 		= null;
 var userList 	= null;
-var language 	= "";
 
 var $languageSelection = $(".language-selection");
 
@@ -46,7 +45,7 @@ function createNewProject() {
 	}
 
 	firebaseRef = new Firebase(firebaseUrl);
-	firebaseRef.child(projectName).push({
+	firebaseRef.child(projectName).set({
 		"language": language
 	});
 
@@ -100,7 +99,6 @@ function init() {
 
 	firebaseRef = new Firebase(firebaseUrl);
 	editor 		= ace.edit("editor");
-	language 	= firebaseRef.parent().language;
 	console.log("LANGUAGE : ", language);
 	userId 		= firebaseRef.push().name();
 	firepad 	= Firepad.fromACE(firebaseRef, editor, {userId: userId});
@@ -117,7 +115,13 @@ function init() {
 	$(".powered-by-firepad").remove();
 	editor.focus();
 	resizeHandler();
-	languageChange("Java");
+
+	// Retrieves language of project and updates editor accordingly
+	firebaseRef.parent().child("language").on('value', function (snapshot) {
+		languageChange(snapshot.val());
+	}, function (errorObject) {
+		console.log('The read failed: ' + errorObject.code);
+	});
 };
 
 /******************************************************************************
