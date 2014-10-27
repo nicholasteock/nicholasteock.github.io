@@ -45,18 +45,14 @@ function createNewProject() {
 	}
 
 	firebaseRef = new Firebase(firebaseUrl);
+	firebaseRef.root().child("projectLanguageRef").child(projectName).set(language);
 
-	console.log("CHECKING1 : ", firebaseRef.toString());
-	console.log("CHECKING2 : ", projectName);
-
-	firebaseRef.child(projectName).set({
-		"language": language
+	firebaseRef.root().child("projectLanguageRef").once('child_added', function() {
+		Firebase.goOffline();
+		$("#newproject-modal").modal("hide");
+		window.location = "http://nicholasteock.github.io/codelaborate/#" + projectName + "/" + fileName;
 	});
 
-	Firebase.goOffline();
-	$("#newproject-modal").modal("hide");
-	
-	window.location = "http://nicholasteock.github.io/codelaborate/#" + projectName + "/" + fileName;
 };
 
 function languageChange(language) {
@@ -88,6 +84,7 @@ function formRunParams() {
 
 function init() {
 	var name 	= window.location.hash;
+	var projectName;
 
 	if(name === "") {
 		$("#newproject-modal").modal({keyboard: false, backdrop: 'static'});
@@ -98,6 +95,7 @@ function init() {
 	}
 
 	name 		= name.substr(1);
+	projectName = name.substring(0, name.indexOf("/"));
 	firebaseUrl += name;
 
 	if (firepad) {
@@ -124,9 +122,13 @@ function init() {
 	editor.focus();
 	resizeHandler();
 
+	console.log("PROJECT NAME : ", projectName);
+
 	// Retrieves language of project and updates editor accordingly
-	firebaseRef.parent().child("language").on('value', function (snapshot) {
+	firebaseRef.root().child("projectLanguageRef").child(projectName).on('value', function (snapshot) {
 		languageChange(snapshot.val());
+		console.log(snapshot.val());
+		// firebaseRef.root().child("projectLanguageRef").child(projectName).off('value');
 	}, function (errorObject) {
 		console.log('The read failed: ' + errorObject.code);
 	});
