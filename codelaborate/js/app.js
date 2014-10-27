@@ -1,15 +1,61 @@
-var currentLanguage = "Javascript";
-
 var firebaseUrl = "https://codelaborate-ace.firebaseio.com/"
 var firebaseRef = null;
 var editor 		= null;
 var firepad 	= null;
 var userId 		= null;
 var userList 	= null;
+var language 	= "";
 
 var $languageSelection = $(".language-selection");
 
-function languageChange( language ) {
+function retrieveExistingProject() {
+	var link = $("#loadexisting-link").val();
+
+	if(link.length === 0) {
+		$(".loadexisting-error").html("Input is required.");
+		return;
+	}
+
+	link = link.substr( link.indexOf("#")+1 );
+
+	firebaseRef = new Firebase(firebaseUrl);
+
+	firebaseRef.child(link).once('value', function(ss) {
+	    if( ss.val() === null ) {
+	    	$(".loadexisting-error").html("Link is invalid. Please try again.");
+	    }
+	    else {
+	    	window.location = "http://nicholasteock.github.io/codelaborate/#" + link;
+	    }
+	});
+};
+
+function createNewProject() {
+	var projectName = $("#newproject-name").val();
+	var fileName 	= $("#newproject-filename").val();
+	var language 	= $("#newproject-language").html();
+
+	// Project parameters validation.
+	if(projectName.length === 0) {
+		$(".newproject-error").html("All fields are required.");
+		return;
+	}
+	if(fileName.length === 0) {
+		$(".newproject-error").html("All fields are required.");
+		return;
+	}
+
+	firebaseRef = new Firebase(firebaseUrl);
+	firebaseRef.child(projectName).push({
+		"language": language
+	});
+
+	Firebase.goOffline();
+	
+	window.location = "http://nicholasteock.github.io/codelaborate/#" + projectName + "/" + fileName;
+};
+
+function languageChange(language) {
 	$languageSelection.find("button").html(language + ' <span class="caret"> </span>');
 
 	switch (language) {
@@ -19,23 +65,31 @@ function languageChange( language ) {
 		case "C++":
 			editor.getSession().setMode("ace/mode/c_cpp");
 			break;
-		case "Javascript":
-			editor.getSession().setMode("ace/mode/javascript");
-			break;
 		default:
 			return;
 	}
 };
 
+function formRunParams() {
+	/*
+		Expected shape:
+		{
+			codePath
+			language
+			folder_name
+			file_name
+		}
+	*/
+};
+
 function init() {
 	var name 	= window.location.hash;
 
-	if( name == "" ) {
-		$(".not-found").removeClass("hide");
-		$(".stage").addClass("hide");
+	if(name === "") {
+		$("#newproject-modal").modal({keyboard: false, backdrop: 'static'});
 	}
 
-	name = name.substr(1);
+	name 		= name.substr(1);
 	firebaseUrl += name;
 
 	if (firepad) {
@@ -44,9 +98,10 @@ function init() {
 		userList.dispose();
 	}
 
-
 	firebaseRef = new Firebase(firebaseUrl);
-	editor 	= ace.edit("editor");
+	editor 		= ace.edit("editor");
+	language 	= firebaseRef.parent().language;
+	console.log("LANGUAGE : ", language);
 	userId 		= firebaseRef.push().name();
 	firepad 	= Firepad.fromACE(firebaseRef, editor, {userId: userId});
 	userList 	= FirepadUserList.fromDiv(
@@ -62,14 +117,34 @@ function init() {
 	$(".powered-by-firepad").remove();
 	editor.focus();
 	resizeHandler();
-	languageChange(currentLanguage);
+	languageChange("Java");
 };
-
-
 
 /******************************************************************************
 *	EVENT HANDLERS
 ******************************************************************************/
+
+function startNewProjectHandler() {
+	$(".modal-title").addClass("hide");
+	$(".newproject-title").removeClass("hide");
+	$(".load-existing").addClass("hide");
+	$(".start-new").addClass("hide");
+	$(".loadexisting").addClass("hide");
+	$(".newproject").removeClass("hide");
+};
+
+function loadExistingProjectHandler() {
+	$(".modal-title").addClass("hide");
+	$(".loadexisting-title").removeClass("hide");
+	$(".start-new").addClass("hide");
+	$(".load-existing").addClass("hide");
+	$(".newproject").addClass("hide");
+	$(".loadexisting").removeClass("hide");
+};
+
+function changeNewProjectLanguage(ev) {
+	$("#newproject-language").html(ev.target.innerText);
+};
 
 function resizeHandler() {
 	$('.quarter-panel').height($(window).height() / 2);
@@ -77,12 +152,23 @@ function resizeHandler() {
 
 function languageChangeHandler(ev) {
 	languageChange(ev.target.innerText);
+};
+
+function runClickHandler(ev) {
+	var runParams = formRunParams();
+	// compileAndExecute(runParams);
 }
 
 /******************************************************************************
 *	EVENTS
 ******************************************************************************/
 $(window).resize(resizeHandler);
+$("#run").click(runClickHandler);
+$(".start-new").click(startNewProjectHandler);
+$(".load-existing").click(loadExistingProjectHandler);
+$(".newproject-create").click(createNewProject);
+$(".loadexisting-load").click(retrieveExistingProject);
 $(".language-selection ul").click(languageChangeHandler);
+$(".newproject-languagelist a").click(changeNewProjectLanguage);
 
 window.onload = init;

@@ -23,13 +23,74 @@
         <script src="js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
     </head>
     <body>
-    	<section class="container not-found hide">
-    		<div class="jumbotron text-center">
-    			<h1>Oops!</h1>
-    			<h2>Codelaboration does not exist!</h2>
-    		</div>
-    	</section>
-    	<section class="stage">
+		<div id="newproject-modal" class="modal fade">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h2 class="text-center modal-title welcome-title">Welcome to Codelaborate!</h2>
+						<h2 class="text-center modal-title newproject-title hide">Start A New Project</h2>
+						<h2 class="text-center modal-title loadexisting-title hide">Load Existing Project</h2>
+					</div>
+					<div class="modal-body text-center">
+						<p>
+							<button type="button" class="btn btn-lg btn-success start-new">Start A New Project</button>
+						</p>
+						<p>
+							<button type="button" class="btn btn-lg btn-primary load-existing">Load Existing Project</button>
+						</p>
+						<div class="newproject hide">
+							<span class="newproject-error"></span>
+							<form class="form-horizontal" role="form">
+								<div class="form-group">
+									<label for="newproject-name" class="col-sm-4 control-label">Project Name:</label>
+									<div class="col-sm-8">
+										<input type="text" class="form-control" id="newproject-name">
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="newproject-filename" class="col-sm-4 control-label">Name your first file:</label>
+									<div class="col-sm-8">
+										<input type="text" class="form-control" id="newproject-filename">
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="newproject-language" class="col-sm-4 control-label">Language:</label>
+									<div class="col-sm-8">
+										<div class="button-group">
+											<button type="button" data-toggle="dropdown" class="form-control btn btn-default dropdown-toggle" id="newproject-language">Java</button>
+											<ul class="col-sm-12 dropdown-menu newproject-languagelist" role="menu">
+												<li><a href="#">Java</a></li>
+												<li><a href="#">C++</a></li>
+											</ul>
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+						<div class="loadexisting hide">
+							<form class="form-horizontal" role="form">
+								<div class="form-group">
+									<label for="loadexisting-link" class="col-sm-4 control-label">Project Link</label>
+									<div class="col-sm-8">
+										<input type="text" class="form-control" id="loadexisting-link" placeholder="Example: codelaborate/#hello_world">
+										<span class="text-danger loadexisting-error"></span>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<p>
+							<button type="button" class="btn btn-lg btn-success center-block newproject newproject-create hide">Get Started</button>
+						</p>
+						<p>
+							<button type="button" class="btn btn-lg btn-success center-block loadexisting loadexisting-load hide">Load Project</button>
+						</p>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+    	<section class="stage hide">
 	    	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 				<div class="container-fluid">
 					<div class="navbar-header">
@@ -44,7 +105,7 @@
 
 					<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 						<ul class="nav navbar-nav">
-							<li><a href="#">Run</a></li>
+							<li><a id="run" href="#">Run</a></li>
 							<li><a href="#">Save</a></li>
 							<li><a href="#">Collaboration</a></li>
 						</ul>
@@ -65,9 +126,8 @@
 								<div class="dropdown language-selection">
 									<button type="button" class="btn btn-block" data-toggle="dropdown" href=".dropdown-menu"></button>
 									<ul class="text-center dropdown-menu" role="menu" aria-labelledby="dLabel">
-								  		<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Javascript</a></li>
-								  		<li role="presentation"><a role="menuitem" tabindex="-1" href="#">C++</a></li>
 								  		<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Java</a></li>
+								  		<li role="presentation"><a role="menuitem" tabindex="-1" href="#">C++</a></li>
 									</ul>
 								</div>
 							</div>
