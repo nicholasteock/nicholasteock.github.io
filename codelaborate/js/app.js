@@ -17,8 +17,6 @@ function getProjectName() {
 };
 
 function verifyFirebaseLink(link, callback) {
-	console.log("verifyFirebaseLink. Checking : ", link);
-	
 	firebaseRef = new Firebase(firebaseRootUrl);
 	firebaseRef.root().child(link).once('value', function(ss) {
 	    if( ss.val() === null ) {
@@ -85,8 +83,6 @@ function createNewProject() {
 };
 
 function languageChange(newLanguage) {
-	console.log("In languagechange. firebaseRef: ", firebaseRef.toString() );
-	
 	var editorThemePath = "",
 		projectName 	= getProjectName();
 
@@ -124,8 +120,6 @@ function formRunParams() {
 };
 
 function compileAndExecute(params) {
-	console.log("In compileAndExecute. runParams: ", params);
-
 	$(".output-content").removeClass("text-danger").html("");
 
 	var success = function(response) {
@@ -138,11 +132,13 @@ function compileAndExecute(params) {
 			content += response.error;
 			$(".output-content").addClass("text-danger").html(content);
 		}
+		$(".loadingstage").removeClass("hide");
 		return;
 	};
 
 	var error = function(response) {
 		console.log("Error ", response);
+		$(".loadingstage").removeClass("hide");
 		return;
 	};
 
@@ -302,8 +298,10 @@ function changeNewProjectLanguage(ev) {
 };
 
 function resizeHandler() {
-	$('.misc-panel').height( ($(window).height()-58) / 3);
+	var miscPanelHt = ($(window).height()-58) / 3;
+	$('.misc-panel').height(miscPanelHt);
 	$(".editor-panel").height( $(window).height()-52 );
+	$(".output-container").height(miscPanelHt);
 };
 
 function languageChangeHandler(ev) {
@@ -311,6 +309,7 @@ function languageChangeHandler(ev) {
 };
 
 function runClickHandler(ev) {
+	$(".loadingstage").removeClass("hide");
 	var runParams = formRunParams();
 	compileAndExecute(runParams);
 }
