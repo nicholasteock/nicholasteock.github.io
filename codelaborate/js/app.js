@@ -1,14 +1,15 @@
-var firebaseUrl = "https://codelaborate-ace.firebaseio.com/"
-var firebaseRef = null;
-var editor 		= null;
-var firepad 	= null;
-var userId 		= null;
-var userList 	= null;
+var firebaseRootUrl = "https://codelaborate-ace.firebaseio.com/"
+var firebaseUrl 	= "";
+var firebaseRef 	= null;
+var editor 			= null;
+var firepad 		= null;
+var userId 			= null;
+var userList 		= null;
 
 var $languageSelection = $(".language-selection");
 
 function verifyFirebaseLink(link, callback) {
-	firebaseRef = new Firebase(firebaseUrl);
+	firebaseRef = new Firebase(firebaseRootUrl);
 	firebaseRef.root().child(link).once('value', function(ss) {
 	    if( ss.val() === null ) {
 	    	return callback(false);
@@ -53,10 +54,10 @@ function createNewProject() {
 	
 	$("#newproject-modal").modal("hide");
 
-	firebaseRef = new Firebase(firebaseUrl);
-	firebaseRef.root().child("projectLanguageRef").child(projectName).set(language);
+	firebaseRef = new Firebase(firebaseRootUrl);
+	firebaseRef.child("projectLanguageRef").child(projectName).set(language);
 
-	firebaseRef.root().child("projectLanguageRef").once('child_added', function() {
+	firebaseRef.child("projectLanguageRef").once('child_added', function() {
 		// Firebase.goOffline();
 		setTimeout( function() {
 			window.location = "http://nicholasteock.github.io/codelaborate/#" + projectName + "/" + fileName;
@@ -104,15 +105,13 @@ function init() {
 	name 		= name.substr(1);
 	projectName = name.substring(0, name.indexOf("/"));
 	fileName 	= name.substr(name.indexOf("/")+1);
-	firebaseUrl += name;
+	firebaseUrl = firebaseRootUrl + name;
 
 	if (firepad) {
 		// Clean up.
 		firepad.dispose();
 		userList.dispose();
 	}
-
-	firebaseRef = new Firebase(firebaseUrl);
 
 	verifyFirebaseLink(projectName, function(result) {
 		if( !result ) {
@@ -122,6 +121,7 @@ function init() {
 		}
 		else {
 			// Retrieves language of project and updates editor accordingly
+			firebaseRef = new Firebase(firebaseUrl);
 			firebaseRef.root().child("projectLanguageRef").child(projectName).once('value', function (snapshot) {
 				var editorId = "editor-"+fileName;
 				$("#editor").data("codePath", name);
