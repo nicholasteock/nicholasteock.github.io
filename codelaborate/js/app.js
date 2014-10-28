@@ -121,8 +121,8 @@ function init() {
 		}
 		else {
 			// Retrieves language of project and updates editor accordingly
-			firebaseRef = new Firebase(firebaseUrl);
-			firebaseRef.root().child("projectLanguageRef").child(projectName).once('value', function (snapshot) {
+			firebaseRef = new Firebase(firebaseRootUrl);
+			firebaseRef.child("projectLanguageRef").child(projectName).once('value', function (snapshot) {
 				var editorId = "editor-"+fileName;
 				$("#editor").data("codePath", name);
 				$("#editor").attr("id", editorId);
