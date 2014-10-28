@@ -24,7 +24,6 @@ function loadProject(link) {
 	
 	verifyFirebaseLink(link, function(result) {
 		if(!result) {
-			console.log("LINK IS ", link);
 	    	$(".loadexisting-error").html("Link is invalid. Please try again.");			
 			return;
 		}
@@ -115,7 +114,7 @@ function init() {
 
 	firebaseRef = new Firebase(firebaseUrl);
 
-	verifyFirebaseLink(name, function(result) {
+	verifyFirebaseLink(projectName, function(result) {
 		if( !result ) {
 			$(".loadingstage").addClass("hide");
 			$(".invalidlinkstage").removeClass("hide");
