@@ -35,9 +35,12 @@ function loadProject(link) {
 	    	setTimeout( function() {
 	    		// window.location = "file:///Users/Nicholas/Workspace/fyp/codelaborate/index.html#" + link;
 	    		window.location = "http://nicholasteock.github.io/codelaborate/#" + link;
+	    		return false;
 	    	}, 500);
 		}
+		return false;
 	});
+	return false;
 };
 
 function createNewProject() {
@@ -66,9 +69,11 @@ function createNewProject() {
 		setTimeout( function() {
 			// window.location = "file:///Users/Nicholas/Workspace/fyp/codelaborate/index.html#" + projectName + "/" + fileName;
 			window.location = "http://nicholasteock.github.io/codelaborate/#" + projectName + "/" + fileName;
+			return false;
 		}, 1000 );
+		return false;
 	});
-
+	return false;
 };
 
 function languageChange(language) {
