@@ -126,17 +126,18 @@ function formRunParams() {
 function compileAndExecute(params) {
 	console.log("In compileAndExecute. runParams: ", params);
 
-	$(".output-content").html("");
+	$(".output-content").removeClass("text-danger").html("");
 
 	var success = function(response) {
 		var content = "";
 		if(response.executeResult === "success") {
 			content += response.stdout;
+			$(".output-content").html(content);
 		}
 		else {
 			content += response.error;
+			$(".output-content").addClass("text-danger").html(content);
 		}
-		$(".output-content").html(content);
 		return;
 	};
 
