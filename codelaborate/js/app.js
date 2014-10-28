@@ -9,6 +9,8 @@ var userList 		= null;
 var $languageSelection = $(".language-selection");
 
 function verifyFirebaseLink(link, callback) {
+	console.log("verifyFirebaseLink. Checking : ", link);
+	
 	firebaseRef = new Firebase(firebaseRootUrl);
 	firebaseRef.root().child(link).once('value', function(ss) {
 	    if( ss.val() === null ) {
