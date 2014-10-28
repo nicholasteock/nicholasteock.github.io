@@ -132,13 +132,13 @@ function compileAndExecute(params) {
 			content += response.error;
 			$(".output-content").addClass("text-danger").html(content);
 		}
-		$(".loadingstage").removeClass("hide");
+		$(".loadingstage").addClass("hide");
 		return;
 	};
 
 	var error = function(response) {
 		console.log("Error ", response);
-		$(".loadingstage").removeClass("hide");
+		$(".loadingstage").addClass("hide");
 		return;
 	};
 
