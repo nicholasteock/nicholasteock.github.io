@@ -1,4 +1,5 @@
-var firebaseRootUrl = "https://codelaborate-ace.firebaseio.com/"
+var nodePath 		= "http://192.168.1.30:8080/api/";
+var firebaseRootUrl = "https://codelaborate-ace.firebaseio.com/";
 var firebaseUrl 	= "";
 var firebaseRef 	= null;
 var editor 			= null;
@@ -125,8 +126,17 @@ function formRunParams() {
 function compileAndExecute(params) {
 	console.log("In compileAndExecute. runParams: ", params);
 
+	$(".output-content").html("");
+
 	var success = function(response) {
-		console.log("success ", response);
+		var content = "";
+		if(response.executeResult === "success") {
+			content += response.stdout;
+		}
+		else {
+			content += response.stderr;
+		}
+		$(".output-content").html(content);
 		return;
 	};
 
@@ -136,7 +146,7 @@ function compileAndExecute(params) {
 	};
 
 	$.ajax({
-		url 		: "http://192.168.1.30:8080/api/",
+		url 		: nodePath,
 		type 		: "POST",
 		data 		: params,
 		dataType 	: "json",

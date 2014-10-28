@@ -79,6 +79,15 @@
 	border: 1px solid #c4c4c4;
 }
 
+.output-container {
+	margin: 0;
+	height: 100%;
+}
+
+.output-container .panel-heading {
+	padding: 3px 10px;
+}
+
 #collapse-language {
 	background-color: #FFCC00;
 }
