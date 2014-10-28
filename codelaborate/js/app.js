@@ -33,7 +33,8 @@ function loadProject(link) {
 		else {
 			$("#newproject-modal").modal("hide");
 	    	setTimeout( function() {
-	    		window.location = "http://nicholasteock.github.io/codelaborate/#" + link;
+	    		window.location = "file:///Users/Nicholas/Workspace/fyp/codelaborate/index.html#" + link;
+	    		// window.location = "http://nicholasteock.github.io/codelaborate/#" + link;
 	    	}, 500);
 		}
 	});
@@ -53,16 +54,18 @@ function createNewProject() {
 		$(".newproject-error").html("All fields are required.");
 		return;
 	}
-	
+
 	$("#newproject-modal").modal("hide");
 
 	firebaseRef = new Firebase(firebaseRootUrl);
-	firebaseRef.child("projectLanguageRef").child(projectName).set(language);
 
+	firebaseRef.child(projectName).set({language: language});
+	firebaseRef.child("projectLanguageRef").child(projectName).set(language);
 	firebaseRef.child("projectLanguageRef").once('child_added', function() {
 		// Firebase.goOffline();
 		setTimeout( function() {
-			window.location = "http://nicholasteock.github.io/codelaborate/#" + projectName + "/" + fileName;
+			window.location = "file:///Users/Nicholas/Workspace/fyp/codelaborate/index.html#" + projectName + "/" + fileName;
+			// window.location = "http://nicholasteock.github.io/codelaborate/#" + projectName + "/" + fileName;
 		}, 1000 );
 	});
 
@@ -129,10 +132,10 @@ function init() {
 				$("#editor").data("codePath", name);
 				$("#editor").attr("id", editorId);
 				editor 		= ace.edit(editorId);
-				userId 		= firebaseRef.push().name();
-				firepad 	= Firepad.fromACE(firebaseRef, editor, {userId: userId});
+				userId 		= firebaseRef.child(projectName).child(fileName).push().name();
+				firepad 	= Firepad.fromACE(firebaseRef.child(projectName).child(fileName), editor, {userId: userId});
 				userList 	= FirepadUserList.fromDiv(
-								firebaseRef.child('users'),
+								firebaseRef.child(projectName).child(fileName).child('users'),
 			      				document.getElementById("user-list"),
 			      				userId
 			      			);
