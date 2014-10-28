@@ -134,7 +134,7 @@ function compileAndExecute(params) {
 			content += response.stdout;
 		}
 		else {
-			content += response.stderr;
+			content += response.error;
 		}
 		$(".output-content").html(content);
 		return;
