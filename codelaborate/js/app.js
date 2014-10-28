@@ -33,8 +33,8 @@ function loadProject(link) {
 		else {
 			$("#newproject-modal").modal("hide");
 	    	setTimeout( function() {
-	    		window.location = "file:///Users/Nicholas/Workspace/fyp/codelaborate/index.html#" + link;
-	    		// window.location = "http://nicholasteock.github.io/codelaborate/#" + link;
+	    		// window.location = "file:///Users/Nicholas/Workspace/fyp/codelaborate/index.html#" + link;
+	    		window.location = "http://nicholasteock.github.io/codelaborate/#" + link;
 	    	}, 500);
 		}
 	});
@@ -64,8 +64,8 @@ function createNewProject() {
 	firebaseRef.child("projectLanguageRef").once('child_added', function() {
 		// Firebase.goOffline();
 		setTimeout( function() {
-			window.location = "file:///Users/Nicholas/Workspace/fyp/codelaborate/index.html#" + projectName + "/" + fileName;
-			// window.location = "http://nicholasteock.github.io/codelaborate/#" + projectName + "/" + fileName;
+			// window.location = "file:///Users/Nicholas/Workspace/fyp/codelaborate/index.html#" + projectName + "/" + fileName;
+			window.location = "http://nicholasteock.github.io/codelaborate/#" + projectName + "/" + fileName;
 		}, 1000 );
 	});
 
