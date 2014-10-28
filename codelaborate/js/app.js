@@ -5,8 +5,15 @@ var editor 			= null;
 var firepad 		= null;
 var userId 			= null;
 var userList 		= null;
+var language 		= "";
 
 var $languageSelection = $(".language-selection");
+
+function getProjectName() {
+	var hash 		= window.location.hash,
+		slashIndex 	= hash.indexOf("/");
+	return hash.substring(1, slashIndex);
+};
 
 function verifyFirebaseLink(link, callback) {
 	console.log("verifyFirebaseLink. Checking : ", link);
@@ -76,36 +83,71 @@ function createNewProject() {
 	return false;
 };
 
-function languageChange(language) {
-	$languageSelection.find("button").html(language + ' <span class="caret"> </span>');
+function languageChange(newLanguage) {
+	console.log("In languagechange. firebaseRef: ", firebaseRef.toString() );
+	
+	var editorThemePath = "",
+		projectName 	= getProjectName();
+
+	language = newLanguage;
 
 	switch (language) {
 		case "Java":
-			editor.getSession().setMode("ace/mode/java");
+			editorThemePath = "ace/mode/java";
 			break;
 		case "C++":
-			editor.getSession().setMode("ace/mode/c_cpp");
+			editorThemePath = "ace/mode/c_cpp";
 			break;
 		default:
-			return;
+			break;
 	}
+
+	firebaseRef.child("projectLanguageRef/"+projectName).set(language);
+	editor.getSession().setMode(editorThemePath);
+	$languageSelection.find("button").html(language);
+	return;
 };
 
 function formRunParams() {
-	/*
-		Expected shape:
-		{
-			codePath
-			language
-			folder_name
-			file_name
-		}
-	*/
+	var hash 		= window.location.hash,
+		codePath 	= hash.substr(1),
+		folderName 	= getProjectName(),
+		fileName 	= hash.substr(hash.indexOf("/")+1),
+		runParams 	= {
+						codePath 	: codePath,
+						language 	: language,
+						folderName 	: folderName,
+						fileName 	: fileName
+					};
+	return runParams;
+};
+
+function compileAndExecute(params) {
+	console.log("In compileAndExecute. runParams: ", params);
+
+	var success = function(response) {
+		console.log("success ", response);
+		return;
+	};
+
+	var error = function(response) {
+		console.log("Error ", response);
+		return;
+	};
+
+	$.ajax({
+		url 		: "http://192.168.1.30:8080/api/",
+		type 		: "POST",
+		data 		: params,
+		dataType 	: "json",
+		success 	: success,
+		error 		: error
+	});
 };
 
 function init() {
-	var name 	= window.location.hash;
-	var projectName;
+	var name 		= window.location.hash;
+	var projectName = getProjectName();
 
 	if(name === "") {
 		$("#newproject-modal").modal({keyboard: false, backdrop: 'static'});
@@ -113,7 +155,6 @@ function init() {
 	}
 
 	name 		= name.substr(1);
-	projectName = name.substring(0, name.indexOf("/"));
 	fileName 	= name.substr(name.indexOf("/")+1);
 	firebaseUrl = firebaseRootUrl + name;
 
@@ -133,6 +174,7 @@ function init() {
 			// Retrieves language of project and updates editor accordingly
 			firebaseRef = new Firebase(firebaseRootUrl);
 			firebaseRef.child("projectLanguageRef").child(projectName).once('value', function (snapshot) {
+				language = snapshot.val();
 				var editorId = "editor-"+fileName;
 				$("#editor").data("codePath", name);
 				$("#editor").attr("id", editorId);
@@ -154,12 +196,13 @@ function init() {
 										'<span class="glyphicon glyphicon-remove"> </span></a></li>');
 				editor.focus();
 				resizeHandler();
-				languageChange(snapshot.val());
+				languageChange(language);
 				$(".loadingstage").addClass("hide");
 				$(".stage").removeClass("hide");
 			}, function (errorObject) {
 				console.log('The read failed: ' + errorObject.code);
 			});
+			return;
 		}
 	});
 };
@@ -258,7 +301,7 @@ function languageChangeHandler(ev) {
 
 function runClickHandler(ev) {
 	var runParams = formRunParams();
-	// compileAndExecute(runParams);
+	compileAndExecute(runParams);
 }
 
 /******************************************************************************
