@@ -7,28 +7,33 @@ var userList 	= null;
 
 var $languageSelection = $(".language-selection");
 
-function retrieveExistingProject() {
-	var link = $("#loadexisting-link").val();
-
-	if(link.length === 0) {
-		$(".loadexisting-error").html("Input is required.");
-		return;
-	}
-
-	link = link.substr( link.indexOf("#")+1 );
-
+function verifyFirebaseLink(link, callback) {
 	firebaseRef = new Firebase(firebaseUrl);
-
-	firebaseRef.child(link).once('value', function(ss) {
+	firebaseRef.root().child(link).once('value', function(ss) {
 	    if( ss.val() === null ) {
-	    	$(".loadexisting-error").html("Link is invalid. Please try again.");
+	    	return callback(false);
 	    }
 	    else {
-	    	$("#newproject-modal").modal("hide");
+	    	return callback(true);
+	    }
+	});
+};
+
+function loadProject(link) {
+	$(".loadexisting-error").html("");		
+	
+	verifyFirebaseLink(link, function(result) {
+		if(!result) {
+			console.log("LINK IS ", link);
+	    	$(".loadexisting-error").html("Link is invalid. Please try again.");			
+			return;
+		}
+		else {
+			$("#newproject-modal").modal("hide");
 	    	setTimeout( function() {
 	    		window.location = "http://nicholasteock.github.io/codelaborate/#" + link;
 	    	}, 500);
-	    }
+		}
 	});
 };
 
@@ -96,9 +101,6 @@ function init() {
 		$("#newproject-modal").modal({keyboard: false, backdrop: 'static'});
 		return;
 	}
-	else {
-		$(".stage").removeClass("hide");
-	}
 
 	name 		= name.substr(1);
 	projectName = name.substring(0, name.indexOf("/"));
@@ -113,58 +115,123 @@ function init() {
 
 	firebaseRef = new Firebase(firebaseUrl);
 
-	// Retrieves language of project and updates editor accordingly
-	firebaseRef.root().child("projectLanguageRef").child(projectName).once('value', function (snapshot) {
-		var editorId = "editor-"+fileName;
-		$("#editor").data("codePath", name);
-		$("#editor").attr("id", editorId);
-		editor 		= ace.edit(editorId);
-		userId 		= firebaseRef.push().name();
-		firepad 	= Firepad.fromACE(firebaseRef, editor, {userId: userId});
-		userList 	= FirepadUserList.fromDiv(
-						firebaseRef.child('users'),
-	      				document.getElementById("user-list"),
-	      				userId
-	      			);
+	verifyFirebaseLink(name, function(result) {
+		if( !result ) {
+			$(".loadingstage").addClass("hide");
+			$(".invalidlinkstage").removeClass("hide");
+			return;
+		}
+		else {
+			// Retrieves language of project and updates editor accordingly
+			firebaseRef.root().child("projectLanguageRef").child(projectName).once('value', function (snapshot) {
+				var editorId = "editor-"+fileName;
+				$("#editor").data("codePath", name);
+				$("#editor").attr("id", editorId);
+				editor 		= ace.edit(editorId);
+				userId 		= firebaseRef.push().name();
+				firepad 	= Firepad.fromACE(firebaseRef, editor, {userId: userId});
+				userList 	= FirepadUserList.fromDiv(
+								firebaseRef.child('users'),
+			      				document.getElementById("user-list"),
+			      				userId
+			      			);
 
-		editor.setTheme("ace/theme/monokai");
-		editor.gotoLine(0,0,false);
+				editor.setTheme("ace/theme/monokai");
+				editor.gotoLine(0,0,false);
 
-		// Remove watermark created by firepad.
-		$(".powered-by-firepad").remove();
-		$(".editor-nav").append('<li class="active"><a><span>'+fileName+'</span>' +
-								'<span class="glyphicon glyphicon-remove"> </span></a></li>');
-		editor.focus();
-		resizeHandler();
-		languageChange(snapshot.val());
-		$(".stage").removeClass("hide");
-		
-	}, function (errorObject) {
-		console.log('The read failed: ' + errorObject.code);
+				// Remove watermark created by firepad.
+				$(".powered-by-firepad").remove();
+				$(".editor-nav").append('<li class="active"><a><span>'+fileName+'</span>' +
+										'<span class="glyphicon glyphicon-remove"> </span></a></li>');
+				editor.focus();
+				resizeHandler();
+				languageChange(snapshot.val());
+				$(".loadingstage").addClass("hide");
+				$(".stage").removeClass("hide");
+			}, function (errorObject) {
+				console.log('The read failed: ' + errorObject.code);
+			});
+		}
 	});
-
 };
 
 /******************************************************************************
 *	EVENT HANDLERS
 ******************************************************************************/
 
-function startNewProjectHandler() {
+function startnewOptionHandler() {
 	$(".modal-title").addClass("hide");
 	$(".newproject-title").removeClass("hide");
-	$(".load-existing").addClass("hide");
-	$(".start-new").addClass("hide");
+	$(".load-option").addClass("hide");
+	$(".startnew-option").addClass("hide");
 	$(".loadexisting").addClass("hide");
 	$(".newproject").removeClass("hide");
+	$(".back-option").removeClass("hide");
 };
 
-function loadExistingProjectHandler() {
+function loadOptionHandler() {
 	$(".modal-title").addClass("hide");
 	$(".loadexisting-title").removeClass("hide");
-	$(".start-new").addClass("hide");
-	$(".load-existing").addClass("hide");
+	$(".startnew-option").addClass("hide");
+	$(".load-option").addClass("hide");
 	$(".newproject").addClass("hide");
 	$(".loadexisting").removeClass("hide");
+	$(".back-option").removeClass("hide");
+};
+
+function backOptionHandler() {
+	$(".modal-title").addClass("hide");
+	$(".welcome-title").removeClass("hide");
+	$(".startnew-option").removeClass("hide");
+	$(".load-option").removeClass("hide");
+	$(".newproject").addClass("hide");
+	$(".loadexisting").addClass("hide");
+	$(".back-option").addClass("hide");
+};
+
+function loadExistingHandler() {
+	var link = $("#loadexisting-link").val();
+
+	if(link.length === 0) {
+		$(".loadexisting-error").html("Input is required.");
+		return;
+	}
+
+	link = link.substr( link.indexOf("#")+1 );
+
+	if(link.indexOf("/") === -1) {
+    	$(".loadexisting-error").html("Link is invalid. Please try again.");
+		return;
+	}
+	else {
+		loadProject(link);
+	}
+};
+
+function showNewProjectHandler() {
+	$(".invalidlinkstage").addClass("hide");
+	$("#newproject-modal").modal({keyboard: false, backdrop: 'static'});
+	startnewOptionHandler();
+	return;
+};
+
+function loadExistingRetryHandler() {
+	var link = $("#retrylink").val();
+
+	if(link.length === 0) {
+		$(".loadexisting-error").html("Input is required.");
+		return;
+	}
+
+	link = link.substr( link.indexOf("#")+1 );
+
+	if(link.indexOf("/") === -1) {
+    	$(".loadexisting-error").html("Link is invalid. Please try again.");
+		return;
+	}
+	else {
+		loadProject(link);
+	}
 };
 
 function changeNewProjectLanguage(ev) {
@@ -190,10 +257,13 @@ function runClickHandler(ev) {
 ******************************************************************************/
 $(window).resize(resizeHandler);
 $("#run").click(runClickHandler);
-$(".start-new").click(startNewProjectHandler);
-$(".load-existing").click(loadExistingProjectHandler);
-$(".newproject-create").click(createNewProject);
-$(".loadexisting-load").click(retrieveExistingProject);
+$(".startnew-option").click(startnewOptionHandler);
+$(".load-option").click(loadOptionHandler);
+$(".back-option").click(backOptionHandler);
+$(".createproject").click(createNewProject);
+$(".loadexisting").click(loadExistingHandler);
+$(".shownewproject").click(showNewProjectHandler);
+$(".retrylink-submit").click(loadExistingRetryHandler);
 $(".language-selection ul").click(languageChangeHandler);
 $(".newproject-languagelist a").click(changeNewProjectLanguage);
 

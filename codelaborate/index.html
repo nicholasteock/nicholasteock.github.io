@@ -35,10 +35,10 @@
 					</div>
 					<div class="modal-body text-center">
 						<p>
-							<button type="button" class="btn btn-lg btn-success start-new">Start A New Project</button>
+							<button type="button" class="btn btn-lg btn-success startnew-option">Start A New Project</button>
 						</p>
 						<p>
-							<button type="button" class="btn btn-lg btn-primary load-existing">Load Existing Project</button>
+							<button type="button" class="btn btn-lg btn-primary load-option">Load Existing Project</button>
 						</p>
 						<div class="newproject hide">
 							<span class="newproject-error"></span>
@@ -72,9 +72,9 @@
 						<div class="loadexisting hide">
 							<form class="form-horizontal" role="form">
 								<div class="form-group">
-									<label for="loadexisting-link" class="col-sm-4 control-label">Project Link</label>
+									<label for="loadexisting-link" class="col-sm-4 control-label">Project Link:</label>
 									<div class="col-sm-8">
-										<input type="text" class="form-control" id="loadexisting-link" placeholder="Example: codelaborate/#hello_world">
+										<input type="text" class="form-control" id="loadexisting-link" placeholder="Example: codelaborate/#project/file">
 										<span class="text-danger loadexisting-error"></span>
 									</div>
 								</div>
@@ -82,16 +82,59 @@
 						</div>
 					</div>
 					<div class="modal-footer">
-						<p>
-							<button type="button" class="btn btn-lg btn-success center-block newproject newproject-create hide">Get Started</button>
+						<p class="newproject text-center">
+							<button type="button" class="btn btn-lg btn-default back-option hide">Back</button>
+							<button type="button" class="btn btn-lg btn-success createproject">Get Started</button>
 						</p>
-						<p>
-							<button type="button" class="btn btn-lg btn-success center-block loadexisting loadexisting-load hide">Load Project</button>
+						<p class="loadexisting text-center">
+							<button type="button" class="btn btn-lg btn-default back-option hide">Back</button>
+							<button type="button" class="btn btn-lg btn-success loadexisting hide">Load Project</button>
 						</p>
 					</div>
 				</div><!-- /.modal-content -->
 			</div><!-- /.modal-dialog -->
-		</div><!-- /.modal -->
+		</div>
+		<section class="loadingstage">
+			<div class="jumbotron text-center">
+				<div class="center-block">
+					<img src="img/spinner.gif">
+				</div>
+				<div class="center-block">
+				<h3>Please wait...</h3>
+				</div>
+			</div>
+		</section>
+		<section class="invalidlinkstage hide">
+			<div class="jumbotron text-center">
+				<p>
+					<h1>Oops!</h1>
+					<h2>Seems like you have entered an invalid codelaborate link.</h2>
+				</p>
+				<br>
+				<p>
+					<p>Try again here:</p>
+					<p>
+						<div class="row">
+							<div class="col-md-6 col-lg-6 col-md-offset-3 col-lg-offset-3">
+								<div class="input-group">
+									<input type="text" id="retrylink"  class="form-control input-lg" placeholder="Example: codelaborate/#project/file">
+									<span class="input-group-btn">
+										<button class="btn btn-lg btn-primary retrylink-submit" type="button">Submit</button>
+									</span>
+								</div>
+								<span class="text-danger loadexisting-error"></span>
+							</div>
+						</div><!-- /.row -->
+					</p>
+				</p>
+				<p>
+					---------- or ----------
+				</p>
+				<p>
+					<button type="button" class="btn btn-success btn-lg shownewproject">Start A New Project</button>
+				</p>
+			</div>
+		</section>
     	<section class="stage hide">
 	    	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 				<div class="container-fluid">
@@ -102,7 +145,7 @@
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 						</button>
-						<a class="navbar-brand">Codelaborate</a>
+						<a class="navbar-brand text-center">Codelaborate</a>
 					</div>
 
 					<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
