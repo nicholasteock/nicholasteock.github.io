@@ -30,7 +30,8 @@ function verifyFirebaseLink(link, callback) {
 
 function loadProject(link) {
 	$(".loadexisting-error").html("");		
-	
+	var newLocation = "http://nicholasteock.github.io/codelaborate/#" + link;;
+
 	verifyFirebaseLink(link, function(result) {
 		if(!result) {
 	    	$(".loadexisting-error").html("Link is invalid. Please try again.");			
@@ -40,7 +41,8 @@ function loadProject(link) {
 			$("#newproject-modal").modal("hide");
 	    	setTimeout( function() {
 	    		// window.location = "file:///Users/Nicholas/Workspace/fyp/codelaborate/index.html#" + link;
-	    		window.location = "http://nicholasteock.github.io/codelaborate/#" + link;
+	    		window.location = newLocation;
+	    		window.location = newLocation;
 	    		return false;
 	    	}, 500);
 		}
@@ -53,6 +55,7 @@ function createNewProject() {
 	var projectName = $("#newproject-name").val();
 	var fileName 	= $("#newproject-filename").val();
 	var language 	= $("#newproject-language").html();
+	var newLocation = "http://nicholasteock.github.io/codelaborate/#" + projectName + "/" + fileName;
 
 	// Project parameters validation.
 	if(projectName.length === 0) {
@@ -74,7 +77,8 @@ function createNewProject() {
 		// Firebase.goOffline();
 		setTimeout( function() {
 			// window.location = "file:///Users/Nicholas/Workspace/fyp/codelaborate/index.html#" + projectName + "/" + fileName;
-			window.location = "http://nicholasteock.github.io/codelaborate/#" + projectName + "/" + fileName;
+			window.location = newLocation;
+			window.location = newLocation;
 			return false;
 		}, 1000 );
 		return false;
@@ -298,10 +302,14 @@ function changeNewProjectLanguage(ev) {
 };
 
 function resizeHandler() {
-	var miscPanelHt = ($(window).height()-58) / 3;
+	var windowHt 	= $(window).height(),
+		miscPanelHt = (windowHt-58)/3,
+		editorHt 	= windowHt-52;
 	$('.misc-panel').height(miscPanelHt);
-	$(".editor-panel").height( $(window).height()-52 );
 	$(".output-container").height(miscPanelHt);
+	$(".editor-panel").height( editorHt );
+	$(".editor").css({height: editorHt + "px"});
+	editor.resize();
 };
 
 function languageChangeHandler(ev) {
@@ -323,7 +331,7 @@ $(".startnew-option").click(startnewOptionHandler);
 $(".load-option").click(loadOptionHandler);
 $(".back-option").click(backOptionHandler);
 $(".createproject").click(createNewProject);
-$(".loadexisting").click(loadExistingHandler);
+$(".loadproject").click(loadExistingHandler);
 $(".shownewproject").click(showNewProjectHandler);
 $(".retrylink-submit").click(loadExistingRetryHandler);
 $(".language-selection ul").click(languageChangeHandler);
