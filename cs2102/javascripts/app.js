@@ -94,21 +94,25 @@ require.register("application", function(exports, require, module) {
 // Application bootstrapper.
 Application = {
     initialize: function() {
-        
+
         var ConfirmationView 	= require('views/confirmation_view'),
-        	LoginView 			= require('views/login_view'),
+            LoginView           = require('views/login_view'),
+        	RegisterView 		= require('views/register_view'),
         	ListingView 		= require('views/listing_view'),
         	MovieView 			= require('views/movie_view'),
         	BookingView 		= require('views/booking_view')
         	Router   			= require('lib/router');
         
+        this.api                = "http://192.168.1.171:8080/api/";
+
         this.confirmationView 	= new ConfirmationView();
-        this.loginView 			= new LoginView();
+        this.loginView          = new LoginView();
+        this.registerView 		= new RegisterView();
         this.listingView 		= new ListingView();
         this.movieView 			= new MovieView();
         this.bookingView 		= new BookingView();
         this.router   			= new Router();
-        
+                
         if (typeof Object.freeze === 'function') Object.freeze(this)
         
     }
@@ -122,8 +126,8 @@ module.exports = Application
 var application = require('application')
 
 $(function() {
-    application.initialize()
-    Backbone.history.start()
+    application.initialize();
+    Backbone.history.start();
 })
 
 });
@@ -134,31 +138,36 @@ var application = require('application')
 module.exports 	= Backbone.Router.extend({
     routes: {
         '' 				: 'login',
-        'login' 		: 'login',
+        'login'         : 'login',
+        'register' 		: 'register',
         'listing' 		: 'listing',
         'movie' 		: 'movie',
         'booking' 		: 'booking',
-        'confirmation' 	: 'confirmation',
+        'confirmation' 	: 'confirmation'
     },
     
     login: function() {
-        $('body').html(application.loginView.render().el)
+        $('body').html(application.loginView.render())
+    },
+
+    register: function() {
+        $('body').html(application.registerView.render())
     },
     
     listing: function() {
-        $('body').html(application.listingView.render().el)
+        $('body').html(application.listingView.render())
     },
     
     movie: function() {
-        $('body').html(application.movieView.render().el)
+        $('body').html(application.movieView.render())
     },
     
     booking: function() {
-        $('body').html(application.bookingView.render().el)
+        $('body').html(application.bookingView.render())
     },
     
     confirmation: function() {
-        $('body').html(application.confirmationView.render().el)
+        $('body').html(application.confirmationView.render())
     },
 
 })
@@ -166,7 +175,256 @@ module.exports 	= Backbone.Router.extend({
 });
 
 ;require.register("lib/view_helper", function(exports, require, module) {
-// Put handlebars.js helpers here
+/******************************************************************************
+ Movie Listing Helper
+******************************************************************************/
+
+Handlebars.registerHelper( 'navbar', function(options) {
+	var output = 	'<nav class="navbar navbar-inverse" role="navigation">'+
+					'<div class="container">'+
+					'<div class="pull-right">'+
+					'<button type="button" class="btn btn-default navbar-btn login hide">Login</button>'+
+					'<button type="button" class="btn btn-default navbar-btn register hide">Register</button>'+
+					'<div class="navbar-text">Hi, '+localStorage.name+'</div>'+
+					'<button type="button" class="btn btn-default navbar-btn logout">Logout</button>'+
+					'</div>'+
+					'</div>'+
+					'</nav>';
+	return output;
+});
+
+/******************************************************************************
+ Movie Listing Helper
+******************************************************************************/
+
+Handlebars.registerHelper( 'movielisting', function(listingObject, options) {
+	var output = "";
+
+	if(listingObject.length == 0) {
+		output = 	'<div class="col-sm-12"><div class="panel panel-default"><div class="panel-body">'+
+					'<h3>Your search returned no results.</h3>'
+  					'</div></div></div>';
+		return output;
+	}
+
+	for( var i=0, iLen=listingObject.length; i<iLen; i++ ) {
+		var itemHtml = "";
+
+		itemHtml += '<div class="col-sm-4 col-md-4 col-lg-4 listing-item">'+
+					'<div class="col-sm-12 col-md-12 col-lg-12 listing-title">'+
+					listingObject[i].TITLE+
+					'</div>'+
+					'<div class="col-md-5 col-lg-5 listing-left">'+
+					'<img class="listing-thumbnail" src="img/thumbs/'+listingObject[i].MID+'.jpg">'+
+					'</div>'+
+					'<div class="col-md-7 col-lg-7 listing-right">'+
+					'<div class="listing-synopsis">'+
+					listingObject[i].SYNOPSIS+
+					'</div>'+
+					'<div class="listing-book">'+
+					'<a href="#/movie?id='+listingObject[i].MID+'">'+
+					'<button type="button" class="btn btn-default btn-sm">BOOK NOW</button></a></div></div></div>';
+
+		output += itemHtml;
+	}
+
+	return output;
+});
+
+/******************************************************************************
+ Showtimes Helper
+******************************************************************************/
+
+Handlebars.registerHelper('showtimeslist', function(showtimesObject, options) {
+	var output = "";
+	var formedArray = [];
+	var showtimesObject = _.groupBy(showtimesObject, 'p_name');
+
+	_.each(showtimesObject, function(value, key) {
+		var formedObject 	= {};
+		formedObject.cinema = key;
+		formedObject.shows 	= _.groupBy(value, 'SHOWDATE');
+		formedArray.push(formedObject);
+	});
+
+	for( var i=0, iLen=formedArray.length; i<iLen; i++ ) {
+		var itemHtml = "";
+
+		itemHtml = 	'<div class="movie-showtime-venue">'+
+					formedArray[i].cinema+
+					'</div><div><ul class="col-sm-12 col-md-12 col-lg-12 movie-showtime-list">';
+
+		_.each(formedArray[i].shows, function(value, key) {
+			var listItem = "";
+
+			var tempDate 	= new Date(key),
+				dateString 	= tempDate.toDateString(),
+				day 		= dateString.substr(0,3),
+				month 		= dateString.substr(4,3),
+				dayNum 		= dateString.substr(8,2);
+
+			listItem = 	'<li>'+
+						'<span class="col-sm-6 col-md-2 col-lg-2 movie-showtime-date">'+
+						dayNum+" "+month+", "+day+
+						'</span><span class="col-sm-6 col-md-10 col-lg-10">'+
+						'<ul class="movie-showtime-timelist">';
+
+			for( var j=0; j<value.length; j++ ) {
+				var temp = "";
+				temp = '<li><a href="#/booking?sid='+value[j].SID+'">'+value[j].TIME.substring(0,5)+'</a></li>';
+				listItem += temp;
+			}
+
+			listItem += '</ul></span></li>';
+			itemHtml += listItem;
+		});
+
+		itemHtml += '</ul></div>';
+		output += itemHtml;
+	}
+	return output;
+});
+
+/******************************************************************************
+ Booking screen movie details Helper
+******************************************************************************/
+
+Handlebars.registerHelper('moviebookingdetails', function(detailsObject, options) {
+	var tempDate 	= new Date(detailsObject.showdate),
+		dateString 	= tempDate.toDateString(),
+		day 		= dateString.substr(0,3),
+		month 		= dateString.substr(4,3),
+		dayNum 		= dateString.substr(8,2),
+		time 		= detailsObject.time.substring(0,5);
+
+	var output = 	'<div class="panel-body">'+
+					'<div class="col-sm-12 col-md-6 col-lg-6">'+
+					'<div class="booking-movie-venue">'+
+					'<span class="col-sm-3 col-md-3 col-lg-3">Cineplex: </span>'+
+					'<span class="col-sm-9 col-md-9 col-lg-9">'+detailsObject.cineplex+'</span>'+
+					'</div>'+
+					'<div class="booking-movie-title">'+
+					'<span class="col-sm-3 col-md-3 col-lg-3">Movie Title: </span>'+
+					'<span class="col-sm-9 col-md-9 col-lg-9">'+detailsObject.title+'</span>'+
+					'</div>'+
+					'<div class="booking-movie-date">'+
+					'<span class="col-sm-3 col-md-3 col-lg-3">Movie Date: </span>'+
+					'<span class="col-sm-9 col-md-9 col-lg-9">'+dayNum+" "+month+", "+day+'</span>'+
+					'</div>'+
+					'<div class="booking-movie-time">'+
+					'<span class="col-sm-3 col-md-3 col-lg-3">Movie Time: </span>'+
+					'<span class="col-sm-9 col-md-9 col-lg-9">'+time+'</span>'+
+					'</div>'+
+					'</div>'+
+					'<div class="col-sm-12 col-md-6 col-lg-6 booking-movie-info">'+
+					'<div class="booking-movie-duration">'+
+					'<span class="col-sm-3 col-md-3 col-lg-3">Duration: </span>'+
+					'<span class="col-sm-9 col-md-9 col-lg-9">'+detailsObject.runtime+' mins</span>'+
+					'</div>'+
+					'<div class="booking-movie-rating">'+
+					'<span class="col-sm-3 col-md-3 col-lg-3">Rating: </span>'+
+					'<span class="col-sm-9 col-md-9 col-lg-9">'+detailsObject.mdarating+'</span>'+
+					'</div>'+
+					'</div>'+
+					'</div>';
+
+	return output;
+});
+
+/******************************************************************************
+ Pre booking screen movie details Helper
+******************************************************************************/
+
+Handlebars.registerHelper('moviedetails', function(detailsObject, options) {
+	var subtitles = detailsObject.subtitles == "None" ? "" : " with " + detailsObject.subtitles + " subtitles";
+
+	var output 	= 	'<div class="col-sm-12 col-md-5 col-lg-5 movie-poster">'+
+					'<img src="img/kenshin.jpg">'+
+					// '<img src="img/'+detailsObject.mid+'.jpg">'+
+					'</div>'+
+					'<div class="col-sm-12 col-md-5 col-lg-5 movie-details">'+
+					'<div class="col-sm-12 col-md-12 col-lg-12 movie-title">'+
+					detailsObject.title+
+					'</div>'+
+					'<div class="col-sm-12 col-md-12 col-lg-12 movie-cast">'+
+					'<span class="col-sm-3 col-md-3 col-lg-3">Cast</span>'+
+					'<span class="col-sm-9 col-md-9 col-lg-9">'+
+					detailsObject.cast+
+					'</span>'+
+					'</div>'+
+					'<div class="col-sm-12 col-md-12 col-lg-12 movie-director">'+
+					'<span class="col-sm-3 col-md-3 col-lg-3">Director</span>'+
+					'<span class="col-sm-9 col-md-9 col-lg-9">'+
+					detailsObject.director+
+					'</span>'+
+					'</div>'+
+					'<div class="col-sm-12 col-md-12 col-lg-12 movie-language">'+
+					'<span class="col-sm-3 col-md-3 col-lg-3">Language</span>'+
+					'<span class="col-sm-9 col-md-9 col-lg-9">'+
+					detailsObject.languages+subtitles+
+					'</span>'+
+					'</div>'+
+					'<div class="col-sm-12 col-md-12 col-lg-12 movie-runtime">'+
+					'<span class="col-sm-3 col-md-3 col-lg-3">Runtime</span>'+
+					'<span class="col-sm-9 col-md-9 col-lg-9">'+
+					detailsObject.runtime+' mins'+
+					'</span>'+
+					'</div>'+
+					'<div class="col-sm-12 col-md-12 col-lg-12 movie-rating">'+
+					'<span class="col-sm-3 col-md-3 col-lg-3">MDA Rating</span>'+
+					'<span class="col-sm-9 col-md-9 col-lg-9">'+
+					detailsObject.mdarating+
+					'</span>'+
+					'</div>'+
+					'<div class="col-sm-12 col-md-12 col-lg-12 movie-synopsis">'+
+					detailsObject.synopsis+
+					'</div>'+
+					'</div>';
+
+	return output;
+});
+
+/******************************************************************************
+ Confirmation Helper
+******************************************************************************/
+
+Handlebars.registerHelper('confirmation', function(options) {
+	var bookingObject 	= JSON.parse(localStorage.booking);
+	var movieDetails 	= bookingObject.movieDetails;
+	var bookedSeats 	= bookingObject.bookedSeats.join(", ");
+
+	var tempDate 	= new Date(movieDetails.showdate),
+		dateString 	= tempDate.toDateString(),
+		day 		= dateString.substr(0,3),
+		month 		= dateString.substr(4,3),
+		dayNum 		= dateString.substr(8,2),
+		time 		= movieDetails.time.substring(0,5);
+
+	var output = 	'<tr><td>Cineplex:</td><td>'+
+					movieDetails.cineplex+
+					'</td></tr>'+
+					'<tr><td>Movie Title:</td><td>'+
+					movieDetails.title+
+					'</td></tr>'+
+					'<tr><td>Movie Date:</td><td>'+
+					dayNum+" "+month+", "+day+
+					'</td></tr>'+
+					'<tr><td>Movie Time:</td><td>'+
+					time+
+					'</td></tr>'+
+					'<tr><td>Duration:</td><td>'+
+					movieDetails.runtime+' mins'+
+					'</td></tr>'+
+					'<tr><td>Rating:</td><td>'+
+					movieDetails.mdarating+
+					'</td></tr>'+
+					'<tr><td>Seats:</td><td>'+
+					bookedSeats+
+					'</td></tr>';
+	return output;
+});
+
+
 
 });
 
@@ -191,18 +449,85 @@ var View     = require('./view'),
 	template = require('./templates/booking');
 
 var events = {
-  'click .seat'  : 'seatClicked'
+  // 'click .seat'  : 'seatClicked'
+  // 'click .submitbooking'  : 'submitBooking'
+};
+
+var bookedSeats;
+
+var movieDetails;
+
+var getRenderData = function() {
+  if(localStorage.userId == undefined || localStorage.name == undefined) {
+    alert("Please log in to continue");
+    window.location.hash = "#login";
+    window.location.hash = "#login";
+    return false;
+  }
+
+  var hash    = window.location.hash,
+      temp    = hash.indexOf('?sid='),
+      sid     = hash.substring(temp+5),
+      params  = {sid: sid};
+  
+  var dfdResult = $.Deferred();
+
+  var onSuccess = function( response ) {
+    var seats       = response.data;
+    var responseObj = {};
+    bookedSeats     = [];
+
+    for(var i=0; i<seats.length; i++) {
+      bookedSeats.push(seats[i].SEATNUM);
+    }
+
+    $.ajax({
+        url       : Application.api+"movie?sid="+sid,
+        type      : "GET",
+        dataType  : 'json',
+        success   : function(response) {
+          var details = response.data;
+          movieDetails = details[0];
+          responseObj.details  = details[0];
+          responseObj.seats    = seats;
+          return dfdResult.resolve( responseObj );
+        },
+        error     : function(response) {
+          console.log("Error in ajax call.");
+          return dfdResult.reject( responseObj );
+        }
+    });
+  };
+  
+  var onError = function( response ) {
+    return dfdResult.reject( response );
+  };
+  
+  $.ajax({
+      url       : Application.api+"seats",
+      type      : "GET",
+      dataType  : 'json',
+      data      : params,
+      success   : onSuccess,
+      error     : onError
+  });
+  
+  return dfdResult;
+};
+
+var logout = function() {
+  localStorage.removeItem('userId');
+  localStorage.removeItem('name');
+  localStorage.removeItem('booking');
+  window.location.hash = "#login";
+  window.location.hash = "#login";
+  return false;
 };
 
 var afterRender = function() {
 	setTimeout( function() {
-		//case I: Show from starting
-		//init();
-
-		//Case II: If already booked
-		// var bookedSeats = [5, 10, 25];
-		// init(bookedSeats);
-		init([ "A-1", "B-10", "C-5" ]);
+		// init([ "A-1", "B-10", "C-5" ]);
+    init(bookedSeats);
 	}, 1000);
 };
 
@@ -227,9 +552,10 @@ var init = function (reservedSeat) {
     	rowChar = rowArr[i];
 
         for (var j = 0, jLen=settings.cols; j<jLen; j++) {
-            // seatNo = (i + j * settings.rows + 1);
-            // className = settings.seatCss + ' ' + settings.rowCssPrefix + i.toString() + ' ' + settings.colCssPrefix + j.toString();
             seatNo = j + 1;
+            if(seatNo < 10) {
+              seatNo = "0"+seatNo.toString();
+            }
             className = settings.seatCss + ' ' + settings.rowCssPrefix + rowChar + ' ' + settings.colCssPrefix + seatNo.toString();
             
             if( $.isArray(reservedSeat)  )
@@ -244,10 +570,13 @@ var init = function (reservedSeat) {
         }
     }
     $('#place').html(str.join(''));
+
+    $(".logout").click(logout);
+    $(".seat").click(seatClicked);
+    $(".submitbooking").click(submitBooking);
 };
 
 var seatClicked = function( ev ) {
-  console.log("HERE", ev);
 	var $seat = $(ev.target),
 		targetClasses = "",
 		seatRow = "",
@@ -272,12 +601,71 @@ var seatClicked = function( ev ) {
 	seatCol = targetClasses.substring( charPos+4, spacePos );
 };
 
+var submitBooking = function() {
+  var that = this;
+
+  var selectedSeats = $(".selectingSeat"),
+      bookedSeats   = [],
+      params        = {};
+
+  if(selectedSeats.length === 0) {
+    alert("Please select at least one seat.");
+    return;
+  }
+
+  for( var i=0, iLen=selectedSeats.length; i<iLen; i++ ) {
+    var classArray = $(selectedSeats[i]).attr('class').split(" ");
+    var row = classArray[1].substring(4);
+    var col = classArray[2].substring(4);
+    var seat = "";
+
+    if(Number(row) < 10) {
+      row = "0" + row;
+    }
+
+    seat = row + "-" + col;
+    bookedSeats.push(seat);
+  }
+
+  var hash    = window.location.hash,
+      temp    = hash.indexOf('?sid='),
+      sid     = hash.substring(temp+5);
+
+  params = {
+    sid   : sid,
+    seats : bookedSeats,
+    c_id  : 1
+  };
+
+  $.ajax({
+      url       : Application.api+"book",
+      type      : "POST",
+      dataType  : 'json',
+      data      : params,
+      success   : function(response) {
+        var tempObj = {
+          movieDetails  : movieDetails,
+          bookedSeats   : params.seats
+        };
+        localStorage.booking = "";
+        localStorage.booking = JSON.stringify(tempObj);
+        window.location.hash = "#/confirmation";
+      },
+      error     : function(response) {
+        console.log("in error : ", response);
+      }
+  });
+};
+
 module.exports = View.extend({
-    id: 'booking-view',
-    events: events,
-    afterRender: afterRender,
-    template: template,
-    seatClicked: seatClicked
+    id            : 'booking-view',
+    events        : events,
+    getRenderData : getRenderData,
+    afterRender   : afterRender,
+    template      : template,
+    seatClicked   : seatClicked,
+    submitBooking : submitBooking,
+    bookedSeats   : bookedSeats
 })
 
 });
@@ -286,9 +674,33 @@ module.exports = View.extend({
 var View     = require('./view'),
 	template = require('./templates/confirmation');
 
+var getRenderData = function() {
+	if(localStorage.userId == undefined || localStorage.name == undefined) {
+		alert("Please log in to continue");
+		window.location.hash = "#login";
+		window.location.hash = "#login";
+		return false;
+	}
+}
+
+var logout = function() {
+	localStorage.removeItem('userId');
+	localStorage.removeItem('name');
+	localStorage.removeItem('booking');
+	window.location.hash = "#login";
+	window.location.hash = "#login";
+	return false;
+};
+
+var afterRender = function() {
+	$(".logout").click(logout);
+}
+
 module.exports = View.extend({
     id: 'confirmation-view',
     template: template,
+    getRenderData : getRenderData,
+    afterRender: afterRender
 });
 
 });
@@ -305,13 +717,176 @@ module.exports = View.extend({
 });
 
 ;require.register("views/listing_view", function(exports, require, module) {
-var View     = require('./view')
-  , template = require('./templates/listing')
+var View     = require('./view'),
+	template = require('./templates/listing')
+
+var getRenderData = function() {
+	if(localStorage.userId == undefined || localStorage.name == undefined) {
+		alert("Please log in to continue");
+		window.location.hash = "#login";
+		window.location.hash = "#login";
+		return false;
+	}
+
+	var	dfdResult = $.Deferred();
+		
+	var onSuccess = function( response ) {
+		return dfdResult.resolve( response );
+	};
+	
+	var onError = function( response ) {
+		return dfdResult.reject( response );
+	};
+
+	var hash = window.location.hash;
+	var data = hash.substring(hash.indexOf("?"));
+
+	$.ajax({
+			url 		: Application.api+"movielisting"+data,
+			type 		: "GET",
+			dataType	: 'json',
+			success		: onSuccess,
+			error		: onError
+	});
+	
+	return dfdResult;
+};
+
+var logout = function() {
+	localStorage.removeItem('userId');
+	localStorage.removeItem('name');
+	localStorage.removeItem('booking');
+	window.location.hash = "#login";
+	window.location.hash = "#login";
+	return false;
+};
+
+var languageSelected = function(ev) {
+	$("#filterLanguage").html(ev.target.text);
+};
+
+var subtitlesSelected = function(ev) {
+	$("#filterSubtitles").html(ev.target.text);
+};
+
+var mdaratingSelected = function(ev) {
+	$("#filtermdarating").html(ev.target.text);
+};
+
+var ratingSelected = function(ev) {
+	$("#filterRating").html(ev.target.text);
+};
+
+var resetFilter = function(ev) {
+	$("#filterTitle").val("");
+	$("#filterLanguage").html("All Languages");
+	$("#filterSubtitles").html("All Subtitles");
+	$("#filtermdarating").html("All MDA Ratings");
+	$("#filterRating").html("Sort by Rating");
+	return;
+}
+
+var submitFilter = function() {
+	var title 		= $("#filterTitle").val();
+	var language 	= $("#filterLanguage").text();
+	var subtitles 	= $("#filterSubtitles").text();
+	var mdarating 	= $("#filtermdarating").text();
+	var ratingorder = $("#filterRating").text();
+
+	var temp = "";
+	var queryParams = [];
+	var queryString = "?";
+
+	if(title.length > 0) {
+		temp="title="+encodeURI(title);
+		queryParams.push(temp);
+	}
+
+	if(language != "All Languages") {
+		temp="languages="+encodeURI(language);
+		queryParams.push(temp);
+	}
+
+	if(subtitles != "All Subtitles") {
+		temp="subtitles="+encodeURI(subtitles);
+		queryParams.push(temp);
+	}
+
+	if(mdarating != "All MDA Ratings") {
+		temp="mdarating="+encodeURI(mdarating);
+		queryParams.push(temp);
+	}
+
+	if(ratingorder != "Sort by Rating") {
+		temp="ratingorder="+encodeURI(ratingorder);
+		queryParams.push(temp);
+	}
+
+	queryString = "?"+queryParams.join("&");
+
+	window.location.hash = "#/listing"+queryString;
+	window.location.hash = "#/listing"+queryString;
+	return false;
+};
+
+var afterRender = function(){
+	var hash = window.location.hash;
+	var data = hash.substring(hash.indexOf("?"));
+	var dataArray = data.split("&");
+	var temp = "";
+
+	if(dataArray.length != 0) {
+		for( var i=0, iLen=dataArray.length; i<iLen; i++ ) {
+			temp = "";
+
+			if(dataArray[i].indexOf("languages") >= 0) {
+				temp = dataArray[i];
+				temp = temp.substring(temp.indexOf("=")+1);
+				$("#filterLanguage").html(temp);
+			}
+			else if(dataArray[i].indexOf("subtitles") >= 0) {
+				temp = dataArray[i];
+				temp = temp.substring(temp.indexOf("=")+1);
+				$("#filterSubtitles").html(temp);
+			}
+			else if(dataArray[i].indexOf("mdarating") >= 0) {
+				temp = dataArray[i];
+				temp = temp.substring(temp.indexOf("=")+1);
+				$("#filtermdarating").html(temp);
+			}
+			else if(dataArray[i].indexOf("ratingorder") >= 0) {
+				temp = dataArray[i];
+				temp = temp.substring(temp.indexOf("=")+1);
+				$("#filterRating").html(temp);
+			}
+			else if(dataArray[i].indexOf("title") >= 0) {
+				temp = dataArray[i];
+				temp = temp.substring(temp.indexOf("=")+1);
+				$("#filterTitle").val(temp);
+			}
+			else {}
+		}
+	}
+
+	$(".logout").click(logout);
+	$("#filterReset").click(resetFilter);
+	$("#filterSubmit").click(submitFilter);
+	$(".languageDropdown li").click(languageSelected);
+	$(".subtitlesDropdown li").click(subtitlesSelected);
+	$(".mdaratingDropdown li").click(mdaratingSelected);
+	$(".ratingDropdown li").click(ratingSelected);
+};
+
+var events = {
+};
 
 module.exports = View.extend({
-    id: 'listing-view',
-    template: template
-})
+    id 				: 'listing-view',
+    events 			: events,
+    getRenderData 	: getRenderData,
+    afterRender 	: afterRender,
+    template 		: template
+});
 
 });
 
@@ -319,9 +894,81 @@ module.exports = View.extend({
 var View     = require('./view')
   , template = require('./templates/login')
 
+var events = {
+	// 'click .login-submit': 'login'
+};
+
+var afterRender = function() {
+	console.log("In login page");
+	localStorage.removeItem("booking");
+
+	if(localStorage.userId != undefined && localStorage.name != undefined) {
+		window.location.hash 	= "#listing";
+		window.location.hash 	= "#listing";
+		return false;
+	}
+
+	$(".login-submit").click(login);
+	$(".login-register").click(register);
+};
+
+var login = function() {
+	var email 		= $("#login-email").val(),
+		password 	= $("#login-password").val(),
+		params 		= {
+						email 		: email,
+						password 	: password
+					};
+
+	$(".login-error").html("");
+
+	if(email.length === 0) {
+		$(".login-error").html("*All fields are required.");
+		return;
+	}
+
+	if(password.length === 0) {
+		$(".login-error").html("*All fields are required.");
+		return;
+	}
+
+	$.ajax({
+			url 		: Application.api+"login",
+			type 		: "POST",
+			dataType	: 'json',
+			data 		: params,
+			success		: function(response) {
+				if(response.data.length === 0) {
+					$(".login-error").html("Invalid credentials. Please try again.");
+				}
+				else {
+					$(".login-error").html("");
+					localStorage.userId 	= response.data[0].userId;
+					localStorage.name 		= response.data[0].name;
+					window.location.hash 	= "#listing";
+					window.location.hash 	= "#listing";
+				}
+				return false;
+			},
+			error		: function(response) {
+				alert("Error in login user.");
+			}
+	});
+
+	// Application.router.navigate('listing', {trigger: true});
+	return;
+};
+
+var register = function() {
+	window.location.hash = "#register";
+};
+
 module.exports = View.extend({
     id: 'login-view',
-    template: template
+    events: events,
+    afterRender: afterRender,
+    template: template,
+    login: login
 })
 
 });
@@ -330,9 +977,145 @@ module.exports = View.extend({
 var View     = require('./view')
   , template = require('./templates/movie')
 
+var getRenderData = function() {
+	if(localStorage.userId == undefined || localStorage.name == undefined) {
+		alert("Please log in to continue");
+		window.location.hash = "#login";
+		window.location.hash = "#login";
+		return false;
+	}
+
+	var hash 		= window.location.hash,
+		temp 		= hash.indexOf('?id='),
+		mid 		= hash.substring(temp+4),
+		params 		= {id: mid},
+		responseObj = {};
+	
+	var	dfdResult = $.Deferred();
+
+	var onSuccess = function( response ) {
+		var showtimes = response.data;
+
+		$.ajax({
+	        url       : Application.api+"movie?mid="+mid,
+	        type      : "GET",
+	        dataType  : 'json',
+	        success   : function(response) {
+				var details = response.data;
+				responseObj.details  	= details[0];
+				responseObj.showtimes = showtimes;
+				console.log("responseObj", responseObj);
+				return dfdResult.resolve( responseObj );
+	        },
+	        error     : function(response) {
+	          console.log("Error in ajax call.");
+	          return dfdResult.reject( responseObj );
+	        }
+	    });
+	};
+	
+	var onError = function( response ) {
+		return dfdResult.reject( response );
+	};
+	
+	$.ajax({
+			url 		: Application.api+"showtimes?id="+mid,
+			type 		: "GET",
+			dataType	: 'json',
+			success		: onSuccess,
+			error		: onError
+	});
+	
+	return dfdResult;
+};
+
+var afterRender = function() {
+	$(".logout").click(logout);
+};
+
+var logout = function() {
+	localStorage.removeItem('userId');
+	localStorage.removeItem('name');
+	localStorage.removeItem('booking');
+	window.location.hash = "#login";
+	window.location.hash = "#login";
+	return false;
+};
+
 module.exports = View.extend({
-    id: 'movie-view',
-    template: template
+    id 				: 'movie-view',
+    getRenderData 	: getRenderData,
+    afterRender 	: afterRender,
+    template 		: template
+});
+
+});
+
+;require.register("views/register_view", function(exports, require, module) {
+var View     = require('./view')
+  , template = require('./templates/register')
+
+var events = {
+};
+
+var getRenderData
+
+var validate = function(params) {
+	var email 		= params.email,
+		name 		= params.name,
+		password 	= params.password;
+
+	$(".register-error").html("");
+
+	if(email.length==0 || name.length==0 || password.length==0) {
+		$(".register-error").html("*All fields are required.");
+		return false;
+	}
+
+	return true;
+};
+
+var registerSubmit = function() {
+	var email 		= $("#register-email").val(),
+		name 		= $("#register-name").val(),
+		password 	= $("#register-password").val(),
+		params 		= {
+						email 		: email,
+						name 		: name,
+						password 	: password
+					};
+
+	if(!validate(params)) return;
+
+	$.ajax({
+			url 		: Application.api+"register",
+			type 		: "POST",
+			dataType	: 'json',
+			data 		: params,
+			success		: function(response) {
+				localStorage.userId = response.data[0].userId;
+				localStorage.name 	= response.data[0].name;
+				window.location.hash = "#listing";
+				window.location.hash = "#listing";
+				return false;
+			},
+			error		: function(response) {
+				alert("Error in registering user.");
+			}
+	});
+};
+
+var afterRender = function() {
+	console.log("In register page");
+	$(".register-submit").click(registerSubmit);
+};
+
+
+module.exports = View.extend({
+    id: 'register-view',
+    events: events,
+    afterRender: afterRender,
+    template: template,
 })
 
 });
@@ -341,10 +1124,19 @@ module.exports = View.extend({
 var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var buffer = "", stack1, helper, options, self=this, helperMissing=helpers.helperMissing;
+
+function program1(depth0,data) {
   
+  var buffer = "";
+  return buffer;
+  }
 
-
-  return "<section class=\"container\">\n	<div class=\"panel panel-default booking-movie-info\">\n		<div class=\"panel-heading\">\n			Movie Information\n	  	</div>\n	  	<div class=\"panel-body\">\n	  		<div class=\"col-sm-12 col-md-6 col-lg-6\">\n				<div class=\"booking-movie-venue\">\n					<span class=\"col-sm-3 col-md-3 col-lg-3\">Cineplex: </span>\n					<span class=\"col-sm-9 col-md-9 col-lg-9\">AMK Hub</span>\n				</div>\n				<div class=\"booking-movie-title\">\n					<span class=\"col-sm-3 col-md-3 col-lg-3\">Movie Title: </span>\n					<span class=\"col-sm-9 col-md-9 col-lg-9\">Rurouni Kenshin The Legend Ends</span>\n				</div>\n				<div class=\"booking-movie-date\">\n					<span class=\"col-sm-3 col-md-3 col-lg-3\">Movie Date: </span>\n					<span class=\"col-sm-9 col-md-9 col-lg-9\">18/10/2014</span>\n				</div>\n				<div class=\"booking-movie-time\">\n					<span class=\"col-sm-3 col-md-3 col-lg-3\">Movie Time: </span>\n					<span class=\"col-sm-9 col-md-9 col-lg-9\">19:10</span>\n				</div>\n			</div>\n			<div class=\"col-sm-12 col-md-6 col-lg-6 booking-movie-info\">\n				<div class=\"booking-movie-duration\">\n					<span class=\"col-sm-3 col-md-3 col-lg-3\">Duration: </span>\n					<span class=\"col-sm-9 col-md-9 col-lg-9\">135 mins</span>\n				</div>\n				<div class=\"booking-movie-rating\">\n					<span class=\"col-sm-3 col-md-3 col-lg-3\">Rating: </span>\n					<span class=\"col-sm-9 col-md-9 col-lg-9\">NC16 - Violence</span>\n				</div>\n			</div>\n		</div>\n	</div>\n</section>\n<section class=\"container\">\n	<div class=\"panel panel-default booking-movie-seats\">\n		<div class=\"panel-body\">\n			<div class=\"booking-seats-container\">\n				<div class=\"center-block text-center booking-screen\">\n					Screen\n				</div>\n				<div class=\"booking-seats\">\n					<div id=\"seats\" class=\"center-block\">\n				        <ul id=\"place\">\n				        </ul>\n				    </div>\n				</div>\n			</div>\n		</div>\n	</div>\n</section>\n<section class=\"container\">\n	<div class=\"panel panel-default booking-movie-control\">\n	  	<div class=\"panel-body text-center\">\n		  	<a href=\"#/confirmation\">\n			  	<button type=\"button\" class=\"btn btn-lg btn-danger\">SUBMIT BOOKING</button>\n			</a>\n		  	<a href=\"#/listing\">\n		  		<button type=\"button\" class=\"btn btn-lg btn-info\">BACK TO MOVIE SELECTION</button>\n		  	</a>\n		</div>\n	</div>\n</section>";
+  buffer += "<section class=\"container\">\n	<div class=\"panel panel-default booking-movie-info\">\n		<div class=\"panel-heading\">\n			Movie Information\n	  	</div>\n	  	";
+  stack1 = (helper = helpers.moviebookingdetails || (depth0 && depth0.moviebookingdetails),options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data},helper ? helper.call(depth0, (depth0 && depth0.details), options) : helperMissing.call(depth0, "moviebookingdetails", (depth0 && depth0.details), options));
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n	</div>\n</section>\n<section class=\"container\">\n	<div class=\"panel panel-default booking-movie-seats\">\n		<div class=\"panel-body\">\n			<div class=\"booking-seats-container\">\n				<div class=\"center-block text-center booking-screen\">\n					Screen\n				</div>\n				<div class=\"booking-seats\">\n					<div id=\"seats\" class=\"center-block\">\n				        <ul id=\"place\">\n				        </ul>\n				    </div>\n				</div>\n			</div>\n		</div>\n	</div>\n</section>\n<section class=\"container\">\n	<div class=\"panel panel-default booking-movie-control\">\n	  	<div class=\"panel-body text-center\">\n		  	<a class=\"submitbooking\">\n			  	<button type=\"button\" class=\"btn btn-lg btn-danger\">SUBMIT BOOKING</button>\n			</a>\n		  	<a href=\"#/listing\">\n		  		<button type=\"button\" class=\"btn btn-lg btn-info\">BACK TO MOVIE SELECTION</button>\n		  	</a>\n		</div>\n	</div>\n</section>";
+  return buffer;
   });
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -361,10 +1153,22 @@ if (typeof define === 'function' && define.amd) {
 var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var buffer = "", stack1, helper, options, self=this, functionType="function", blockHelperMissing=helpers.blockHelperMissing;
+
+function program1(depth0,data) {
   
+  var buffer = "";
+  return buffer;
+  }
 
-
-  return "<section class=\"container\">\n	<div class=\"jumbotron\">\n		<h1 class=\"text-right\">Success!</h1>\n		<div class=\"well confirmation-summary\">\n			<h2>Booking Summary</h2>\n			<table class=\"table table-hover\">\n				<thead>\n				</thead>\n				<tbody>\n					<tr>\n						<td>Cineplex:</td>\n						<td>AMK Hub</td>\n					</tr>\n					<tr>\n						<td>Movie Title:</td>\n						<td>Rurouni Kenshin The Legend Ends</td>\n					</tr>\n					<tr>\n						<td>Movie Date:</td>\n						<td>18/10/2014</td>\n					</tr>\n					<tr>\n						<td>Movie Time:</td>\n						<td>19:10</td>\n					</tr>\n					<tr>\n						<td>Duration:</td>\n						<td>135 mins</td>\n					</tr>\n					<tr>\n						<td>Rating:</td>\n						<td>NC16 - Violence</td>\n					</tr>\n					<tr>\n						<td>Seats:</td>\n						<td>A-5, C-10, C-11</td>\n					</tr>\n				</tbody>\n			</table>\n		</div>\n		<div class=\"text-center\">\n			<a href=\"#/listing\">\n				<button type=\"button\" class=\"btn btn-lg btn-primary\">Home</button>\n			</a>\n		</div>\n	</div>\n</section>";
+  buffer += "<section class=\"container\">\n	<div class=\"jumbotron\">\n		<h1 class=\"text-right\">Success!</h1>\n		<div class=\"well confirmation-summary\">\n			<h2>Booking Summary</h2>\n			<table class=\"table table-hover\">\n				<thead>\n				</thead>\n				<tbody>\n					";
+  options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data}
+  if (helper = helpers.confirmation) { stack1 = helper.call(depth0, options); }
+  else { helper = (depth0 && depth0.confirmation); stack1 = typeof helper === functionType ? helper.call(depth0, options) : helper; }
+  if (!helpers.confirmation) { stack1 = blockHelperMissing.call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data}); }
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n				</tbody>\n			</table>\n		</div>\n		<div class=\"text-center\">\n			<a href=\"#/listing\">\n				<button type=\"button\" class=\"btn btn-lg btn-primary\">Home</button>\n			</a>\n		</div>\n	</div>\n</section>";
+  return buffer;
   });
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -401,10 +1205,24 @@ if (typeof define === 'function' && define.amd) {
 var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var buffer = "", stack1, helper, options, self=this, functionType="function", blockHelperMissing=helpers.blockHelperMissing, helperMissing=helpers.helperMissing;
+
+function program1(depth0,data) {
   
+  var buffer = "";
+  return buffer;
+  }
 
-
-  return "<section class=\"container\">\n	<div class=\"col-sm-4 col-md-4 col-lg-4 listing-item\">\n		<div class=\"col-sm-12 col-md-12 col-lg-12 listing-title\">\n			Rurouni Kenshin The Legend Ends\n		</div>\n		<div class=\"col-md-5 col-lg-5 listing-left\">\n			<img class=\"listing-thumbnail\" src=\"img/thumbs/kenshin.jpg\">\n		</div>\n		<div class=\"col-md-7 col-lg-7 listing-right\">\n			<div class=\"listing-synopsis\">\n				To stop Makoto Shishio who aims to conquer Japan, Kenshin arrives in Kyoto and tries to face off against Shishio’s troops. However, his enemy has begun its course to start invading Tokyo with the steel-reinforced battleship. To save captured Kaoru who is thrown into the sea by Shishio’s men, Kenshin also dives in after her but is washed ashore alone, unconscious.\n				<br>\n				Kenshin recovers with the help of Seijuro Hiko, the master of Kenshin who happens to find him on the shore. He realises he is no match for Shishio unless he learns the ultimate technique of his sword style, and begs the master to teach him.\n				<br>\n				In the meantime, Shishio finds that Kenshin is still alive, and puts pressure on the government to find Kenshin and execute him in public for his sins during his days as the “Battosai the Killer”. As Kenshin faces his biggest challenge, can Kenshin really defeat his fiercest enemy Shishio, and be reunited with Kaoru?\n			</div>\n			<div class=\"listing-book\">\n				<a href=\"#/movie\"><button type=\"button\" class=\"btn btn-default btn-sm\">BOOK NOW</button></a>\n			</div>\n		</div>\n	</div>\n\n	<div class=\"col-sm-4 col-md-4 col-lg-4 listing-item\">\n		<div class=\"col-sm-12 col-md-12 col-lg-12 listing-title\">\n			Rurouni Kenshin The Legend Ends\n		</div>\n		<div class=\"col-md-5 col-lg-5 listing-left\">\n			<img class=\"listing-thumbnail\" src=\"img/thumbs/kenshin.jpg\">\n		</div>\n		<div class=\"col-md-7 col-lg-7 listing-right\">\n			<div class=\"listing-synopsis\">\n				<p>\n					To stop Makoto Shishio who aims to conquer Japan, Kenshin arrives in Kyoto and tries to face off against Shishio’s troops. However, his enemy has begun its course to start invading Tokyo with the steel-reinforced battleship. To save captured Kaoru who is thrown into the sea by Shishio’s men, Kenshin also dives in after her but is washed ashore alone, unconscious.\n				</p>\n				<p>\n					Kenshin recovers with the help of Seijuro Hiko, the master of Kenshin who happens to find him on the shore. He realises he is no match for Shishio unless he learns the ultimate technique of his sword style, and begs the master to teach him.\n				</p>\n				<p>\n					In the meantime, Shishio finds that Kenshin is still alive, and puts pressure on the government to find Kenshin and execute him in public for his sins during his days as the “Battosai the Killer”. As Kenshin faces his biggest challenge, can Kenshin really defeat his fiercest enemy Shishio, and be reunited with Kaoru?\n				</p>\n			</div>\n			<div class=\"listing-book\">\n				<a href=\"#/movie\"><button type=\"button\" class=\"btn btn-default btn-sm\">BOOK NOW</button></a>\n			</div>\n		</div>\n	</div>\n\n	<div class=\"col-sm-4 col-md-4 col-lg-4 listing-item\">\n		<div class=\"col-sm-12 col-md-12 col-lg-12 listing-title\">\n			Rurouni Kenshin The Legend Ends\n		</div>\n		<div class=\"col-md-5 col-lg-5 listing-left\">\n			<img class=\"listing-thumbnail\" src=\"img/thumbs/kenshin.jpg\">\n		</div>\n		<div class=\"col-md-7 col-lg-7 listing-right\">\n			<div class=\"listing-synopsis\">\n				<p>\n					To stop Makoto Shishio who aims to conquer Japan, Kenshin arrives in Kyoto and tries to face off against Shishio’s troops. However, his enemy has begun its course to start invading Tokyo with the steel-reinforced battleship. To save captured Kaoru who is thrown into the sea by Shishio’s men, Kenshin also dives in after her but is washed ashore alone, unconscious.\n				</p>\n				<p>\n					Kenshin recovers with the help of Seijuro Hiko, the master of Kenshin who happens to find him on the shore. He realises he is no match for Shishio unless he learns the ultimate technique of his sword style, and begs the master to teach him.\n				</p>\n				<p>\n					In the meantime, Shishio finds that Kenshin is still alive, and puts pressure on the government to find Kenshin and execute him in public for his sins during his days as the “Battosai the Killer”. As Kenshin faces his biggest challenge, can Kenshin really defeat his fiercest enemy Shishio, and be reunited with Kaoru?\n				</p>\n			</div>\n			<div class=\"listing-book\">\n				<a href=\"#/movie\"><button type=\"button\" class=\"btn btn-default btn-sm\">BOOK NOW</button></a>\n			</div>\n		</div>\n	</div>\n\n	<div class=\"col-sm-4 col-md-4 col-lg-4 listing-item\">\n		<div class=\"col-sm-12 col-md-12 col-lg-12 listing-title\">\n			Rurouni Kenshin The Legend Ends\n		</div>\n		<div class=\"col-md-5 col-lg-5 listing-left\">\n			<img class=\"listing-thumbnail\" src=\"img/thumbs/kenshin.jpg\">\n		</div>\n		<div class=\"col-md-7 col-lg-7 listing-right\">\n			<div class=\"listing-synopsis\">\n				<p>\n					To stop Makoto Shishio who aims to conquer Japan, Kenshin arrives in Kyoto and tries to face off against Shishio’s troops. However, his enemy has begun its course to start invading Tokyo with the steel-reinforced battleship. To save captured Kaoru who is thrown into the sea by Shishio’s men, Kenshin also dives in after her but is washed ashore alone, unconscious.\n				</p>\n				<p>\n					Kenshin recovers with the help of Seijuro Hiko, the master of Kenshin who happens to find him on the shore. He realises he is no match for Shishio unless he learns the ultimate technique of his sword style, and begs the master to teach him.\n				</p>\n				<p>\n					In the meantime, Shishio finds that Kenshin is still alive, and puts pressure on the government to find Kenshin and execute him in public for his sins during his days as the “Battosai the Killer”. As Kenshin faces his biggest challenge, can Kenshin really defeat his fiercest enemy Shishio, and be reunited with Kaoru?\n				</p>\n			</div>\n			<div class=\"listing-book\">\n				<a href=\"#/movie\"><button type=\"button\" class=\"btn btn-default btn-sm\">BOOK NOW</button></a>\n			</div>\n		</div>\n	</div>\n\n	<div class=\"col-sm-4 col-md-4 col-lg-4 listing-item\">\n		<div class=\"col-sm-12 col-md-12 col-lg-12 listing-title\">\n			Rurouni Kenshin The Legend Ends\n		</div>\n		<div class=\"col-md-5 col-lg-5 listing-left\">\n			<img class=\"listing-thumbnail\" src=\"img/thumbs/kenshin.jpg\">\n		</div>\n		<div class=\"col-md-7 col-lg-7 listing-right\">\n			<div class=\"listing-synopsis\">\n				<p>\n					To stop Makoto Shishio who aims to conquer Japan, Kenshin arrives in Kyoto and tries to face off against Shishio’s troops. However, his enemy has begun its course to start invading Tokyo with the steel-reinforced battleship. To save captured Kaoru who is thrown into the sea by Shishio’s men, Kenshin also dives in after her but is washed ashore alone, unconscious.\n				</p>\n				<p>\n					Kenshin recovers with the help of Seijuro Hiko, the master of Kenshin who happens to find him on the shore. He realises he is no match for Shishio unless he learns the ultimate technique of his sword style, and begs the master to teach him.\n				</p>\n				<p>\n					In the meantime, Shishio finds that Kenshin is still alive, and puts pressure on the government to find Kenshin and execute him in public for his sins during his days as the “Battosai the Killer”. As Kenshin faces his biggest challenge, can Kenshin really defeat his fiercest enemy Shishio, and be reunited with Kaoru?\n				</p>\n			</div>\n			<div class=\"listing-book\">\n				<a href=\"#/movie\"><button type=\"button\" class=\"btn btn-default btn-sm\">BOOK NOW</button></a>\n			</div>\n		</div>\n	</div>\n</section>";
+  options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data}
+  if (helper = helpers.navbar) { stack1 = helper.call(depth0, options); }
+  else { helper = (depth0 && depth0.navbar); stack1 = typeof helper === functionType ? helper.call(depth0, options) : helper; }
+  if (!helpers.navbar) { stack1 = blockHelperMissing.call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data}); }
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n<section class=\"container filterContainer\">\n	<div class=\"col-md-12 col-lg-12\">\n		<div class=\"panel panel-default\">\n			<div class=\"panel-heading\">\n				<h2 class=\"panel-title\">Filters / Sorting</h2>\n			</div>\n			<div class=\"panel-body\">\n				<form class=\"form-inline filters\" role=\"form\">\n					<div class=\"form-group\">\n						<div class=\"col-sm-12\">\n							<input type=\"text\" class=\"form-control\" id=\"filterTitle\" placeholder=\"Search Movie Title\">\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<div class=\"col-sm-12 dropdown\">\n							<button type=\"button\" class=\"form-control dropdown-toggle\" id=\"filterLanguage\" data-toggle=\"dropdown\">All Languages</button>\n							<ul class=\"dropdown-menu languageDropdown\" role=\"menu\">\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">All Languages</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">English</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">Chinese</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">Japanese</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">Spanish</a></li>\n							</ul>\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<div class=\"col-sm-12 dropdown\">\n							<button type=\"button\" class=\"form-control dropdown-toggle\" id=\"filterSubtitles\" data-toggle=\"dropdown\">All Subtitles</button>\n						<ul class=\"dropdown-menu subtitlesDropdown\" role=\"menu\">\n							<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">All Subtitles</a></li>\n							<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">None</a></li>\n							<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">English</a></li>\n							<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">Chinese</a></li>\n						</ul>\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<div class=\"col-sm-12\">\n							<button type=\"button\" class=\"form-control dropdown-toggle\" id=\"filtermdarating\" data-toggle=\"dropdown\">All MDA Ratings</button>\n							<ul class=\"dropdown-menu mdaratingDropdown\" role=\"menu\">\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">All MDA Ratings</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">UR</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">PG13</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">NC16</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">M18</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">R21</a></li>\n							</ul>\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<div class=\"col-sm-12\">\n							<button type=\"button\" class=\"form-control dropdown-toggle\" id=\"filterRating\" data-toggle=\"dropdown\">Sort by Rating</button>\n							<ul class=\"dropdown-menu ratingDropdown\" role=\"menu\">\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">Ascending</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">Descending</a></li>\n							</ul>\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<div class=\"col-sm-12\">\n							<button type=\"button\" class=\"btn btn-danger\" id=\"filterReset\">Reset</button>\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<div class=\"col-sm-12\">\n							<button type=\"button\" class=\"btn btn-primary\" id=\"filterSubmit\">Filter</button>\n						</div>\n					</div>\n				</form>\n			</div>\n		</div>\n	</div>\n</section>\n<section class=\"container\">\n	<div class=\"col-sm-12\">\n		<div class=\"panel panel-default\">\n			<div class=\"panel-body\">\n			";
+  stack1 = (helper = helpers.movielisting || (depth0 && depth0.movielisting),options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data},helper ? helper.call(depth0, (depth0 && depth0.data), options) : helperMissing.call(depth0, "movielisting", (depth0 && depth0.data), options));
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n			</div>\n		</div>\n	</div>\n</section>";
+  return buffer;
   });
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -424,7 +1242,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   
 
 
-  return "<section class=\"container\">\n	<div class=\"jumbotron text-center\">\n		<h1>CS2102 Project</h1>\n		<h1>Movie Booking System</h1>\n\n		<div class=\"container login-form\">\n			<h4>Please login to continue</h4>\n			<form role=\"form\" class=\"col-sm-12 col-md-4 col-lg-4 col-md-offset-4 col-lg-offset-4\">\n				<input type=\"email\" class=\"form-control\" id=\"login-email\" placeholder=\"Email\">\n				<input type=\"password\" class=\"form-control\" id=\"login-password\" placeholder=\"Password\">\n				<a href=\"#/listing\">\n					<button type=\"button\" class=\"btn btn-default\">Submit</button>\n				</a>\n			</form>\n		</div>\n	</div>\n<section>";
+  return "<section class=\"container\">\n	<div class=\"jumbotron text-center\">\n		<h1>CS2102 Project</h1>\n		<h1>Movie Booking System</h1>\n\n		<div class=\"container login-form\">\n			<h4>Please login to continue</h4>\n			<form role=\"form\" class=\"col-sm-12 col-md-4 col-lg-4 col-md-offset-4 col-lg-offset-4\">\n				<h4 class=\"text-danger login-error\"></h4>\n				<input type=\"email\" class=\"form-control input-lg\" id=\"login-email\" placeholder=\"Email\" value=\"nick@test.com\">\n				<input type=\"password\" class=\"form-control input-lg\" id=\"login-password\" placeholder=\"Password\" value=\"1234\">\n				<button type=\"button\" class=\"btn btn-lg btn-block btn-primary login-submit\">Login</button>\n				<button type=\"button\" class=\"btn btn-lg btn-block btn-success login-register\">Register</button>\n			</form>\n		</div>\n	</div>\n<section>";
   });
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -441,10 +1259,47 @@ if (typeof define === 'function' && define.amd) {
 var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var buffer = "", stack1, helper, options, self=this, functionType="function", blockHelperMissing=helpers.blockHelperMissing, helperMissing=helpers.helperMissing;
+
+function program1(depth0,data) {
+  
+  var buffer = "";
+  return buffer;
+  }
+
+  options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data}
+  if (helper = helpers.navbar) { stack1 = helper.call(depth0, options); }
+  else { helper = (depth0 && depth0.navbar); stack1 = typeof helper === functionType ? helper.call(depth0, options) : helper; }
+  if (!helpers.navbar) { stack1 = blockHelperMissing.call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data}); }
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n<section class=\"movie-info\">\n<div class=\"container\">\n	";
+  stack1 = (helper = helpers.moviedetails || (depth0 && depth0.moviedetails),options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data},helper ? helper.call(depth0, (depth0 && depth0.details), options) : helperMissing.call(depth0, "moviedetails", (depth0 && depth0.details), options));
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n</div>\n</section>\n<section class=\"movie-showtimes\">\n	<div class=\"container\">\n		<h3>Showtimes</h3>\n		<div class=\"movie-showtime-container\">\n		";
+  stack1 = (helper = helpers.showtimeslist || (depth0 && depth0.showtimeslist),options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data},helper ? helper.call(depth0, (depth0 && depth0.showtimes), options) : helperMissing.call(depth0, "showtimeslist", (depth0 && depth0.showtimes), options));
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n		</div>\n	</div>\n</section>";
+  return buffer;
+  });
+if (typeof define === 'function' && define.amd) {
+  define([], function() {
+    return __templateData;
+  });
+} else if (typeof module === 'object' && module && module.exports) {
+  module.exports = __templateData;
+} else {
+  __templateData;
+}
+});
+
+;require.register("views/templates/register", function(exports, require, module) {
+var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   
 
 
-  return "<section class=\"movie-info\">\n<div class=\"container\">\n	<div class=\"col-sm-12 col-md-5 col-lg-5 movie-poster\">\n		<img src=\"img/kenshin.jpg\">\n	</div>\n	<div class=\"col-sm-12 col-md-5 col-lg-5 movie-details\">\n		<div class=\"col-sm-12 col-md-12 col-lg-12 movie-title\">\n			Rurouni Kenshin The Legend Ends ~ 浪客剑心: 传说落幕篇\n		</div>\n		<div class=\"col-sm-12 col-md-12 col-lg-12 movie-cast\">\n			<span class=\"col-sm-3 col-md-3 col-lg-3\">Cast</span>\n			<span class=\"col-sm-9 col-md-9 col-lg-9\">Takeru Satoh</span>\n		</div>\n		<div class=\"col-sm-12 col-md-12 col-lg-12 movie-director\">\n			<span class=\"col-sm-3 col-md-3 col-lg-3\">Director</span>\n			<span class=\"col-sm-9 col-md-9 col-lg-9\">Keishi Otomo</span>\n		</div>\n		<div class=\"col-sm-12 col-md-12 col-lg-12 movie-language\">\n			<span class=\"col-sm-3 col-md-3 col-lg-3\">Language</span>\n			<span class=\"col-sm-9 col-md-9 col-lg-9\">Japanese with English Subtitles</span>\n		</div>\n		<div class=\"col-sm-12 col-md-12 col-lg-12 movie-runtime\">\n			<span class=\"col-sm-3 col-md-3 col-lg-3\">Runtime</span>\n			<span class=\"col-sm-9 col-md-9 col-lg-9\">135 mins</span>\n		</div>\n		<div class=\"col-sm-12 col-md-12 col-lg-12 movie-rating\">\n			<span class=\"col-sm-3 col-md-3 col-lg-3\">Runtime</span>\n			<span class=\"col-sm-9 col-md-9 col-lg-9\">NC16 - Violence</span>\n		</div>\n		<div class=\"col-sm-12 col-md-12 col-lg-12 movie-book\">\n			<a href=\"#/booking\"><button type=\"button\" class=\"btn btn-default btn-sm\">BOOK NOW</button></a>\n		</div>\n		<div class=\"col-sm-12 col-md-12 col-lg-12 movie-synopsis\">\n			To stop Makoto Shishio who aims to conquer Japan, Kenshin arrives in Kyoto and tries to face off against Shishio’s troops. However, his enemy has begun its course to start invading Tokyo with the steel-reinforced battleship. To save captured Kaoru who is thrown into the sea by Shishio’s men, Kenshin also dives in after her but is washed ashore alone, unconscious.\n			<br><br>\n			Kenshin recovers with the help of Seijuro Hiko, the master of Kenshin who happens to find him on the shore. He realises he is no match for Shishio unless he learns the ultimate technique of his sword style, and begs the master to teach him.\n			<br><br>\n			In the meantime, Shishio finds that Kenshin is still alive, and puts pressure on the government to find Kenshin and execute him in public for his sins during his days as the “Battosai the Killer”. As Kenshin faces his biggest challenge, can Kenshin really defeat his fiercest enemy Shishio, and be reunited with Kaoru?\n		</div>\n	</div>\n</div>\n</section>\n<section class=\"movie-showtimes\">\n	<div class=\"container\">\n		<h3>Showtimes</h3>\n		<div class=\"movie-showtime-container\">\n			<div class=\"movie-showtime-venue\">\n				AMK HUB\n			</div>\n			<div>\n				<ul class=\"col-sm-12 col-md-12 col-lg-12 movie-showtime-list\">\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">TODAY</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"#/booking\">00:45</a></li>\n								<li><a href=\"#/booking\">13:45</a></li>\n								<li><a href=\"#/booking\">16:30</a></li>\n								<li><a href=\"#/booking\">19:15</a></li>\n								<li><a href=\"#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">19 OCT, SUN</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"#/booking\">00:45</a></li>\n								<li><a href=\"#/booking\">13:45</a></li>\n								<li><a href=\"#/booking\">16:30</a></li>\n								<li><a href=\"#/booking\">19:15</a></li>\n								<li><a href=\"#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">20 OCT, MON</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"#/booking\">00:45</a></li>\n								<li><a href=\"#/booking\">13:45</a></li>\n								<li><a href=\"#/booking\">16:30</a></li>\n								<li><a href=\"#/booking\">19:15</a></li>\n								<li><a href=\"#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">21 OCT, TUE</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"#/booking\">00:45</a></li>\n								<li><a href=\"#/booking\">13:45</a></li>\n								<li><a href=\"#/booking\">16:30</a></li>\n								<li><a href=\"#/booking\">19:15</a></li>\n								<li><a href=\"#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">22 OCT, WED</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"#/booking\">00:45</a></li>\n								<li><a href=\"#/booking\">13:45</a></li>\n								<li><a href=\"#/booking\">16:30</a></li>\n								<li><a href=\"#/booking\">19:15</a></li>\n								<li><a href=\"#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n				</ul>\n			</div>\n			<div class=\"movie-showtime-venue\">\n				AMK HUB\n			</div>\n			<div>\n				<ul class=\"col-sm-12 col-md-12 col-lg-12 movie-showtime-list\">\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">TODAY</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"#/booking\">00:45</a></li>\n								<li><a href=\"#/booking\">13:45</a></li>\n								<li><a href=\"#/booking\">16:30</a></li>\n								<li><a href=\"#/booking\">19:15</a></li>\n								<li><a href=\"#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">19 OCT, SUN</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"#/booking\">00:45</a></li>\n								<li><a href=\"#/booking\">13:45</a></li>\n								<li><a href=\"#/booking\">16:30</a></li>\n								<li><a href=\"#/booking\">19:15</a></li>\n								<li><a href=\"#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">20 OCT, MON</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"#/booking\">00:45</a></li>\n								<li><a href=\"#/booking\">13:45</a></li>\n								<li><a href=\"#/booking\">16:30</a></li>\n								<li><a href=\"#/booking\">19:15</a></li>\n								<li><a href=\"#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">21 OCT, TUE</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"#/booking\">00:45</a></li>\n								<li><a href=\"#/booking\">13:45</a></li>\n								<li><a href=\"#/booking\">16:30</a></li>\n								<li><a href=\"#/booking\">19:15</a></li>\n								<li><a href=\"#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">22 OCT, WED</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"#/booking\">00:45</a></li>\n								<li><a href=\"#/booking\">13:45</a></li>\n								<li><a href=\"#/booking\">16:30</a></li>\n								<li><a href=\"#/booking\">19:15</a></li>\n								<li><a href=\"#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n				</ul>\n			</div>\n			<div class=\"movie-showtime-venue\">\n				AMK HUB\n			</div>\n			<div>\n				<ul class=\"col-sm-12 col-md-12 col-lg-12 movie-showtime-list\">\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">TODAY</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"#/booking\">00:45</a></li>\n								<li><a href=\"#/booking\">13:45</a></li>\n								<li><a href=\"#/booking\">16:30</a></li>\n								<li><a href=\"#/booking\">19:15</a></li>\n								<li><a href=\"#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">19 OCT, SUN</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"#/booking\">00:45</a></li>\n								<li><a href=\"#/booking\">13:45</a></li>\n								<li><a href=\"#/booking\">16:30</a></li>\n								<li><a href=\"#/booking\">19:15</a></li>\n								<li><a href=\"#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">20 OCT, MON</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"#/booking\">00:45</a></li>\n								<li><a href=\"#/booking\">13:45</a></li>\n								<li><a href=\"#/booking\">16:30</a></li>\n								<li><a href=\"#/booking\">19:15</a></li>\n								<li><a href=\"#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">21 OCT, TUE</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"#/booking\">00:45</a></li>\n								<li><a href=\"#/booking\">13:45</a></li>\n								<li><a href=\"#/booking\">16:30</a></li>\n								<li><a href=\"#/booking\">19:15</a></li>\n								<li><a href=\"#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n					<li>\n						<span class=\"col-sm-6 col-md-2 col-lg-2 movie-showtime-date\">22 OCT, WED</span>\n						<span class=\"col-sm-6 col-md-10 col-lg-10\">\n							<ul class=\"movie-showtime-timelist\">\n								<li><a href=\"#/booking\">00:45</a></li>\n								<li><a href=\"#/booking\">13:45</a></li>\n								<li><a href=\"#/booking\">16:30</a></li>\n								<li><a href=\"#/booking\">19:15</a></li>\n								<li><a href=\"#/booking\">22:00</a></li>\n							</ul>\n						</span>\n					</li>\n				</ul>\n			</div>\n		</div>\n	</div>\n</section>";
+  return "<section class=\"container\">\n	<div class=\"jumbotron text-center\">\n		<h1>Register User</h1>\n\n		<div class=\"container register-form\">\n			<h4>Please fill in the following:</h4>\n			<br>\n			<div class=\"text-danger register-error\"></div>\n			<br>\n			<div class=\"col-sm-6 col-sm-offset-3\">\n			<form class=\"form-horizontal\" role=\"form\">\n				<div class=\"form-group\">\n					<label for=\"register-email\" class=\"col-sm-2 control-label\">Email</label>\n					<div class=\"col-sm-10\">\n						<input type=\"email\" class=\"form-control input-lg\" id=\"register-email\" placeholder=\"Email\">\n					</div>\n				</div>\n				<div class=\"form-group\">\n					<label for=\"register-name\" class=\"col-sm-2 control-label\">Name</label>\n					<div class=\"col-sm-10\">\n						<input type=\"text\" class=\"form-control input-lg\" id=\"register-name\" placeholder=\"Name\">\n						<span class=\"text-danger\"></span>\n					</div>\n				</div>\n				<div class=\"form-group\">\n					<label for=\"register-password\" class=\"col-sm-2 control-label\">Password</label>\n					<div class=\"col-sm-10\">\n						<input type=\"password\" class=\"form-control input-lg\" id=\"register-password\" placeholder=\"Password\">\n					</div>\n				</div>\n				<div class=\"form-group\">\n					<div class=\"col-sm-offset-2 col-sm-10\">\n						<button type=\"button\" class=\"btn btn-lg btn-success register-submit\">Register</button>\n					</div>\n				</div>\n			</form>\n			</div>\n		</div>\n	</div>\n<section>";
   });
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -471,9 +1326,24 @@ module.exports = Backbone.View.extend({
     getRenderData: function(){},
     
     render: function(){
-        this.$el.html(this.template(this.getRenderData()))
-        this.afterRender()
-        return this
+        var that = this;
+
+        $.when(this.getRenderData()).done(
+            function(data){
+                $("body").html(that.template(data));
+                that.afterRender();
+                return that;
+        }).fail(
+            function(data){
+                $("body").html(this.template(data));
+                that.afterRender();
+                return that;
+        });
+
+
+        // this.$el.html(this.template(this.getRenderData()));
+        // this.afterRender();
+        // return this;
     },
     
     afterRender: function(){}
