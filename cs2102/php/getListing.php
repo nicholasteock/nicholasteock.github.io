@@ -1,1 +1,0 @@
-<?php echo "<script type=\"text/javascript\">alert('HERE');</script>; ?>
