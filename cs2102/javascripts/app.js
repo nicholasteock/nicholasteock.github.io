@@ -738,13 +738,22 @@ var getRenderData = function() {
 		return dfdResult.reject( response );
 	};
 
+	var data = {};
 	var hash = window.location.hash;
-	var data = hash.substring(hash.indexOf("?"));
-
+	if(hash.indexOf("?") != -1) {
+		var filters = hash.substring(hash.indexOf("?")+1);
+		var filterArr = filters.split("&");
+		for(var i=0, iLen=filterArr.length; i<iLen; i++) {
+			var temp = filterArr[i].split("=");
+			data[temp[0]] = temp[1];
+		}
+	}
+	
 	$.ajax({
 			url 		: Application.api+"movielisting?"+data,
 			type 		: "GET",
 			dataType	: 'json',
+			data 		: data,
 			success		: onSuccess,
 			error		: onError
 	});
