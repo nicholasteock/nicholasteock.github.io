@@ -748,9 +748,9 @@ var getRenderData = function() {
 			data[temp[0]] = temp[1];
 		}
 	}
-	
+
 	$.ajax({
-			url 		: Application.api+"movielisting?"+data,
+			url 		: Application.api+"movielisting",
 			type 		: "GET",
 			dataType	: 'json',
 			data 		: data,
