@@ -101,8 +101,11 @@ Application = {
         	ListingView 		= require('views/listing_view'),
         	MovieView 			= require('views/movie_view'),
             BookingView         = require('views/booking_view')
-        	EditView 		    = require('views/edit_view')
-        	Router   			= require('lib/router');
+            EditView            = require('views/edit_view')
+            AdminView           = require('views/admin_view')
+            AdduserView         = require('views/adduser_view')
+        	AddmovieView 		= require('views/addmovie_view')
+            Router   			= require('lib/router');
         
         this.api                = "http://ec2-54-69-16-201.us-west-2.compute.amazonaws.com/api/";
 
@@ -112,7 +115,10 @@ Application = {
         this.listingView 		= new ListingView();
         this.movieView 			= new MovieView();
         this.bookingView        = new BookingView();
-        this.editView 		    = new EditView();
+        this.editView           = new EditView();
+        this.adminView          = new AdminView();
+        this.adduserView        = new AdduserView();
+        this.addMovieView 		= new AddmovieView();
         this.router   			= new Router();
                 
         if (typeof Object.freeze === 'function') Object.freeze(this)
@@ -146,7 +152,10 @@ module.exports 	= Backbone.Router.extend({
         'movie' 		: 'movie',
         'booking' 		: 'booking',
         'confirmation' 	: 'confirmation',
-        'edit'          : 'edit'
+        'edit'          : 'edit',
+        'admin'         : 'admin',
+        'adduser'       : 'adduser',
+        'addmovie'      : 'addmovie'
     },
     
     login: function() {
@@ -175,6 +184,18 @@ module.exports 	= Backbone.Router.extend({
 
     edit: function() {
         $('body').html(application.editView.render())
+    },
+
+    admin: function() {
+        $('body').html(application.adminView.render())
+    },
+
+    adduser: function() {
+        $('body').html(application.adduserView.render())
+    },
+
+    addmovie: function() {
+        $('body').html(application.addmovieView.render())
     },
 })
 
@@ -450,6 +471,184 @@ module.exports = Backbone.Model.extend({
 
 });
 
+;require.register("views/addmovie_view", function(exports, require, module) {
+var View     = require('./view'),
+	template = require('./templates/addmovie')
+
+var getRenderData = function() {
+	if(localStorage.userId == undefined || localStorage.name == undefined) {
+		alert("Please log in to continue");
+		Application.router.navigate('login', {trigger: true});
+		return false;
+	}
+
+	if(localStorage.userType == undefined || localStorage.userType != 0) {
+		alert("You do not have admin privileges.");
+		Application.router.navigate('listing', {trigger: true});
+		return false;
+	}
+};
+
+var logout = function() {
+	localStorage.removeItem('userId');
+	localStorage.removeItem('name');
+	localStorage.removeItem('userType');
+	localStorage.removeItem('booking');
+	Application.router.navigate('login', {trigger: true});
+	return false;
+};
+
+var afterRender = function(){
+	$(".logout").click(logout);
+};
+
+var events = {
+};
+
+module.exports = View.extend({
+    id 				: 'addmovie-view',
+    events 			: events,
+    getRenderData 	: getRenderData,
+    afterRender 	: afterRender,
+    template 		: template
+});
+
+});
+
+;require.register("views/adduser_view", function(exports, require, module) {
+var View     = require('./view'),
+	template = require('./templates/adduser')
+
+var getRenderData = function() {
+	if(localStorage.userId == undefined || localStorage.name == undefined) {
+		alert("Please log in to continue");
+		Application.router.navigate('login', {trigger: true});
+		return false;
+	}
+
+	if(localStorage.userType == undefined || localStorage.userType != 0) {
+		alert("You do not have admin privileges.");
+		Application.router.navigate('listing', {trigger: true});
+		return false;
+	}
+};
+
+var logout = function() {
+	localStorage.removeItem('userId');
+	localStorage.removeItem('name');
+	localStorage.removeItem('userType');
+	localStorage.removeItem('booking');
+	Application.router.navigate('login', {trigger: true});
+	return false;
+};
+
+var validate = function(params) {
+	var email 		= params.email,
+		name 		= params.name,
+		password 	= params.password;
+
+	$(".newuser-error").html("");
+
+	if(email.length==0 || name.length==0 || password.length==0) {
+		$(".newuser-error").html("*All fields are required.");
+		return false;
+	}
+
+	return true;
+};
+
+var newuser = function() {
+	var email 		= $("#newuser-email").val(),
+		name 		= $("#newuser-name").val(),
+		password 	= $("#newuser-password").val(),
+		isAdmin 	= $('#check_id').is(":checked") ? 0 : 1,
+		params 		= {
+						email 		: email,
+						name 		: name,
+						password 	: password,
+						userType 	: isAdmin
+					};
+
+	if(!validate(params)) return;
+
+	$.ajax({
+			url 		: Application.api+"register",
+			type 		: "POST",
+			dataType	: 'json',
+			data 		: params,
+			success		: function(response) {
+				$(".newuser-error").html("New user "+params.name+" added to system.");
+				return false;
+			},
+			error		: function(response) {
+				alert("Error in registering user "+params.name);
+			}
+	});
+};
+
+var afterRender = function(){
+	$(".logout").click(logout);
+	$(".newuser-submit").click(newuser);
+};
+
+var events = {
+};
+
+module.exports = View.extend({
+    id 				: 'adduser-view',
+    events 			: events,
+    getRenderData 	: getRenderData,
+    afterRender 	: afterRender,
+    template 		: template,
+    newuser 		: newuser
+});
+
+});
+
+;require.register("views/admin_view", function(exports, require, module) {
+var View     = require('./view'),
+	template = require('./templates/admin')
+
+var getRenderData = function() {
+	if(localStorage.userId == undefined || localStorage.name == undefined) {
+		alert("Please log in to continue");
+		Application.router.navigate('login', {trigger: true});
+		return false;
+	}
+
+	if(localStorage.userType == undefined || localStorage.userType != 0) {
+		alert("You do not have admin privileges.");
+		Application.router.navigate('listing', {trigger: true});
+		return false;
+	}
+};
+
+var logout = function() {
+	localStorage.removeItem('userId');
+	localStorage.removeItem('name');
+	localStorage.removeItem('userType');
+	localStorage.removeItem('booking');
+	Application.router.navigate('login', {trigger: true});
+	return false;
+};
+
+var afterRender = function(){
+	$(".logout").click(logout);
+};
+
+var events = {
+};
+
+module.exports = View.extend({
+    id 				: 'admin-view',
+    events 			: events,
+    getRenderData 	: getRenderData,
+    afterRender 	: afterRender,
+    template 		: template
+});
+
+});
+
 ;require.register("views/booking_view", function(exports, require, module) {
 var View     = require('./view'),
 	template = require('./templates/booking');
@@ -690,6 +889,7 @@ var getRenderData = function() {
 var logout = function() {
 	localStorage.removeItem('userId');
 	localStorage.removeItem('name');
+	localStorage.removeItem('userType');
 	localStorage.removeItem('booking');
 	Application.router.navigate('login', {trigger: true});
 	return false;
@@ -748,6 +948,7 @@ var getRenderData = function() {
 var logout = function() {
 	localStorage.removeItem('userId');
 	localStorage.removeItem('name');
+	localStorage.removeItem('userType');
 	localStorage.removeItem('booking');
 	Application.router.navigate('login', {trigger: true});
 	return false;
@@ -828,6 +1029,7 @@ var getRenderData = function() {
 var logout = function() {
 	localStorage.removeItem('userId');
 	localStorage.removeItem('name');
+	localStorage.removeItem('userType');
 	localStorage.removeItem('booking');
 	Application.router.navigate('login', {trigger: true});
 	return false;
@@ -1016,6 +1218,7 @@ var login = function() {
 					$(".login-error").html("");
 					localStorage.userId 	= response.data[0].userId;
 					localStorage.name 		= response.data[0].name;
+					localStorage.userType 	= response.data[0].userType;
 					// window.location.hash 	= "#listing";
 					// window.location.hash 	= "#listing";
 					Application.router.navigate('listing', {trigger: true});
@@ -1107,6 +1310,7 @@ var afterRender = function() {
 var logout = function() {
 	localStorage.removeItem('userId');
 	localStorage.removeItem('name');
+	localStorage.removeItem('userType');
 	localStorage.removeItem('booking');
 	Application.router.navigate('login', {trigger: true});
 	return false;
@@ -1152,7 +1356,8 @@ var registerSubmit = function() {
 		params 		= {
 						email 		: email,
 						name 		: name,
-						password 	: password
+						password 	: password,
+						userType 	: "1"
 					};
 
 	if(!validate(params)) return;
@@ -1187,6 +1392,66 @@ module.exports = View.extend({
     template: template,
 })
 
+});
+
+;require.register("views/templates/addmovie", function(exports, require, module) {
+var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  
+
+
+  return "<section class=\"container newuser-panel\">\n	<div class=\"jumbotron text-center\">\n		<h1>Add New User</h1>\n\n		<div class=\"container newuser-form\">\n			<h4>Please fill in the following:</h4>\n			<br>\n			<div class=\"text-danger newuser-error\"></div>\n			<br>\n			<div class=\"col-sm-6 col-sm-offset-3\">\n			<form class=\"form-horizontal\" role=\"form\">\n				<div class=\"form-group\">\n					<label for=\"newuser-email\" class=\"col-sm-2 control-label\">Email</label>\n					<div class=\"col-sm-10\">\n						<input type=\"email\" class=\"form-control input-lg\" id=\"newuser-email\" placeholder=\"Email\">\n					</div>\n				</div>\n				<div class=\"form-group\">\n					<label for=\"newuser-name\" class=\"col-sm-2 control-label\">Name</label>\n					<div class=\"col-sm-10\">\n						<input type=\"text\" class=\"form-control input-lg\" id=\"newuser-name\" placeholder=\"Name\">\n						<span class=\"text-danger\"></span>\n					</div>\n				</div>\n				<div class=\"form-group\">\n					<label for=\"newuser-password\" class=\"col-sm-2 control-label\">Password</label>\n					<div class=\"col-sm-10\">\n						<input type=\"password\" class=\"form-control input-lg\" id=\"newuser-password\" placeholder=\"Password\">\n					</div>\n				</div>\n				<div class=\"form-group\">\n					<label for=\"newuser-isadmin\" class=\"col-sm-2 control-label\">This user is an admin.</label>\n					<div class=\"col-sm-10\">\n						<input type=\"checkbox\" class=\"form-control input-lg\" id=\"newuser-password\">\n					</div>\n				</div>\n				<div class=\"form-group\">\n					<div class=\"col-sm-offset-2 col-sm-10\">\n						<button type=\"button\" class=\"btn btn-lg btn-success newuser-submit\">Register</button>\n					</div>\n				</div>\n			</form>\n			</div>\n		</div>\n	</div>\n<section>";
+  });
+if (typeof define === 'function' && define.amd) {
+  define([], function() {
+    return __templateData;
+  });
+} else if (typeof module === 'object' && module && module.exports) {
+  module.exports = __templateData;
+} else {
+  __templateData;
+}
+});
+
+;require.register("views/templates/adduser", function(exports, require, module) {
+var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  
+
+
+  return "<section class=\"container newuser-panel\">\n	<div class=\"jumbotron text-center\">\n		<h1>Add New User</h1>\n\n		<div class=\"container newuser-form\">\n			<h4>Please fill in the following:</h4>\n			<br>\n			<div class=\"text-danger newuser-error\"></div>\n			<br>\n			<div class=\"col-sm-6 col-sm-offset-3\">\n			<form class=\"form-horizontal\" role=\"form\">\n				<div class=\"form-group\">\n					<label for=\"newuser-email\" class=\"col-sm-2 control-label\">Email</label>\n					<div class=\"col-sm-10\">\n						<input type=\"email\" class=\"form-control input-lg\" id=\"newuser-email\" placeholder=\"Email\">\n					</div>\n				</div>\n				<div class=\"form-group\">\n					<label for=\"newuser-name\" class=\"col-sm-2 control-label\">Name</label>\n					<div class=\"col-sm-10\">\n						<input type=\"text\" class=\"form-control input-lg\" id=\"newuser-name\" placeholder=\"Name\">\n						<span class=\"text-danger\"></span>\n					</div>\n				</div>\n				<div class=\"form-group\">\n					<label for=\"newuser-password\" class=\"col-sm-2 control-label\">Password</label>\n					<div class=\"col-sm-10\">\n						<input type=\"password\" class=\"form-control input-lg\" id=\"newuser-password\" placeholder=\"Password\">\n					</div>\n				</div>\n				<div class=\"form-group\">\n					<input type=\"checkbox\" id=\"newuser-isadmin\"> This user is an administrator.\n				</div>\n				<div class=\"form-group\">\n					<div class=\"col-sm-offset-2 col-sm-10\">\n						<button type=\"button\" class=\"btn btn-lg btn-success newuser-submit\">Register</button>\n					</div>\n				</div>\n			</form>\n			</div>\n		</div>\n	</div>\n<section>";
+  });
+if (typeof define === 'function' && define.amd) {
+  define([], function() {
+    return __templateData;
+  });
+} else if (typeof module === 'object' && module && module.exports) {
+  module.exports = __templateData;
+} else {
+  __templateData;
+}
+});
+
+;require.register("views/templates/admin", function(exports, require, module) {
+var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  
+
+
+  return "<section class=\"container users-management\">\n	<div class=\"panel panel-default\">\n		<div class=\"panel-heading\">\n			<h3>User Management<button type=\"button\" class=\"btn btn-primary pull-right\">Add User</button></h3>\n		</div>\n		<div class=\"panel-body\">\n			Panel content\n		</div>\n	</div>\n</section>\n\n<section class=\"container movie-management\">\n	<div class=\"panel panel-default\">\n		<div class=\"panel-heading\">\n			<h3>Movie Management<button type=\"button\" class=\"btn btn-primary pull-right\">Add Movie</button></h3>\n		</div>\n		<div class=\"panel-body\">\n			Panel content\n		</div>\n	</div>\n</section>";
+  });
+if (typeof define === 'function' && define.amd) {
+  define([], function() {
+    return __templateData;
+  });
+} else if (typeof module === 'object' && module && module.exports) {
+  module.exports = __templateData;
+} else {
+  __templateData;
+}
 });
 
 ;require.register("views/templates/booking", function(exports, require, module) {
