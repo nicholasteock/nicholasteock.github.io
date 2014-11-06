@@ -751,7 +751,7 @@ var getRenderData = function() {
 
 	$.ajax({
 			url 		: Application.api+"movielisting",
-			type 		: "GET",
+			type 		: "POST",
 			dataType	: 'json',
 			data 		: data,
 			success		: onSuccess,
