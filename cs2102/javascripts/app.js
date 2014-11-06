@@ -100,7 +100,8 @@ Application = {
         	RegisterView 		= require('views/register_view'),
         	ListingView 		= require('views/listing_view'),
         	MovieView 			= require('views/movie_view'),
-        	BookingView 		= require('views/booking_view')
+            BookingView         = require('views/booking_view')
+        	EditView 		    = require('views/edit_view')
         	Router   			= require('lib/router');
         
         this.api                = "http://ec2-54-69-16-201.us-west-2.compute.amazonaws.com/api/";
@@ -110,7 +111,8 @@ Application = {
         this.registerView 		= new RegisterView();
         this.listingView 		= new ListingView();
         this.movieView 			= new MovieView();
-        this.bookingView 		= new BookingView();
+        this.bookingView        = new BookingView();
+        this.editView 		    = new EditView();
         this.router   			= new Router();
                 
         if (typeof Object.freeze === 'function') Object.freeze(this)
@@ -143,7 +145,8 @@ module.exports 	= Backbone.Router.extend({
         'listing' 		: 'listing',
         'movie' 		: 'movie',
         'booking' 		: 'booking',
-        'confirmation' 	: 'confirmation'
+        'confirmation' 	: 'confirmation',
+        'edit'          : 'edit'
     },
     
     login: function() {
@@ -170,6 +173,9 @@ module.exports 	= Backbone.Router.extend({
         $('body').html(application.confirmationView.render())
     },
 
+    edit: function() {
+        $('body').html(application.editView.render())
+    },
 })
 
 });
@@ -627,12 +633,13 @@ var submitBooking = function() {
 
   var hash    = window.location.hash,
       temp    = hash.indexOf('?sid='),
-      sid     = hash.substring(temp+5);
+      sid     = hash.substring(temp+5),
+      c_id    = Number(localStorage.userId);
 
   params = {
     sid   : sid,
     seats : bookedSeats,
-    c_id  : 1
+    c_id  : c_id
   };
 
   $.ajax({
@@ -701,6 +708,68 @@ module.exports = View.extend({
 
 });
 
+;require.register("views/edit_view", function(exports, require, module) {
+var View     = require('./view'),
+	template = require('./templates/edit')
+
+var getRenderData = function() {
+	if(localStorage.userId == undefined || localStorage.name == undefined) {
+		alert("Please log in to continue");
+		Application.router.navigate('login', {trigger: true});
+		return false;
+	}
+
+	var	dfdResult = $.Deferred();
+
+	var onSuccess = function( response ) {
+		return dfdResult.resolve( response );
+	};
+	
+	var onError = function( response ) {
+		return dfdResult.reject( response );
+	};
+
+	var data = {
+		userId: localStorage.userId
+	};
+
+	$.ajax({
+			url 		: Application.api+"bookings",
+			type 		: "POST",
+			dataType	: 'json',
+			data 		: data,
+			success		: onSuccess,
+			error		: onError
+	});
+	
+	return dfdResult;
+};
+
+var logout = function() {
+	localStorage.removeItem('userId');
+	localStorage.removeItem('name');
+	localStorage.removeItem('booking');
+	Application.router.navigate('login', {trigger: true});
+	return false;
+};
+
+var afterRender = function(){
+	$(".logout").click(logout);
+};
+
+var events = {
+};
+
+module.exports = View.extend({
+    id 				: 'edit-view',
+    events 			: events,
+    getRenderData 	: getRenderData,
+    afterRender 	: afterRender,
+    template 		: template
+});
+
+});
+
 ;require.register("views/home_view", function(exports, require, module) {
 var View     = require('./view')
   , template = require('./templates/home')
@@ -724,7 +793,7 @@ var getRenderData = function() {
 	}
 
 	var	dfdResult = $.Deferred();
-		
+
 	var onSuccess = function( response ) {
 		return dfdResult.resolve( response );
 	};
@@ -1168,6 +1237,27 @@ function program1(depth0,data) {
   if (!helpers.confirmation) { stack1 = blockHelperMissing.call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data}); }
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\n				</tbody>\n			</table>\n		</div>\n		<div class=\"text-center\">\n			<a href=\"#/listing\">\n				<button type=\"button\" class=\"btn btn-lg btn-primary\">Home</button>\n			</a>\n		</div>\n	</div>\n</section>";
+  return buffer;
+  });
+if (typeof define === 'function' && define.amd) {
+  define([], function() {
+    return __templateData;
+  });
+} else if (typeof module === 'object' && module && module.exports) {
+  module.exports = __templateData;
+} else {
+  __templateData;
+}
+});
+
+;require.register("views/templates/edit", function(exports, require, module) {
+var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var buffer = "";
+
+
+  buffer += "<section class=\"container\">\n	<div class=\"jumbotron\">\n		<h1 class=\"text-right\">Success!</h1>\n		<div class=\"well userbooking-summary\">\n			<h2>Your Bookings</h2>\n			<table class=\"table table-hover\">\n				<thead>\n				</thead>\n				<tbody>\n					\n					\n				</tbody>\n			</table>\n		</div>\n		<div class=\"text-center\">\n			<a href=\"#/listing\">\n				<button type=\"button\" class=\"btn btn-lg btn-primary\">Home</button>\n			</a>\n		</div>\n	</div>\n</section>";
   return buffer;
   });
 if (typeof define === 'function' && define.amd) {
