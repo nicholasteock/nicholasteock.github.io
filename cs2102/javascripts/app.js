@@ -561,7 +561,7 @@ var newuser = function() {
 	var email 		= $("#newuser-email").val(),
 		name 		= $("#newuser-name").val(),
 		password 	= $("#newuser-password").val(),
-		isAdmin 	= $('#check_id').is(":checked") ? 0 : 1,
+		isAdmin 	= $('#newuser-isadmin').is(":checked") ? 0 : 1,
 		params 		= {
 						email 		: email,
 						name 		: name,
