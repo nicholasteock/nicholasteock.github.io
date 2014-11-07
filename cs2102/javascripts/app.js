@@ -209,12 +209,15 @@ module.exports 	= Backbone.Router.extend({
 Handlebars.registerHelper( 'navbar', function(options) {
 	var output = 	'<nav class="navbar navbar-inverse" role="navigation">'+
 					'<div class="container">'+
-					'<div class="pull-right">'+
-					'<button type="button" class="btn btn-default navbar-btn login hide">Login</button>'+
-					'<button type="button" class="btn btn-default navbar-btn register hide">Register</button>'+
-					'<div class="navbar-text">Hi, '+localStorage.name+'</div>'+
-					'<button type="button" class="btn btn-default navbar-btn logout">Logout</button>'+
-					'</div>'+
+					'<ul class="nav navbar-nav">'+
+					'<li><button type="button" class="btn btn-default navbar-btn adminpanel">Admin Panel</button></li>'+
+					'</ul>'+
+					'<ul class="nav navbar-nav navbar-right">'+
+					'<li><button type="button" class="btn btn-default navbar-btn login hide">Login</button></li>'+
+					'<li><button type="button" class="btn btn-default navbar-btn register hide">Register</button></li>'+
+					'<li><div class="navbar-text">Hi, '+localStorage.name+'</div></li>'+
+					'<li><button type="button" class="btn btn-default navbar-btn logout">Logout</button></li>'+
+					'</ul>'+
 					'</div>'+
 					'</nav>';
 	return output;
@@ -498,8 +501,14 @@ var logout = function() {
 	return false;
 };
 
+var adminpanel = function() {
+	Application.router.navigate('admin', {trigger: true});
+	return false;
+};
+
 var afterRender = function(){
 	$(".logout").click(logout);
+	$(".adminpanel").click(adminpanel);
 };
 
 var events = {
@@ -539,6 +548,11 @@ var logout = function() {
 	localStorage.removeItem('userType');
 	localStorage.removeItem('booking');
 	Application.router.navigate('login', {trigger: true});
+	return false;
+};
+
+var adminpanel = function() {
+	Application.router.navigate('admin', {trigger: true});
 	return false;
 };
 
@@ -596,6 +610,7 @@ var cancel = function() {
 
 var afterRender = function(){
 	$(".logout").click(logout);
+	$(".adminpanel").click(adminpanel);
 	$(".newuser-submit").click(newuser);
 	$(".newuser-cancel").click(cancel);
 };
@@ -630,6 +645,26 @@ var getRenderData = function() {
 		Application.router.navigate('listing', {trigger: true});
 		return false;
 	}
+
+	var	dfdResult = $.Deferred();
+
+	var onSuccess = function( response ) {
+		return dfdResult.resolve( response );
+	};
+	
+	var onError = function( response ) {
+		return dfdResult.reject( response );
+	};
+
+	$.ajax({
+			url 		: Application.api+"admininfo",
+			type 		: "POST",
+			dataType	: 'json',
+			success		: onSuccess,
+			error		: onError
+	});
+	
+	return dfdResult;
 };
 
 var logout = function() {
@@ -641,8 +676,26 @@ var logout = function() {
 	return false;
 };
 
+var adminpanel = function() {
+	Application.router.navigate('admin', {trigger: true});
+	return false;
+};
+
+var adduser = function() {
+	Application.router.navigate('adduser', {trigger: true});
+	return false;
+};
+
+var addmovie = function() {
+	Application.router.navigate('addmovie', {trigger: true});
+	return false;
+};
+
 var afterRender = function(){
 	$(".logout").click(logout);
+	$(".adminpanel").click(adminpanel);
+	$(".adduser").click(adduser);
+	$(".addmovie").click(addmovie);
 };
 
 var events = {
@@ -782,8 +835,7 @@ var init = function (reservedSeat) {
         }
     }
     $('#place').html(str.join(''));
-
-    $(".logout").click(logout);
+    
     $(".seat").click(seatClicked);
     $(".submitbooking").click(submitBooking);
 };
@@ -904,8 +956,14 @@ var logout = function() {
 	return false;
 };
 
+var adminpanel = function() {
+	Application.router.navigate('admin', {trigger: true});
+	return false;
+};
+
 var afterRender = function() {
 	$(".logout").click(logout);
+	$(".adminpanel").click(adminpanel);
 }
 
 module.exports = View.extend({
@@ -963,8 +1021,14 @@ var logout = function() {
 	return false;
 };
 
+var adminpanel = function() {
+	Application.router.navigate('admin', {trigger: true});
+	return false;
+};
+
 var afterRender = function(){
 	$(".logout").click(logout);
+	$(".adminpanel").click(adminpanel);
 };
 
 var events = {
@@ -1041,6 +1105,11 @@ var logout = function() {
 	localStorage.removeItem('userType');
 	localStorage.removeItem('booking');
 	Application.router.navigate('login', {trigger: true});
+	return false;
+};
+
+var adminpanel = function() {
+	Application.router.navigate('admin', {trigger: true});
 	return false;
 };
 
@@ -1152,6 +1221,7 @@ var afterRender = function(){
 	}
 
 	$(".logout").click(logout);
+	$(".adminpanel").click(adminpanel);
 	$("#filterReset").click(resetFilter);
 	$("#filterSubmit").click(submitFilter);
 	$(".languageDropdown li").click(languageSelected);
@@ -1314,6 +1384,7 @@ var getRenderData = function() {
 
 var afterRender = function() {
 	$(".logout").click(logout);
+	$(".adminpanel").click(adminpanel);
 };
 
 var logout = function() {
@@ -1322,6 +1393,11 @@ var logout = function() {
 	localStorage.removeItem('userType');
 	localStorage.removeItem('booking');
 	Application.router.navigate('login', {trigger: true});
+	return false;
+};
+
+var adminpanel = function() {
+	Application.router.navigate('admin', {trigger: true});
 	return false;
 };
 
@@ -1447,10 +1523,21 @@ if (typeof define === 'function' && define.amd) {
 var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var buffer = "", stack1, helper, options, self=this, functionType="function", blockHelperMissing=helpers.blockHelperMissing;
+
+function program1(depth0,data) {
   
+  var buffer = "";
+  return buffer;
+  }
 
-
-  return "<section class=\"container users-management\">\n	<div class=\"panel panel-default\">\n		<div class=\"panel-heading\">\n			<h3>User Management<button type=\"button\" class=\"btn btn-primary pull-right\">Add User</button></h3>\n		</div>\n		<div class=\"panel-body\">\n			Panel content\n		</div>\n	</div>\n</section>\n\n<section class=\"container movie-management\">\n	<div class=\"panel panel-default\">\n		<div class=\"panel-heading\">\n			<h3>Movie Management<button type=\"button\" class=\"btn btn-primary pull-right\">Add Movie</button></h3>\n		</div>\n		<div class=\"panel-body\">\n			Panel content\n		</div>\n	</div>\n</section>";
+  options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data}
+  if (helper = helpers.navbar) { stack1 = helper.call(depth0, options); }
+  else { helper = (depth0 && depth0.navbar); stack1 = typeof helper === functionType ? helper.call(depth0, options) : helper; }
+  if (!helpers.navbar) { stack1 = blockHelperMissing.call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data}); }
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n\n<section class=\"container users-management\">\n	<div class=\"panel panel-default\">\n		<div class=\"panel-heading\">\n			<h3>User Management<button type=\"button\" class=\"btn btn-primary pull-right adduser\">Add User</button></h3>\n		</div>\n		<div class=\"panel-body\">\n			Panel content\n		</div>\n	</div>\n</section>\n\n<section class=\"container movie-management\">\n	<div class=\"panel panel-default\">\n		<div class=\"panel-heading\">\n			<h3>Movie Management<button type=\"button\" class=\"btn btn-primary pull-right addmovie\">Add Movie</button></h3>\n		</div>\n		<div class=\"panel-body\">\n			Panel content\n		</div>\n	</div>\n</section>";
+  return buffer;
   });
 if (typeof define === 'function' && define.amd) {
   define([], function() {
