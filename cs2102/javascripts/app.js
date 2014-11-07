@@ -454,8 +454,97 @@ Handlebars.registerHelper('confirmation', function(options) {
 	return output;
 });
 
+/******************************************************************************
+ Admin page users Helper
+******************************************************************************/
 
+Handlebars.registerHelper('users', function(userlist, options) {
+	var type 	= 	"",
+		user 	= 	"",
+		output 	= 	'<table class="table table-hover">'+
+					'<thead>'+
+					'<tr>'+
+					'<th>Name</th>'+
+					'<th>Email</th>'+
+					'<th>Password</th>'+
+					'<th>Type</th>'+
+					'<th>Edit</th>'+
+					'<th>Remove</th>'+
+					'</tr>'+
+					'</thead>'+
+					'<tbody>';
 
+	for(var i=0, iLen=userlist.length; i<iLen; i++) {
+		user = 	'<tr>'+
+				'<td>'+userlist[i].c_name+'</td>'+
+				'<td>'+userlist[i].c_email+'</td>'+
+				'<td>'+userlist[i].c_pwd+'</td>';
+
+		if(userlist[i].c_type == 0) {
+			type = "Admin";
+		}
+		else {
+			type = "Customer";
+		}
+
+		user += '<td>'+type+'</td>'+
+				'<td><button id="edituser-'+userlist[i].c_id+'" type="button" class="btn btn-sm btn-warning edituser">Edit</button></td>'+
+				'<td><button id="removeuser-'+userlist[i].c_id+'" type="button" class="btn btn-sm btn-danger removeuser">Remove</button></td></tr>';
+		output += user;
+	}
+	
+	output += '</tbody></table>';
+
+	return output;
+});
+
+/******************************************************************************
+ Admin page bookings Helper
+******************************************************************************/
+
+Handlebars.registerHelper('bookings', function(bookinglist, options) {
+	var type 	= 	"",
+		booking = 	"",
+		output 	= 	'<table class="table table-hover">'+
+					'<thead>'+
+					'<tr>'+
+					'<th>Movie</th>'+
+					'<th>Venue</th>'+
+					'<th>Date</th>'+
+					'<th>Time</th>'+
+					'<th>Seat</th>'+
+					'<th>Ticket#</th>'+
+					'<th>Edit</th>'+
+					'<th>Remove</th>'+
+					'</tr>'+
+					'</thead>'+
+					'<tbody>';
+
+	for(var i=0, iLen=bookinglist.length; i<iLen; i++) {
+		var tempDate 	= new Date(bookinglist[i].showdate),
+			dateString 	= tempDate.toDateString(),
+			day 		= dateString.substr(0,3),
+			month 		= dateString.substr(4,3),
+			dayNum 		= dateString.substr(8,2),
+			time 		= bookinglist[i].showtime.substring(0,5);
+
+		booking = 	'<tr>'+
+					'<td>'+bookinglist[i].title+'</td>'+
+					'<td>'+bookinglist[i].cinema+'</td>'+
+					'<td>'+dayNum+" "+month+", "+day+'</td>'+
+					'<td>'+time+'</td>'+
+					'<td>'+bookinglist[i].seatnum+'</td>'+
+					'<td>'+bookinglist[i].ticketnum+'</td>'+
+					'<td><button id="editbooking-'+bookinglist[i].ticketnum+'" type="button" class="btn btn-sm btn-warning editbooking">Edit</button></td>'+
+					'<td><button id="removebooking-'+bookinglist[i].ticketnum+'" type="button" class="btn btn-sm btn-danger removebooking">Remove</button></td></tr>';
+
+		output += booking;
+	}
+	
+	output += '</tbody></table>';
+
+	return output;
+});
 });
 
 ;require.register("models/collection", function(exports, require, module) {
@@ -649,11 +738,11 @@ var getRenderData = function() {
 	var	dfdResult = $.Deferred();
 
 	var onSuccess = function( response ) {
-		return dfdResult.resolve( response );
+		return dfdResult.resolve( response.data );
 	};
 	
 	var onError = function( response ) {
-		return dfdResult.reject( response );
+		return dfdResult.reject( response.data );
 	};
 
 	$.ajax({
@@ -691,11 +780,65 @@ var addmovie = function() {
 	return false;
 };
 
+var edituser = function() {
+
+}
+
+var removeuser = function(ev) {
+	var temp 		= ev.target.id,
+		userId 		= temp.substring(11);
+		params 		= { userId: userId };
+
+	$.ajax({
+			url 		: Application.api+"removeuser",
+			type 		: "POST",
+			dataType	: 'json',
+			data 		: params,
+			success		: function(response) {
+				$(ev.target).parent().parent().remove();
+				return;
+			},
+			error		: function(response) {
+				console.log("Error in removeuser, response :", response);
+				return;
+			}
+	});
+}
+
+var editbooking = function() {
+	
+}
+
+var removebooking = function(ev) {
+	var temp 		= ev.target.id,
+		ticketnum 	= temp.substring(14);
+		params 		= { ticketnum: ticketnum };
+
+	$.ajax({
+			url 		: Application.api+"removebooking",
+			type 		: "POST",
+			dataType	: 'json',
+			data 		: params,
+			success		: function(response) {
+				$(ev.target).parent().parent().remove();
+				return;
+			},
+			error		: function(response) {
+				console.log("Error in removebooking, response :", response);
+				return;
+			}
+	});
+}
+
 var afterRender = function(){
 	$(".logout").click(logout);
 	$(".adminpanel").click(adminpanel);
 	$(".adduser").click(adduser);
 	$(".addmovie").click(addmovie);
+	$(".edituser").click(edituser);
+	$(".removeuser").click(removeuser);
+	$(".editbooking").click(editbooking);
+	$(".removebooking").click(removebooking);
 };
 
 var events = {
@@ -1523,7 +1666,7 @@ if (typeof define === 'function' && define.amd) {
 var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
-  var buffer = "", stack1, helper, options, self=this, functionType="function", blockHelperMissing=helpers.blockHelperMissing;
+  var buffer = "", stack1, helper, options, self=this, functionType="function", blockHelperMissing=helpers.blockHelperMissing, helperMissing=helpers.helperMissing;
 
 function program1(depth0,data) {
   
@@ -1536,7 +1679,13 @@ function program1(depth0,data) {
   else { helper = (depth0 && depth0.navbar); stack1 = typeof helper === functionType ? helper.call(depth0, options) : helper; }
   if (!helpers.navbar) { stack1 = blockHelperMissing.call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data}); }
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n\n<section class=\"container users-management\">\n	<div class=\"panel panel-default\">\n		<div class=\"panel-heading\">\n			<h3>User Management<button type=\"button\" class=\"btn btn-primary pull-right adduser\">Add User</button></h3>\n		</div>\n		<div class=\"panel-body\">\n			Panel content\n		</div>\n	</div>\n</section>\n\n<section class=\"container movie-management\">\n	<div class=\"panel panel-default\">\n		<div class=\"panel-heading\">\n			<h3>Movie Management<button type=\"button\" class=\"btn btn-primary pull-right addmovie\">Add Movie</button></h3>\n		</div>\n		<div class=\"panel-body\">\n			Panel content\n		</div>\n	</div>\n</section>";
+  buffer += "\n\n<section class=\"container users-management\">\n	<div class=\"panel panel-default\">\n		<div class=\"panel-heading\">\n			<h3>User Management<button type=\"button\" class=\"btn btn-primary pull-right adduser\">Add User</button></h3>\n		</div>\n		<div class=\"panel-body\">\n		";
+  stack1 = (helper = helpers.users || (depth0 && depth0.users),options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data},helper ? helper.call(depth0, (depth0 && depth0.users), options) : helperMissing.call(depth0, "users", (depth0 && depth0.users), options));
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n		</div>\n	</div>\n</section>\n\n<section class=\"container movie-management\">\n	<div class=\"panel panel-default\">\n		<div class=\"panel-heading\">\n			<h3>Movie Management<button type=\"button\" class=\"btn btn-primary pull-right addmovie\">Add Movie</button></h3>\n		</div>\n		<div class=\"panel-body\">\n		";
+  stack1 = (helper = helpers.bookings || (depth0 && depth0.bookings),options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data},helper ? helper.call(depth0, (depth0 && depth0.bookings), options) : helperMissing.call(depth0, "bookings", (depth0 && depth0.bookings), options));
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n		</div>\n	</div>\n</section>";
   return buffer;
   });
 if (typeof define === 'function' && define.amd) {
