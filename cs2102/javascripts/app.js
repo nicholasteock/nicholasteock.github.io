@@ -104,6 +104,7 @@ Application = {
             EditView            = require('views/edit_view')
             AdminView           = require('views/admin_view')
             AdduserView         = require('views/adduser_view')
+            EdituserView         = require('views/edituser_view')
         	AddmovieView 		= require('views/addmovie_view')
             Router   			= require('lib/router');
         
@@ -118,6 +119,7 @@ Application = {
         this.editView           = new EditView();
         this.adminView          = new AdminView();
         this.adduserView        = new AdduserView();
+        this.edituserView       = new EdituserView();
         this.addmovieView 		= new AddmovieView();
         this.router   			= new Router();
                 
@@ -155,6 +157,7 @@ module.exports 	= Backbone.Router.extend({
         'edit'          : 'edit',
         'admin'         : 'admin',
         'adduser'       : 'adduser',
+        'edituser'      : 'edituser',
         'addmovie'      : 'addmovie'
     },
     
@@ -192,6 +195,10 @@ module.exports 	= Backbone.Router.extend({
 
     adduser: function() {
         $('body').html(application.adduserView.render())
+    },
+
+    edituser: function() {
+        $('body').html(application.edituserView.render())
     },
 
     addmovie: function() {
@@ -256,7 +263,7 @@ Handlebars.registerHelper( 'movielisting', function(listingObject, options) {
 					listingObject[i].TITLE+
 					'</div>'+
 					'<div class="col-md-5 col-lg-5 listing-left">'+
-					'<img class="listing-thumbnail" src="img/thumbs/'+listingObject[i].MID+'.jpg">'+
+					'<img class="listing-thumbnail" src="img/thumbs/'+listingObject[i].MID+'.jpg" alt="'+listingObject[i].TITLE+'">'+
 					'</div>'+
 					'<div class="col-md-7 col-lg-7 listing-right">'+
 					'<div class="listing-synopsis">'+
@@ -380,7 +387,7 @@ Handlebars.registerHelper('moviedetails', function(detailsObject, options) {
 	var subtitles = detailsObject.subtitles == "None" ? "" : " with " + detailsObject.subtitles + " subtitles";
 
 	var output 	= 	'<div class="col-sm-12 col-md-5 col-lg-5 movie-poster">'+
-					'<img src="img/'+detailsObject.mid+'.jpg">'+
+					'<img src="img/'+detailsObject.mid+'.jpg" alt="'+detailsObject.title+'">'+
 					// '<img src="img/'+detailsObject.mid+'.jpg">'+
 					'</div>'+
 					'<div class="col-sm-12 col-md-5 col-lg-5 movie-details">'+
@@ -555,6 +562,56 @@ Handlebars.registerHelper('bookings', function(bookinglist, options) {
 	output += '</tbody></table>';
 
 	return output;
+});
+
+/******************************************************************************
+ Edit User Helper
+******************************************************************************/
+
+Handlebars.registerHelper('edituser', function(userObject, options) {
+
+	var output = 	'<div class="container edituser-form">'+
+					'<div class="text-danger edituser-error"></div>'+
+					'<br>'+
+					'<div class="col-sm-6 col-sm-offset-3">'+
+					'<form class="form-horizontal" role="form">'+
+					'<div class="form-group">'+
+					'<label for="edituser-email" class="col-sm-3 control-label">Email</label>'+
+					'<div class="col-sm-9">'+
+					'<input type="email" class="form-control input-lg" id="edituser-email" placeholder="Email" value="'+userObject[0].c_email+'">'+
+					'</div>'+
+					'</div>'+
+					'<div class="form-group">'+
+					'<label for="edituser-name" class="col-sm-3 control-label">Name</label>'+
+					'<div class="col-sm-9">'+
+					'<input type="text" class="form-control input-lg" id="edituser-name" placeholder="Name" value="'+userObject[0].c_name+'">'+
+					'<span class="text-danger"></span>'+
+					'</div>'+
+					'</div>'+
+					'<div class="form-group">'+
+					'<label for="edituser-password" class="col-sm-3 control-label">Password</label>'+
+					'<div class="col-sm-9">'+
+					'<input type="password" class="form-control input-lg" id="edituser-password" placeholder="Password" value="'+userObject[0].c_pwd+'">'+
+					'</div>'+
+					'</div>'+
+					'<div class="form-group">'+
+					'<div class="col-sm-12"><input type="checkbox" id="edituser-isadmin"';
+
+		if( userObject[0].c_type==0 ) {
+			output += " checked";
+		}
+
+		output += 	'> Administrator'+
+					'</div></div>'+
+					'<div class="form-group">'+
+					'<div class="col-sm-2 col-sm-offset-4">'+
+					'<button type="button" class="btn btn-lg btn-danger edituser-cancel">Cancel</button>'+
+					'</div><div class="col-sm-6">'+
+					'<button type="button" id="'+userObject[0].c_id+'" class="btn btn-lg btn-primary edituser-submit">Update</button>'+
+					'</div></div></div></form></div></div>';
+
+	return output;
+
 });
 });
 
@@ -731,7 +788,7 @@ module.exports = View.extend({
 
 ;require.register("views/admin_view", function(exports, require, module) {
 var View     = require('./view'),
-	template = require('./templates/admin')
+	template = require('./templates/admin');
 
 var getRenderData = function() {
 	if(localStorage.userId == undefined || localStorage.name == undefined) {
@@ -791,9 +848,12 @@ var addmovie = function() {
 	return false;
 };
 
-var edituser = function() {
+var edituser = function(ev) {
+	var temp 	= ev.target.id;
+		userId 	= temp.substring(9);
 
-}
+	Application.router.navigate('edituser?userId='+userId, {trigger: true});
+};
 
 var removeuser = function(ev) {
 	var temp 		= ev.target.id,
@@ -839,9 +899,12 @@ var removebooking = function(ev) {
 				return;
 			}
 	});
-}
+};
 
 var afterRender = function(){
+	$(".loadingSpinner").addClass("hide");
+	$(".users-management").removeClass("hide");
+	$(".movie-management").removeClass("hide");
 	$(".logout").click(logout);
 	$(".adminpanel").click(adminpanel);
 	$(".adduser").click(adduser);
@@ -938,6 +1001,7 @@ var getRenderData = function() {
 var logout = function() {
   localStorage.removeItem('userId');
   localStorage.removeItem('name');
+  localStorage.removeItem('userType');
   localStorage.removeItem('booking');
   Application.router.navigate('login', {trigger: true});
   return false;
@@ -989,7 +1053,7 @@ var init = function (reservedSeat) {
         }
     }
     $('#place').html(str.join(''));
-    
+
     $(".seat").click(seatClicked);
     $(".submitbooking").click(submitBooking);
 };
@@ -1198,6 +1262,123 @@ module.exports = View.extend({
 
 });
 
+;require.register("views/edituser_view", function(exports, require, module) {
+var View     = require('./view'),
+	template = require('./templates/edituser');
+
+var getRenderData = function() {
+	if(localStorage.userId == undefined || localStorage.name == undefined) {
+		alert("Please log in to continue");
+		Application.router.navigate('login', {trigger: true});
+		return false;
+	}
+
+	var	dfdResult = $.Deferred();
+
+	var onSuccess = function( response ) {
+		return dfdResult.resolve( response );
+	};
+
+	var onError = function( response ) {
+		return dfdResult.reject( response );
+	};
+
+	var data 		= {};
+	var hash 		= window.location.hash;
+	var filter 		= hash.substring(hash.indexOf("?")+1);
+	var filterArr 	= filter.split("=");
+	data[filterArr[0]] = filterArr[1];
+
+	$.ajax({
+			url 		: Application.api+"userinfo",
+			type 		: "POST",
+			dataType	: 'json',
+			data 		: data,
+			success		: onSuccess,
+			error		: onError
+	});
+
+	return dfdResult;
+};
+
+var logout = function() {
+	localStorage.removeItem('userId');
+	localStorage.removeItem('name');
+	localStorage.removeItem('userType');
+	localStorage.removeItem('booking');
+	Application.router.navigate('login', {trigger: true});
+	return false;
+};
+
+var adminpanel = function() {
+	Application.router.navigate('admin', {trigger: true});
+	return false;
+};
+
+
+var edituser = function(ev) {
+	var userId 		= ev.target.id,
+		email 		= $("#edituser-email").val(),
+		name 		= $("#edituser-name").val(),
+		password 	= $("#edituser-password").val(),
+		isAdmin 	= $('#edituser-isadmin').is(":checked") ? 0 : 1,
+		params 		= {
+						userId 		: userId,
+						email 		: email,
+						name 		: name,
+						password 	: password,
+						userType 	: isAdmin
+					};
+
+	if(!validate(params)) return;
+
+	$.ajax({
+			url 		: Application.api+"edituser",
+			type 		: "POST",
+			dataType	: 'json',
+			data 		: params,
+			success		: function(response) {
+				alert("User "+params.name+" has been updated.");
+				return false;
+			},
+			error		: function(response) {
+				alert("Error in edit user "+params.name);
+			}
+	});
+};
+
+var validate = function(params) {
+	var email 		= params.email,
+		name 		= params.name,
+		password 	= params.password;
+
+	$(".edituser-error").html("");
+
+	if(email.length==0 || name.length==0 || password.length==0) {
+		$(".edituser-error").html("*All fields are required.");
+		return false;
+	}
+
+	return true;
+};
+
+var afterRender = function() {
+	$(".loadingSpinner").addClass("hide");
+	$(".edituser-panel").removeClass("hide");
+	$(".logout").click(logout);
+	$(".adminpanel").click(adminpanel);
+	$(".edituser-submit").click(edituser);
+}
+
+module.exports = View.extend({
+    id 				: 'edituser-view',
+    getRenderData 	: getRenderData,
+    afterRender 	: afterRender,
+    template 		: template
+});
+
+});
+
 ;require.register("views/home_view", function(exports, require, module) {
 var View     = require('./view')
   , template = require('./templates/home')
@@ -1374,6 +1555,9 @@ var afterRender = function(){
 		}
 	}
 
+	$(".loadingSpinner").addClass("hide");
+	$(".filterContainer").removeClass("hide");
+	$(".movielistingContainer").removeClass("hide");
 	$(".logout").click(logout);
 	$(".adminpanel").click(adminpanel);
 	$("#filterReset").click(resetFilter);
@@ -1690,10 +1874,10 @@ function program1(depth0,data) {
   else { helper = (depth0 && depth0.navbar); stack1 = typeof helper === functionType ? helper.call(depth0, options) : helper; }
   if (!helpers.navbar) { stack1 = blockHelperMissing.call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data}); }
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n\n<section class=\"container users-management\">\n	<div class=\"panel panel-default\">\n		<div class=\"panel-heading\">\n			<h3>User Management<button type=\"button\" class=\"btn btn-primary pull-right adduser\">Add User</button></h3>\n		</div>\n		<div class=\"panel-body\">\n		";
+  buffer += "\n\n<section class=\"container users-management hide\">\n	<div class=\"panel panel-default\">\n		<div class=\"panel-heading\">\n			<h3>User Management<button type=\"button\" class=\"btn btn-primary pull-right adduser\">Add User</button></h3>\n		</div>\n		<div class=\"panel-body\">\n		";
   stack1 = (helper = helpers.users || (depth0 && depth0.users),options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data},helper ? helper.call(depth0, (depth0 && depth0.users), options) : helperMissing.call(depth0, "users", (depth0 && depth0.users), options));
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n		</div>\n	</div>\n</section>\n\n<section class=\"container movie-management\">\n	<div class=\"panel panel-default\">\n		<div class=\"panel-heading\">\n			<h3>Movie Management<button type=\"button\" class=\"btn btn-primary pull-right addmovie\">Add Movie</button></h3>\n		</div>\n		<div class=\"panel-body\">\n		";
+  buffer += "\n		</div>\n	</div>\n</section>\n\n<section class=\"container movie-management hide\">\n	<div class=\"panel panel-default\">\n		<div class=\"panel-heading\">\n			<h3>Movie Management<button type=\"button\" class=\"btn btn-primary pull-right addmovie\">Add Movie</button></h3>\n		</div>\n		<div class=\"panel-body\">\n		";
   stack1 = (helper = helpers.bookings || (depth0 && depth0.bookings),options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data},helper ? helper.call(depth0, (depth0 && depth0.bookings), options) : helperMissing.call(depth0, "bookings", (depth0 && depth0.bookings), options));
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\n		</div>\n	</div>\n</section>";
@@ -1792,6 +1976,40 @@ if (typeof define === 'function' && define.amd) {
 }
 });
 
+;require.register("views/templates/edituser", function(exports, require, module) {
+var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var buffer = "", stack1, helper, options, self=this, functionType="function", blockHelperMissing=helpers.blockHelperMissing, helperMissing=helpers.helperMissing;
+
+function program1(depth0,data) {
+  
+  var buffer = "";
+  return buffer;
+  }
+
+  options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data}
+  if (helper = helpers.navbar) { stack1 = helper.call(depth0, options); }
+  else { helper = (depth0 && depth0.navbar); stack1 = typeof helper === functionType ? helper.call(depth0, options) : helper; }
+  if (!helpers.navbar) { stack1 = blockHelperMissing.call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data}); }
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n<section class=\"container edituser-panel hide\">\n	<div class=\"jumbotron text-center\">\n		<h1>Edit User</h1>\n		";
+  stack1 = (helper = helpers.edituser || (depth0 && depth0.edituser),options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data},helper ? helper.call(depth0, (depth0 && depth0.data), options) : helperMissing.call(depth0, "edituser", (depth0 && depth0.data), options));
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n	</div>\n<section>\n";
+  return buffer;
+  });
+if (typeof define === 'function' && define.amd) {
+  define([], function() {
+    return __templateData;
+  });
+} else if (typeof module === 'object' && module && module.exports) {
+  module.exports = __templateData;
+} else {
+  __templateData;
+}
+});
+
 ;require.register("views/templates/home", function(exports, require, module) {
 var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
@@ -1829,7 +2047,7 @@ function program1(depth0,data) {
   else { helper = (depth0 && depth0.navbar); stack1 = typeof helper === functionType ? helper.call(depth0, options) : helper; }
   if (!helpers.navbar) { stack1 = blockHelperMissing.call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data}); }
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n<section class=\"container filterContainer\">\n	<div class=\"col-md-12 col-lg-12\">\n		<div class=\"panel panel-default\">\n			<div class=\"panel-heading\">\n				<h2 class=\"panel-title\">Filters / Sorting</h2>\n			</div>\n			<div class=\"panel-body\">\n				<form class=\"form-inline filters\" role=\"form\">\n					<div class=\"form-group\">\n						<div class=\"col-sm-12\">\n							<input type=\"text\" class=\"form-control\" id=\"filterTitle\" placeholder=\"Search Movie Title\">\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<div class=\"col-sm-12 dropdown\">\n							<button type=\"button\" class=\"form-control dropdown-toggle\" id=\"filterLanguage\" data-toggle=\"dropdown\">All Languages</button>\n							<ul class=\"dropdown-menu languageDropdown\" role=\"menu\">\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">All Languages</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">English</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">Chinese</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">Japanese</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">Spanish</a></li>\n							</ul>\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<div class=\"col-sm-12 dropdown\">\n							<button type=\"button\" class=\"form-control dropdown-toggle\" id=\"filterSubtitles\" data-toggle=\"dropdown\">All Subtitles</button>\n						<ul class=\"dropdown-menu subtitlesDropdown\" role=\"menu\">\n							<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">All Subtitles</a></li>\n							<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">None</a></li>\n							<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">English</a></li>\n							<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">Chinese</a></li>\n						</ul>\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<div class=\"col-sm-12\">\n							<button type=\"button\" class=\"form-control dropdown-toggle\" id=\"filtermdarating\" data-toggle=\"dropdown\">All MDA Ratings</button>\n							<ul class=\"dropdown-menu mdaratingDropdown\" role=\"menu\">\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">All MDA Ratings</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">UR</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">PG13</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">NC16</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">M18</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">R21</a></li>\n							</ul>\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<div class=\"col-sm-12\">\n							<button type=\"button\" class=\"form-control dropdown-toggle\" id=\"filterRating\" data-toggle=\"dropdown\">Sort by Rating</button>\n							<ul class=\"dropdown-menu ratingDropdown\" role=\"menu\">\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">Ascending</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">Descending</a></li>\n							</ul>\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<div class=\"col-sm-12\">\n							<button type=\"button\" class=\"btn btn-danger\" id=\"filterReset\">Reset</button>\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<div class=\"col-sm-12\">\n							<button type=\"button\" class=\"btn btn-primary\" id=\"filterSubmit\">Filter</button>\n						</div>\n					</div>\n				</form>\n			</div>\n		</div>\n	</div>\n</section>\n<section class=\"container\">\n	<div class=\"col-sm-12\">\n		<div class=\"panel panel-default\">\n			<div class=\"panel-body\">\n			";
+  buffer += "\n<section class=\"container filterContainer hide\">\n	<div class=\"col-md-12 col-lg-12\">\n		<div class=\"panel panel-default\">\n			<div class=\"panel-heading\">\n				<h2 class=\"panel-title\">Filters / Sorting</h2>\n			</div>\n			<div class=\"panel-body\">\n				<form class=\"form-inline filters\" role=\"form\">\n					<div class=\"form-group\">\n						<div class=\"col-sm-12\">\n							<input type=\"text\" class=\"form-control\" id=\"filterTitle\" placeholder=\"Search Movie Title\">\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<div class=\"col-sm-12 dropdown\">\n							<button type=\"button\" class=\"form-control dropdown-toggle\" id=\"filterLanguage\" data-toggle=\"dropdown\">All Languages</button>\n							<ul class=\"dropdown-menu languageDropdown\" role=\"menu\">\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">All Languages</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">English</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">Chinese</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">Japanese</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">Spanish</a></li>\n							</ul>\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<div class=\"col-sm-12 dropdown\">\n							<button type=\"button\" class=\"form-control dropdown-toggle\" id=\"filterSubtitles\" data-toggle=\"dropdown\">All Subtitles</button>\n						<ul class=\"dropdown-menu subtitlesDropdown\" role=\"menu\">\n							<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">All Subtitles</a></li>\n							<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">None</a></li>\n							<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">English</a></li>\n							<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">Chinese</a></li>\n						</ul>\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<div class=\"col-sm-12\">\n							<button type=\"button\" class=\"form-control dropdown-toggle\" id=\"filtermdarating\" data-toggle=\"dropdown\">All MDA Ratings</button>\n							<ul class=\"dropdown-menu mdaratingDropdown\" role=\"menu\">\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">All MDA Ratings</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">UR</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">PG13</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">NC16</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">M18</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">R21</a></li>\n							</ul>\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<div class=\"col-sm-12\">\n							<button type=\"button\" class=\"form-control dropdown-toggle\" id=\"filterRating\" data-toggle=\"dropdown\">Sort by Rating</button>\n							<ul class=\"dropdown-menu ratingDropdown\" role=\"menu\">\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">Ascending</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">Descending</a></li>\n							</ul>\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<div class=\"col-sm-12\">\n							<button type=\"button\" class=\"btn btn-danger\" id=\"filterReset\">Reset</button>\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<div class=\"col-sm-12\">\n							<button type=\"button\" class=\"btn btn-primary\" id=\"filterSubmit\">Filter</button>\n						</div>\n					</div>\n				</form>\n			</div>\n		</div>\n	</div>\n</section>\n<section class=\"container movielistingContainer hide\">\n	<div class=\"col-sm-12\">\n		<div class=\"panel panel-default\">\n			<div class=\"panel-body\">\n			";
   stack1 = (helper = helpers.movielisting || (depth0 && depth0.movielisting),options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data},helper ? helper.call(depth0, (depth0 && depth0.data), options) : helperMissing.call(depth0, "movielisting", (depth0 && depth0.data), options));
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\n			</div>\n		</div>\n	</div>\n</section>";
@@ -1911,6 +2129,26 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
 
 
   return "<section class=\"container\">\n	<div class=\"jumbotron text-center\">\n		<h1>Register User</h1>\n\n		<div class=\"container register-form\">\n			<h4>Please fill in the following:</h4>\n			<br>\n			<div class=\"text-danger register-error\"></div>\n			<br>\n			<div class=\"col-sm-6 col-sm-offset-3\">\n			<form class=\"form-horizontal\" role=\"form\">\n				<div class=\"form-group\">\n					<label for=\"register-email\" class=\"col-sm-2 control-label\">Email</label>\n					<div class=\"col-sm-10\">\n						<input type=\"email\" class=\"form-control input-lg\" id=\"register-email\" placeholder=\"Email\">\n					</div>\n				</div>\n				<div class=\"form-group\">\n					<label for=\"register-name\" class=\"col-sm-2 control-label\">Name</label>\n					<div class=\"col-sm-10\">\n						<input type=\"text\" class=\"form-control input-lg\" id=\"register-name\" placeholder=\"Name\">\n						<span class=\"text-danger\"></span>\n					</div>\n				</div>\n				<div class=\"form-group\">\n					<label for=\"register-password\" class=\"col-sm-2 control-label\">Password</label>\n					<div class=\"col-sm-10\">\n						<input type=\"password\" class=\"form-control input-lg\" id=\"register-password\" placeholder=\"Password\">\n					</div>\n				</div>\n				<div class=\"form-group\">\n					<div class=\"col-sm-offset-2 col-sm-10\">\n						<button type=\"button\" class=\"btn btn-lg btn-success register-submit\">Register</button>\n					</div>\n				</div>\n			</form>\n			</div>\n		</div>\n	</div>\n<section>";
+  });
+if (typeof define === 'function' && define.amd) {
+  define([], function() {
+    return __templateData;
+  });
+} else if (typeof module === 'object' && module && module.exports) {
+  module.exports = __templateData;
+} else {
+  __templateData;
+}
+});
+
+;require.register("views/templates/untitled", function(exports, require, module) {
+var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  
+
+
+  return "<div class=\"panel-body\">\n	  		<div class=\"col-sm-12 col-md-6 col-lg-6\">\n				<div class=\"booking-movie-venue\">\n					<span class=\"col-sm-3 col-md-3 col-lg-3\">Cineplex: </span>\n					<span class=\"col-sm-9 col-md-9 col-lg-9\">AMK Hub</span>\n				</div>\n				<div class=\"booking-movie-title\">\n					<span class=\"col-sm-3 col-md-3 col-lg-3\">Movie Title: </span>\n					<span class=\"col-sm-9 col-md-9 col-lg-9\">Rurouni Kenshin The Legend Ends</span>\n				</div>\n				<div class=\"booking-movie-date\">\n					<span class=\"col-sm-3 col-md-3 col-lg-3\">Movie Date: </span>\n					<span class=\"col-sm-9 col-md-9 col-lg-9\">18/10/2014</span>\n				</div>\n				<div class=\"booking-movie-time\">\n					<span class=\"col-sm-3 col-md-3 col-lg-3\">Movie Time: </span>\n					<span class=\"col-sm-9 col-md-9 col-lg-9\">19:10</span>\n				</div>\n			</div>\n			<div class=\"col-sm-12 col-md-6 col-lg-6 booking-movie-info\">\n				<div class=\"booking-movie-duration\">\n					<span class=\"col-sm-3 col-md-3 col-lg-3\">Duration: </span>\n					<span class=\"col-sm-9 col-md-9 col-lg-9\">135 mins</span>\n				</div>\n				<div class=\"booking-movie-rating\">\n					<span class=\"col-sm-3 col-md-3 col-lg-3\">Rating: </span>\n					<span class=\"col-sm-9 col-md-9 col-lg-9\">NC16 - Violence</span>\n				</div>\n			</div>\n		</div>";
   });
 if (typeof define === 'function' && define.amd) {
   define([], function() {
