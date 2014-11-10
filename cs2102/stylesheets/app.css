@@ -5778,6 +5778,9 @@ body {
   background-color: #34495e;
   font-family: Helvetica;
 }
+.jumbotron {
+  margin-top: 30px;
+}
 
 /******************************************************************************
 *	LOADING SPINNER
@@ -5951,6 +5954,18 @@ body {
 ******************************************************************************/
 .confirmation-summary {
   margin-top: 40px;
+}
+/******************************************************************************
+*	ADMIN PAGE STYLES
+******************************************************************************/
+.admin-nav {
+  font-size: 18px;
+}
+.admin-nav a {
+  color: #FFF;
+}
+.admin-management .panel {
+  border-radius: 0;
 }
 
 #seats {

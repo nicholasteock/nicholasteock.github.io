@@ -2244,6 +2244,8 @@ var validate = function(params) {
 
 	if(email.length==0 || name.length==0 || password.length==0) {
 		$(".register-error").html("*All fields are required.");
+		$(".loginSpinner").addClass("hide");
+		$(".register-submit").removeClass("hide");
 		return false;
 	}
 
@@ -2251,6 +2253,9 @@ var validate = function(params) {
 };
 
 var registerSubmit = function() {
+	$(".loginSpinner").removeClass("hide");
+	$(".register-submit").addClass("hide");
+
 	var email 		= $("#register-email").val(),
 		name 		= $("#register-name").val(),
 		password 	= $("#register-password").val(),
@@ -2276,13 +2281,20 @@ var registerSubmit = function() {
 			},
 			error		: function(response) {
 				alert("Error in registering user.");
+				$(".loginSpinner").addClass("hide");
+				$(".register-submit").removeClass("hide");
 			}
 	});
+};
+
+var registerCancel = function() {
+	Application.router.navigate('login', {trigger: true});
 };
 
 var afterRender = function() {
 	console.log("In register page");
 	$(".register-submit").click(registerSubmit);
+	$(".register-cancel").click(registerCancel);
 };
 
 
@@ -2643,7 +2655,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   
 
 
-  return "<section class=\"container\">\n	<div class=\"jumbotron text-center\">\n		<h1>Register User</h1>\n\n		<div class=\"container register-form\">\n			<h4>Please fill in the following:</h4>\n			<br>\n			<div class=\"text-danger register-error\"></div>\n			<br>\n			<div class=\"col-sm-6 col-sm-offset-3\">\n			<form class=\"form-horizontal\" role=\"form\">\n				<div class=\"form-group\">\n					<label for=\"register-email\" class=\"col-sm-2 control-label\">Email</label>\n					<div class=\"col-sm-10\">\n						<input type=\"email\" class=\"form-control input-lg\" id=\"register-email\" placeholder=\"Email\">\n					</div>\n				</div>\n				<div class=\"form-group\">\n					<label for=\"register-name\" class=\"col-sm-2 control-label\">Name</label>\n					<div class=\"col-sm-10\">\n						<input type=\"text\" class=\"form-control input-lg\" id=\"register-name\" placeholder=\"Name\">\n						<span class=\"text-danger\"></span>\n					</div>\n				</div>\n				<div class=\"form-group\">\n					<label for=\"register-password\" class=\"col-sm-2 control-label\">Password</label>\n					<div class=\"col-sm-10\">\n						<input type=\"password\" class=\"form-control input-lg\" id=\"register-password\" placeholder=\"Password\">\n					</div>\n				</div>\n				<div class=\"form-group\">\n					<div class=\"col-sm-offset-2 col-sm-10\">\n						<button type=\"button\" class=\"btn btn-lg btn-success register-submit\">Register</button>\n					</div>\n				</div>\n			</form>\n			</div>\n		</div>\n	</div>\n<section>";
+  return "<section class=\"container\">\n	<div class=\"jumbotron text-center\">\n		<h1>Register User</h1>\n\n		<div class=\"container register-form\">\n			<h4>Please fill in the following:</h4>\n			<br>\n			<div class=\"text-danger register-error\"></div>\n			<br>\n			<div class=\"col-sm-6 col-sm-offset-3\">\n			<form class=\"form-horizontal\" role=\"form\">\n				<div class=\"form-group\">\n					<label for=\"register-email\" class=\"col-sm-2 control-label\">Email</label>\n					<div class=\"col-sm-10\">\n						<input type=\"email\" class=\"form-control input-lg\" id=\"register-email\" placeholder=\"Email\">\n					</div>\n				</div>\n				<div class=\"form-group\">\n					<label for=\"register-name\" class=\"col-sm-2 control-label\">Name</label>\n					<div class=\"col-sm-10\">\n						<input type=\"text\" class=\"form-control input-lg\" id=\"register-name\" placeholder=\"Name\">\n						<span class=\"text-danger\"></span>\n					</div>\n				</div>\n				<div class=\"form-group\">\n					<label for=\"register-password\" class=\"col-sm-2 control-label\">Password</label>\n					<div class=\"col-sm-10\">\n						<input type=\"password\" class=\"form-control input-lg\" id=\"register-password\" placeholder=\"Password\">\n					</div>\n				</div>\n				<div class=\"form-group\">\n					<div class=\"col-sm-offset-2 col-sm-10\">\n						<button type=\"button\" class=\"btn btn-lg btn-danger register-cancel\">Cancel</button>\n						<button type=\"button\" class=\"btn btn-lg btn-success register-submit\">Register</button>\n						<div class=\"col-sm-4 col-sm-offset-4 loginSpinner hide\">\n							<img src=\"img/spinner.gif\">\n						</div>\n					</div>\n				</div>\n			</form>\n			</div>\n		</div>\n	</div>\n<section>";
   });
 if (typeof define === 'function' && define.amd) {
   define([], function() {
