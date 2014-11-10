@@ -694,7 +694,7 @@ Handlebars.registerHelper('editmovie', function(movieObject, options) {
 					'<div class="form-group">'+
 					'<label for="editmovie-genre" class="col-sm-3 control-label">Genre</label>'+
 					'<div class="col-sm-9">'+
-					'<input type="text" class="form-control input-lg" id="editmovie-title" placeholder="Genre" value="'+movieObject.genre+'">'+
+					'<input type="text" class="form-control input-lg" id="editmovie-genre" placeholder="Genre" value="'+movieObject.genre+'">'+
 					'</div>'+
 					'</div>'+
 					'<div class="form-group">'+
@@ -764,9 +764,9 @@ Handlebars.registerHelper('editmovie', function(movieObject, options) {
 				'</div>'+
 				'</div>'+
 				'<div class="form-group">'+
-				'<label for="editmovie-language" class="col-sm-3 control-label">Language</label>'+
+				'<label for="editmovie-languages" class="col-sm-3 control-label">Language</label>'+
 				'<div class="col-sm-9">'+
-				'<select id="editmovie-language" class="form-control input-lg">';
+				'<select id="editmovie-languages" class="form-control input-lg">';
 
 	switch(movieObject.languages) {
 		case 'English':
@@ -920,18 +920,12 @@ module.exports = Backbone.Model.extend({
 
 ;require.register("views/addmovie_view", function(exports, require, module) {
 var View     = require('./view'),
-	template = require('./templates/addmovie')
+	template = require('./templates/addmovie');
 
 var getRenderData = function() {
 	if(localStorage.userId == undefined || localStorage.name == undefined) {
 		alert("Please log in to continue");
 		Application.router.navigate('login', {trigger: true});
-		return false;
-	}
-
-	if(localStorage.userType == undefined || localStorage.userType != 0) {
-		alert("You do not have admin privileges.");
-		Application.router.navigate('listing', {trigger: true});
 		return false;
 	}
 };
@@ -950,17 +944,90 @@ var adminpanel = function() {
 	return false;
 };
 
-var afterRender = function(){
-	$(".logout").click(logout);
-	$(".adminpanel").click(adminpanel);
+var addmovie = function(ev) {
+
+	var title 		= $("#addmovie-title").val(),
+		rating 		= $("#addmovie-rating").val(),
+		director 	= $("#addmovie-director").val(),
+		cast 		= $("#addmovie-cast").val(),
+		genre 		= $("#addmovie-genre").val(),
+		runtime 	= $("#addmovie-runtime").val(),
+		mdarating 	= $("#addmovie-mdarating").val(),
+		languages 	= $("#addmovie-languages").val(),
+		subtitles 	= $("#addmovie-subtitles").val(),
+		synopsis 	= $("#addmovie-synopsis").val(),
+		params 		= {
+						title 		: title,
+						rating 		: rating,
+						director 	: director,
+						cast 		: cast,
+						genre 		: genre,
+						runtime 	: runtime,
+						mdarating 	: mdarating,
+						languages	: languages,
+						subtitles 	: subtitles,
+						synopsis 	: synopsis,
+					};
+
+	if(!validate(params)) return;
+
+	$.ajax({
+			url 		: Application.api+"addmovie",
+			type 		: "POST",
+			dataType	: 'json',
+			data 		: params,
+			success		: function(response) {
+				alert("Movie "+params.title+" has been updated.");
+				return false;
+			},
+			error		: function(response) {
+				alert("Error in add movie "+params.title);
+			}
+	});
 };
 
-var events = {
+var validate = function(params) {
+
+	$(".addmovie-error").html("");
+
+	if(	params.title.length==0 ||
+		params.rating.length==0 ||
+		params.director.length==0 ||
+		params.cast.length==0 ||
+		params.runtime.length==0
+	) {
+		$(".addmovie-error").html("*All fields are required.");
+		return false;
+	}
+
+	if(params.runtime <= 0) {
+		$(".addmovie-error").html("Movie runtime cannot be 0");
+		return false;
+	}
+
+	if(params.rating > 10 || params.rating < 0) {
+		$(".addmovie-error").html("Rating is between 0-10");
+		return false;
+	}
+
+	return true;
 };
+
+var addcancel = function() {
+	Application.router.navigate('admin', {trigger: true});
+};
+
+var afterRender = function() {
+	$(".loadingSpinner").addClass("hide");
+	$(".addmovie-panel").removeClass("hide");
+	$(".logout").click(logout);
+	$(".adminpanel").click(adminpanel);
+	$(".addmovie-submit").click(addmovie);
+	$(".addmovie-cancel").click(addcancel);
+}
 
 module.exports = View.extend({
     id 				: 'addmovie-view',
-    events 			: events,
     getRenderData 	: getRenderData,
     afterRender 	: afterRender,
     template 		: template
@@ -2314,7 +2381,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   
 
 
-  return "<section class=\"container newuser-panel\">\n	<div class=\"jumbotron text-center\">\n		<h1>Add New Movie</h1>\n\n		<div class=\"container newuser-form\">\n			<h4>Please fill in the following:</h4>\n			<br>\n			<div class=\"text-danger newuser-error\"></div>\n			<br>\n			<div class=\"col-sm-6 col-sm-offset-3\">\n			<form class=\"form-horizontal\" role=\"form\">\n				<div class=\"form-group\">\n					<label for=\"newuser-email\" class=\"col-sm-2 control-label\">Email</label>\n					<div class=\"col-sm-10\">\n						<input type=\"email\" class=\"form-control input-lg\" id=\"newuser-email\" placeholder=\"Email\">\n					</div>\n				</div>\n				<div class=\"form-group\">\n					<label for=\"newuser-name\" class=\"col-sm-2 control-label\">Name</label>\n					<div class=\"col-sm-10\">\n						<input type=\"text\" class=\"form-control input-lg\" id=\"newuser-name\" placeholder=\"Name\">\n						<span class=\"text-danger\"></span>\n					</div>\n				</div>\n				<div class=\"form-group\">\n					<label for=\"newuser-password\" class=\"col-sm-2 control-label\">Password</label>\n					<div class=\"col-sm-10\">\n						<input type=\"password\" class=\"form-control input-lg\" id=\"newuser-password\" placeholder=\"Password\">\n					</div>\n				</div>\n				<div class=\"form-group\">\n					<label for=\"newuser-isadmin\" class=\"col-sm-2 control-label\">This user is an admin.</label>\n					<div class=\"col-sm-10\">\n						<input type=\"checkbox\" class=\"form-control input-lg\" id=\"newuser-password\">\n					</div>\n				</div>\n				<div class=\"form-group\">\n					<div class=\"col-sm-offset-2 col-sm-10\">\n						<button type=\"button\" class=\"btn btn-lg btn-success newuser-cancel\">Cancel</button>\n						<button type=\"button\" class=\"btn btn-lg btn-success newuser-submit\">Register</button>\n					</div>\n				</div>\n			</form>\n			</div>\n		</div>\n	</div>\n<section>";
+  return "<section class=\"container addmovie-panel\">\n	<div class=\"jumbotron text-center\">\n		<h1>Add New Movie</h1>\n		<div class=\"container addmovie-form\">\n			<h4>Please fill in movie details:</h4>\n			<br>\n			<div class=\"text-danger addmovie-error\"></div>\n			<br>\n			<div class=\"col-sm-6 col-sm-offset-3\">\n				<form class=\"form-horizontal\" role=\"form\">\n					<div class=\"form-group\">\n						<label for=\"addmovie-email\" class=\"col-sm-3 control-label\">Title</label>\n						<div class=\"col-sm-9\">\n							<input type=\"text\" class=\"form-control input-lg\" id=\"addmovie-title\" placeholder=\"Title\">\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<label for=\"addmovie-rating\" class=\"col-sm-3 control-label\">Rating</label>\n						<div class=\"col-sm-9\">\n							<input type=\"number\" class=\"form-control input-lg\" id=\"addmovie-rating\" placeholder=\"Rating\">\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<label for=\"addmovie-director\" class=\"col-sm-3 control-label\">Director</label>\n						<div class=\"col-sm-9\">\n							<input type=\"text\" class=\"form-control input-lg\" id=\"addmovie-director\" placeholder=\"Director\">\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<label for=\"addmovie-cast\" class=\"col-sm-3 control-label\">Cast</label>\n						<div class=\"col-sm-9\">\n							<input type=\"text\" class=\"form-control input-lg\" id=\"addmovie-cast\" placeholder=\"Cast\">\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<label for=\"addmovie-genre\" class=\"col-sm-3 control-label\">Genre</label>\n						<div class=\"col-sm-9\">\n							<input type=\"text\" class=\"form-control input-lg\" id=\"addmovie-genre\" placeholder=\"Genre\">\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<label for=\"addmovie-runtime\" class=\"col-sm-3 control-label\">Runtime</label>\n						<div class=\"col-sm-9\">\n							<input type=\"number\" class=\"form-control input-lg\" id=\"addmovie-runtime\" placeholder=\"Runtime\">\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<label for=\"addmovie-mdarating\" class=\"col-sm-3 control-label\">MDA Rating</label>\n						<div class=\"col-sm-9\">\n							<select id=\"addmovie-mdarating\" class=\"form-control input-lg\">\n								<option value=\"UR\" selected=\"selected\">UR</option>\n								<option value=\"G\">G</option>\n								<option value=\"PG13\">PG13</option>\n								<option value=\"NC16\">NC16</option>\n								<option value=\"M18\">M18</option>\n								<option value=\"R21\">R21</option>\n							</select>\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<label for=\"addmovie-languages\" class=\"col-sm-3 control-label\">Language</label>\n						<div class=\"col-sm-9\">\n							<select id=\"addmovie-languages\" class=\"form-control input-lg\">\n								<option value=\"None\" selected=\"selected\">None</option>\n								<option value=\"English\">English</option>\n								<option value=\"Chinese\">Chinese</option>\n								<option value=\"Japanese\">Japanese</option>\n								<option value=\"Spanish\">Spanish</option>\n								<option value=\"Hindu\">Hindu</option>\n							</select>\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<label for=\"addmovie-subtitles\" class=\"col-sm-3 control-label\">Subtitles</label>\n						<div class=\"col-sm-9\">\n							<select id=\"addmovie-subtitles\" class=\"form-control input-lg\">\n								<option value=\"None\" selected=\"selected\">None</option>\n								<option value=\"English\">English</option>\n								<option value=\"Chinese\">Chinese</option>\n								<option value=\"Japanese\">Japanese</option>\n								<option value=\"Spanish\">Spanish</option>\n								<option value=\"Hindu\">Hindu</option>\n							</select>\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<label for=\"addmovie-synopsis\" class=\"col-sm-3 control-label\">Synopsis</label>\n						<div class=\"col-sm-9\">\n							<textarea class=\"form-control input-lg\" rows=\"7\" id=\"addmovie-synopsis\" placeholder=\"Synopsis\"></textarea>\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<div class=\"col-sm-2 col-sm-offset-4\">\n							<button type=\"button\" class=\"btn btn-lg btn-danger addmovie-cancel\">Cancel</button>\n						</div>\n						<div class=\"col-sm-6\">\n							<button type=\"button\" class=\"btn btn-lg btn-primary addmovie-submit\">Submit</button>\n						</div>\n					</div>\n				</form>\n			</div>\n		</div>\n	</div>\n</section>				\n\n\n";
   });
 if (typeof define === 'function' && define.amd) {
   define([], function() {
