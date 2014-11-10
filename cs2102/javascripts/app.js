@@ -105,7 +105,8 @@ Application = {
             AdminView           = require('views/admin_view')
             AdduserView         = require('views/adduser_view')
             EdituserView         = require('views/edituser_view')
-        	AddmovieView 		= require('views/addmovie_view')
+            AddmovieView        = require('views/addmovie_view')
+        	EditmovieView 		= require('views/editmovie_view')
             Router   			= require('lib/router');
         
         this.api                = "http://ec2-54-69-16-201.us-west-2.compute.amazonaws.com/api/";
@@ -120,7 +121,8 @@ Application = {
         this.adminView          = new AdminView();
         this.adduserView        = new AdduserView();
         this.edituserView       = new EdituserView();
-        this.addmovieView 		= new AddmovieView();
+        this.addmovieView       = new AddmovieView();
+        this.editmovieView 		= new EditmovieView();
         this.router   			= new Router();
                 
         if (typeof Object.freeze === 'function') Object.freeze(this)
@@ -158,7 +160,8 @@ module.exports 	= Backbone.Router.extend({
         'admin'         : 'admin',
         'adduser'       : 'adduser',
         'edituser'      : 'edituser',
-        'addmovie'      : 'addmovie'
+        'addmovie'      : 'addmovie',
+        'editmovie'     : 'editmovie'
     },
     
     login: function() {
@@ -203,6 +206,10 @@ module.exports 	= Backbone.Router.extend({
 
     addmovie: function() {
         $('body').html(application.addmovieView.render())
+    },
+
+    editmovie: function() {
+        $('body').html(application.editmovieView.render())
     },
 })
 
@@ -565,6 +572,37 @@ Handlebars.registerHelper('bookings', function(bookinglist, options) {
 });
 
 /******************************************************************************
+ Admin page movies Helper
+******************************************************************************/
+
+Handlebars.registerHelper('movies', function(movieList, options) {
+	var type 	= 	"",
+		movie = 	"",
+		output 	= 	'<table class="table table-hover">'+
+					'<thead>'+
+					'<tr>'+
+					'<th>Title</th>'+
+					'<th>Edit</th>'+
+					'<th>Remove</th>'+
+					'</tr>'+
+					'</thead>'+
+					'<tbody>';
+
+	for(var i=0, iLen=movieList.length; i<iLen; i++) {
+		movie = 	'<tr>'+
+					'<td>'+movieList[i].TITLE+'</td>'+
+					'<td><button id="editmovie-'+movieList[i].MID+'" type="button" class="btn btn-sm btn-warning editmovie">Edit</button></td>'+
+					'<td><button id="removemovie-'+movieList[i].MID+'" type="button" class="btn btn-sm btn-danger removemovie">Remove</button></td></tr>';
+
+		output += movie;
+	}
+	
+	output += '</tbody></table>';
+
+	return output;
+});
+
+/******************************************************************************
  Edit User Helper
 ******************************************************************************/
 
@@ -613,9 +651,255 @@ Handlebars.registerHelper('edituser', function(userObject, options) {
 	return output;
 
 });
+
+/******************************************************************************
+ Edit Movie Helper
+******************************************************************************/
+
+Handlebars.registerHelper('editmovie', function(movieObject, options) {
+	movieObject = movieObject[0];
+	console.log("movieobject : ", movieObject);
+	var output = 	'<div class="container editmovie-form">'+
+					'<div class="text-danger editmovie-error"></div>'+
+					'<br>'+
+					'<div class="col-sm-6 col-sm-offset-3">'+
+					'<form class="form-horizontal" role="form">'+
+					'<div class="form-group">'+
+					'<label for="editmovie-email" class="col-sm-3 control-label">Title</label>'+
+					'<div class="col-sm-9">'+
+					'<input type="text" class="form-control input-lg" id="editmovie-title" placeholder="Title" value="'+movieObject.title+'">'+
+					'</div>'+
+					'</div>'+
+					'<div class="form-group">'+
+					'<label for="editmovie-rating" class="col-sm-3 control-label">Rating</label>'+
+					'<div class="col-sm-9">'+
+					'<input type="number" class="form-control input-lg" id="editmovie-rating" placeholder="Rating" value="'+movieObject.rating+'">'+
+					'</div>'+
+					'</div>'+
+					'<div class="form-group">'+
+					'<label for="editmovie-director" class="col-sm-3 control-label">Director</label>'+
+					'<div class="col-sm-9">'+
+					'<input type="text" class="form-control input-lg" id="editmovie-director" placeholder="Director" value="'+movieObject.director+'">'+
+					'</div>'+
+					'</div>'+
+					'<div class="form-group">'+
+					'<label for="editmovie-cast" class="col-sm-3 control-label">Cast</label>'+
+					'<div class="col-sm-9">'+
+					'<input type="text" class="form-control input-lg" id="editmovie-cast" placeholder="Cast" value="'+movieObject.cast+'">'+
+					'</div>'+
+					'</div>'+
+					'<div class="form-group">'+
+					'<label for="editmovie-genre" class="col-sm-3 control-label">Genre</label>'+
+					'<div class="col-sm-9">'+
+					'<input type="text" class="form-control input-lg" id="editmovie-title" placeholder="Genre" value="'+movieObject.genre+'">'+
+					'</div>'+
+					'</div>'+
+					'<div class="form-group">'+
+					'<label for="editmovie-runtime" class="col-sm-3 control-label">Runtime</label>'+
+					'<div class="col-sm-9">'+
+					'<input type="number" class="form-control input-lg" id="editmovie-runtime" placeholder="Runtime" value="'+movieObject.runtime+'">'+
+					'</div>'+
+					'</div>'+
+					'<div class="form-group">'+
+					'<label for="editmovie-mdarating" class="col-sm-3 control-label">MDA Rating</label>'+
+					'<div class="col-sm-9">'+
+					'<select id="editmovie-mdarating" class="form-control input-lg">';
+
+	switch(movieObject.mdarating) {
+		case 'G':
+			output += 	'<option value="UR">UR</option>'+
+						'<option value="G" selected="selected">G</option>'+
+						'<option value="PG13">PG13</option>'+
+						'<option value="NC16">NC16</option>'+
+						'<option value="M18">M18</option>'+
+						'<option value="R21">R21</option>';
+			break;
+		case 'PG13':
+			output += 	'<option value="UR">UR</option>'+
+						'<option value="G">G</option>'+
+						'<option value="PG13" selected="selected">PG13</option>'+
+						'<option value="NC16">NC16</option>'+
+						'<option value="M18">M18</option>'+
+						'<option value="R21">R21</option>';
+			break;
+		case 'NC16':
+			output += 	'<option value="UR">UR</option>'+
+						'<option value="G">G</option>'+
+						'<option value="PG13">PG13</option>'+
+						'<option value="NC16" selected="selected">NC16</option>'+
+						'<option value="M18">M18</option>'+
+						'<option value="R21">R21</option>';
+			break;
+		case 'M18':
+			output += 	'<option value="UR">UR</option>'+
+						'<option value="G">G</option>'+
+						'<option value="PG13">PG13</option>'+
+						'<option value="NC16">NC16</option>'+
+						'<option value="M18" selected="selected">M18</option>'+
+						'<option value="R21">R21</option>';
+			break;
+		case 'R21':
+			output += 	'<option value="UR">UR</option>'+
+						'<option value="G">G</option>'+
+						'<option value="PG13">PG13</option>'+
+						'<option value="NC16">NC16</option>'+
+						'<option value="M18">M18</option>'+
+						'<option value="R21" selected="selected">R21</option>';
+			break;
+		default:
+			output += 	'<option value="UR" selected="selected">UR</option>'+
+						'<option value="G">G</option>'+
+						'<option value="PG13">PG13</option>'+
+						'<option value="NC16">NC16</option>'+
+						'<option value="M18">M18</option>'+
+						'<option value="R21">R21</option>';
+			break;
+
+	};
+
+	output +=	'</select>'+
+				'</div>'+
+				'</div>'+
+				'<div class="form-group">'+
+				'<label for="editmovie-language" class="col-sm-3 control-label">Language</label>'+
+				'<div class="col-sm-9">'+
+				'<select id="editmovie-language" class="form-control input-lg">';
+
+	switch(movieObject.languages) {
+		case 'English':
+			output += 	'<option value="None">None</option>'+
+						'<option value="English" selected="selected">English</option>'+
+						'<option value="Chinese">Chinese</option>'+
+						'<option value="Japanese">Japanese</option>'+
+						'<option value="Spanish">Spanish</option>'+
+						'<option value="Hindu">Hindu</option>';
+			break;
+		case 'Chinese':
+			output += 	'<option value="None">None</option>'+
+						'<option value="English">English</option>'+
+						'<option value="Chinese" selected="selected">Chinese</option>'+
+						'<option value="Japanese">Japanese</option>'+
+						'<option value="Spanish">Spanish</option>'+
+						'<option value="Hindu">Hindu</option>';
+			break;
+		case 'Japanese':
+			output += 	'<option value="None">None</option>'+
+						'<option value="English">English</option>'+
+						'<option value="Chinese">Chinese</option>'+
+						'<option value="Japanese" selected="selected">Japanese</option>'+
+						'<option value="Spanish">Spanish</option>'+
+						'<option value="Hindu">Hindu</option>';
+			break;
+		case 'Hindu':
+			output += 	'<option value="None">None</option>'+
+						'<option value="English">English</option>'+
+						'<option value="Chinese">Chinese</option>'+
+						'<option value="Japanese">Japanese</option>'+
+						'<option value="Spanish">Spanish</option>'+
+						'<option value="Hindu" selected="selected">Hindu</option>';
+			break;
+		case 'Spanish':
+			output += 	'<option value="None">None</option>'+
+						'<option value="English">English</option>'+
+						'<option value="Chinese">Chinese</option>'+
+						'<option value="Japanese">Japanese</option>'+
+						'<option value="Spanish" selected="selected">Spanish</option>'+
+						'<option value="Hindu">Hindu</option>';
+			break;
+		default:
+			output += 	'<option value="None" selected="selected">None</option>'+
+						'<option value="English">English</option>'+
+						'<option value="Chinese">Chinese</option>'+
+						'<option value="Japanese">Japanese</option>'+
+						'<option value="Spanish">Spanish</option>'+
+						'<option value="Hindu">Hindu</option>';
+			break;
+	};
+
+	output +=	'</select>'+
+				'</div>'+
+				'</div>'+
+				'<div class="form-group">'+
+				'<label for="editmovie-subtitles" class="col-sm-3 control-label">Subtitles</label>'+
+				'<div class="col-sm-9">'+
+				'<select id="editmovie-subtitles" class="form-control input-lg">';
+
+
+	switch(movieObject.subtitles) {
+		case 'English':
+			output += 	'<option value="None">None</option>'+
+						'<option value="English" selected="selected">English</option>'+
+						'<option value="Chinese">Chinese</option>'+
+						'<option value="Japanese">Japanese</option>'+
+						'<option value="Spanish">Spanish</option>'+
+						'<option value="Hindu">Hindu</option>';
+			break;
+		case 'Chinese':
+			output += 	'<option value="None">None</option>'+
+						'<option value="English">English</option>'+
+						'<option value="Chinese" selected="selected">Chinese</option>'+
+						'<option value="Japanese">Japanese</option>'+
+						'<option value="Spanish">Spanish</option>'+
+						'<option value="Hindu">Hindu</option>';
+			break;
+		case 'Japanese':
+			output += 	'<option value="None">None</option>'+
+						'<option value="English">English</option>'+
+						'<option value="Chinese">Chinese</option>'+
+						'<option value="Japanese" selected="selected">Japanese</option>'+
+						'<option value="Spanish">Spanish</option>'+
+						'<option value="Hindu">Hindu</option>';
+			break;
+		case 'Spanish':
+			output += 	'<option value="None">None</option>'+
+						'<option value="English">English</option>'+
+						'<option value="Chinese">Chinese</option>'+
+						'<option value="Japanese">Japanese</option>'+
+						'<option value="Spanish" selected="selected">Spanish</option>'+
+						'<option value="Hindu">Hindu</option>';
+			break;
+		case 'Hindu':
+			output += 	'<option value="None">None</option>'+
+						'<option value="English">English</option>'+
+						'<option value="Chinese">Chinese</option>'+
+						'<option value="Japanese">Japanese</option>'+
+						'<option value="Spanish">Spanish</option>'+
+						'<option value="Hindu" selected="selected">Hindu</option>';
+			break;
+		default:
+			output += 	'<option value="None" selected="selected">None</option>'+
+						'<option value="English">English</option>'+
+						'<option value="Chinese">Chinese</option>'+
+						'<option value="Japanese">Japanese</option>'+
+						'<option value="Spanish">Spanish</option>'+
+						'<option value="Hindu">Hindu</option>';
+			break;
+	}
+
+	output += 	'</select>'+
+				'</div>'+
+				'</div>'+
+				'<div class="form-group">'+
+				'<label for="editmovie-synopsis" class="col-sm-3 control-label">Synopsis</label>'+
+				'<div class="col-sm-9">'+
+				'<textarea class="form-control input-lg" rows="7" id="editmovie-synopsis" placeholder="Synopsis">'+movieObject.synopsis+'</textarea>'+
+				'</div>'+
+				'</div>'+
+				'<div class="form-group">'+
+				'<div class="col-sm-2 col-sm-offset-4">'+
+				'<button type="button" class="btn btn-lg btn-danger editmovie-cancel">Cancel</button>'+
+				'</div><div class="col-sm-6">'+
+				'<button type="button" id="'+movieObject.mid+'" class="btn btn-lg btn-primary editmovie-submit">Update</button>'+
+				'</div></div></div></form>'+
+				'</div>'+
+				'</div>';
+
+	return output;
 });
 
-;require.register("models/collection", function(exports, require, module) {
+});
+
+require.register("models/collection", function(exports, require, module) {
 // Base class for all collections
 module.exports = Backbone.Collection.extend({
     
@@ -681,7 +965,7 @@ module.exports = View.extend({
 
 });
 
-;require.register("views/adduser_view", function(exports, require, module) {
+require.register("views/adduser_view", function(exports, require, module) {
 var View     = require('./view'),
 	template = require('./templates/adduser')
 
@@ -786,7 +1070,7 @@ module.exports = View.extend({
 
 });
 
-;require.register("views/admin_view", function(exports, require, module) {
+require.register("views/admin_view", function(exports, require, module) {
 var View     = require('./view'),
 	template = require('./templates/admin');
 
@@ -838,6 +1122,33 @@ var adminpanel = function() {
 	return false;
 };
 
+var adminnav = function(ev) {
+	var id = ev.target.id;
+	$(".admin-nav ul li").removeClass("active");
+	$("#"+id).parent().addClass("active");
+
+	switch (id) {
+		case "admin-users":
+			$(".admin-management").addClass("hide");
+			$(".users-management").removeClass("hide");
+			break;
+		case "admin-bookings":
+			$(".admin-management").addClass("hide");
+			$(".bookings-management").removeClass("hide");
+			break;
+		case "admin-movies":
+			$(".admin-management").addClass("hide");
+			$(".movies-management").removeClass("hide");
+			break;
+		case "admin-showtimes":
+			$(".admin-management").addClass("hide");
+			$(".showtimes-management").removeClass("hide");
+			break;
+		default:
+			break;
+	}
+};
+
 var adduser = function() {
 	Application.router.navigate('adduser', {trigger: true});
 	return false;
@@ -853,6 +1164,13 @@ var edituser = function(ev) {
 		userId 	= temp.substring(9);
 
 	Application.router.navigate('edituser?userId='+userId, {trigger: true});
+};
+
+var editmovie = function(ev) {
+	var temp 	= ev.target.id;
+		mid 	= temp.substring(10);
+
+	Application.router.navigate('editmovie?mid='+mid, {trigger: true});
 };
 
 var removeuser = function(ev) {
@@ -904,12 +1222,13 @@ var removebooking = function(ev) {
 var afterRender = function(){
 	$(".loadingSpinner").addClass("hide");
 	$(".users-management").removeClass("hide");
-	$(".movie-management").removeClass("hide");
 	$(".logout").click(logout);
 	$(".adminpanel").click(adminpanel);
+	$(".admin-nav li").click(adminnav);
 	$(".adduser").click(adduser);
 	$(".addmovie").click(addmovie);
 	$(".edituser").click(edituser);
+	$(".editmovie").click(editmovie);
 	$(".removeuser").click(removeuser);
 	$(".editbooking").click(editbooking);
 	$(".removebooking").click(removebooking);
@@ -928,7 +1247,7 @@ module.exports = View.extend({
 
 });
 
-;require.register("views/booking_view", function(exports, require, module) {
+require.register("views/booking_view", function(exports, require, module) {
 var View     = require('./view'),
 	template = require('./templates/booking');
 
@@ -1193,7 +1512,7 @@ module.exports = View.extend({
 
 });
 
-;require.register("views/edit_view", function(exports, require, module) {
+require.register("views/edit_view", function(exports, require, module) {
 var View     = require('./view'),
 	template = require('./templates/edit')
 
@@ -1262,7 +1581,153 @@ module.exports = View.extend({
 
 });
 
-;require.register("views/edituser_view", function(exports, require, module) {
+require.register("views/editmovie_view", function(exports, require, module) {
+var View     = require('./view'),
+	template = require('./templates/editmovie');
+
+var getRenderData = function() {
+	if(localStorage.userId == undefined || localStorage.name == undefined) {
+		alert("Please log in to continue");
+		Application.router.navigate('login', {trigger: true});
+		return false;
+	}
+
+	var	dfdResult = $.Deferred();
+
+	var onSuccess = function( response ) {
+		return dfdResult.resolve( response );
+	};
+
+	var onError = function( response ) {
+		return dfdResult.reject( response );
+	};
+
+	var data 		= {};
+	var hash 		= window.location.hash;
+	var filter 		= hash.substring(hash.indexOf("?")+1);
+	var filterArr 	= filter.split("=");
+	data[filterArr[0]] = filterArr[1];
+
+	$.ajax({
+			url 		: Application.api+"movie?mid="+filterArr[1],
+			type 		: "GET",
+			dataType	: 'json',
+			success		: onSuccess,
+			error		: onError
+	});
+
+	return dfdResult;
+};
+
+var logout = function() {
+	localStorage.removeItem('userId');
+	localStorage.removeItem('name');
+	localStorage.removeItem('userType');
+	localStorage.removeItem('booking');
+	Application.router.navigate('login', {trigger: true});
+	return false;
+};
+
+var adminpanel = function() {
+	Application.router.navigate('admin', {trigger: true});
+	return false;
+};
+
+
+var editmovie = function(ev) {
+
+	var mid 		= ev.target.id,
+		title 		= $("#editmovie-title").val(),
+		rating 		= $("#editmovie-rating").val(),
+		director 	= $("#editmovie-director").val(),
+		cast 		= $("#editmovie-cast").val(),
+		genre 		= $("#editmovie-genre").val(),
+		runtime 	= $("#editmovie-runtime").val(),
+		mdarating 	= $("#editmovie-mdarating").val(),
+		languages 	= $("#editmovie-languages").val(),
+		subtitles 	= $("#editmovie-subtitles").val(),
+		synopsis 	= $("#editmovie-synopsis").val(),
+		params 		= {
+						mid 		: mid,
+						title 		: title,
+						rating 		: rating,
+						director 	: director,
+						cast 		: cast,
+						genre 		: genre,
+						runtime 	: runtime,
+						mdarating 	: mdarating,
+						languages	: languages,
+						subtitles 	: subtitles,
+						synopsis 	: synopsis,
+					};
+
+	if(!validate(params)) return;
+
+	$.ajax({
+			url 		: Application.api+"editmovie",
+			type 		: "POST",
+			dataType	: 'json',
+			data 		: params,
+			success		: function(response) {
+				alert("Movie "+params.title+" has been updated.");
+				return false;
+			},
+			error		: function(response) {
+				alert("Error in edit movie "+params.name);
+			}
+	});
+};
+
+var validate = function(params) {
+
+	$(".editmovie-error").html("");
+
+	if(	params.title.length==0 ||
+		params.rating.length==0 ||
+		params.director.length==0 ||
+		params.cast.length==0 ||
+		params.runtime.length==0
+	) {
+		$(".editmovie-error").html("*All fields are required.");
+		return false;
+	}
+
+	if(params.runtime <= 0) {
+		$(".editmovie-error").html("Movie runtime cannot be 0");
+		return false;
+	}
+
+	if(params.rating > 10 || params.rating < 0) {
+		$(".editmovie-error").html("Rating is between 0-10");
+		return false;
+	}
+
+	return true;
+};
+
+var editcancel = function() {
+	Application.router.navigate('admin', {trigger: true});
+};
+
+var afterRender = function() {
+	$(".loadingSpinner").addClass("hide");
+	$(".editmovie-panel").removeClass("hide");
+	$(".logout").click(logout);
+	$(".adminpanel").click(adminpanel);
+	$(".editmovie-submit").click(editmovie);
+	$(".editmovie-cancel").click(editcancel);
+}
+
+module.exports = View.extend({
+    id 				: 'editmovie-view',
+    getRenderData 	: getRenderData,
+    afterRender 	: afterRender,
+    template 		: template
+});
+
+});
+
+require.register("views/edituser_view", function(exports, require, module) {
 var View     = require('./view'),
 	template = require('./templates/edituser');
 
@@ -1362,13 +1827,18 @@ var validate = function(params) {
 	return true;
 };
 
+var editcancel = function() {
+	Application.router.navigate('admin', {trigger: true});
+};
+
 var afterRender = function() {
 	$(".loadingSpinner").addClass("hide");
 	$(".edituser-panel").removeClass("hide");
 	$(".logout").click(logout);
 	$(".adminpanel").click(adminpanel);
 	$(".edituser-submit").click(edituser);
-}
+	$(".edituser-cancel").click(editcancel);
+};
 
 module.exports = View.extend({
     id 				: 'edituser-view',
@@ -1379,7 +1849,7 @@ module.exports = View.extend({
 
 });
 
-;require.register("views/home_view", function(exports, require, module) {
+require.register("views/home_view", function(exports, require, module) {
 var View     = require('./view')
   , template = require('./templates/home')
 
@@ -1581,7 +2051,7 @@ module.exports = View.extend({
 
 });
 
-;require.register("views/login_view", function(exports, require, module) {
+require.register("views/login_view", function(exports, require, module) {
 var View     = require('./view')
   , template = require('./templates/login')
 
@@ -1603,6 +2073,10 @@ var afterRender = function() {
 };
 
 var login = function() {
+	$(".loginSpinner").removeClass("hide");
+	$(".login-submit").addClass("hide");
+	$(".login-register").addClass("hide");
+
 	var email 		= $("#login-email").val(),
 		password 	= $("#login-password").val(),
 		params 		= {
@@ -1748,7 +2222,7 @@ module.exports = View.extend({
 
 });
 
-;require.register("views/register_view", function(exports, require, module) {
+require.register("views/register_view", function(exports, require, module) {
 var View     = require('./view')
   , template = require('./templates/register')
 
@@ -1874,13 +2348,16 @@ function program1(depth0,data) {
   else { helper = (depth0 && depth0.navbar); stack1 = typeof helper === functionType ? helper.call(depth0, options) : helper; }
   if (!helpers.navbar) { stack1 = blockHelperMissing.call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data}); }
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n\n<section class=\"container users-management hide\">\n	<div class=\"panel panel-default\">\n		<div class=\"panel-heading\">\n			<h3>User Management<button type=\"button\" class=\"btn btn-primary pull-right adduser\">Add User</button></h3>\n		</div>\n		<div class=\"panel-body\">\n		";
+  buffer += "\n\n<section class=\"container admin-nav\">\n	<ul class=\"nav nav-tabs nav-justified\" role=\"tablist\">\n	  <li role=\"presentation\" class=\"active\"><a id=\"admin-users\">Users</a></li>\n	  <li role=\"presentation\"><a id=\"admin-bookings\">Bookings</a></li>\n	  <li role=\"presentation\"><a id=\"admin-movies\">Movies</a></li>\n	  <li role=\"presentation\"><a id=\"admin-showtimes\">Showtimes</a></li>\n	</ul>\n</section>\n\n<section class=\"container admin-management users-management hide\">\n	<div class=\"panel panel-default\">\n		<div class=\"panel-heading\">\n			<h3>User Management<button type=\"button\" class=\"btn btn-primary pull-right adduser\">Add User</button></h3>\n		</div>\n		<div class=\"panel-body\">\n		";
   stack1 = (helper = helpers.users || (depth0 && depth0.users),options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data},helper ? helper.call(depth0, (depth0 && depth0.users), options) : helperMissing.call(depth0, "users", (depth0 && depth0.users), options));
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n		</div>\n	</div>\n</section>\n\n<section class=\"container movie-management hide\">\n	<div class=\"panel panel-default\">\n		<div class=\"panel-heading\">\n			<h3>Movie Management<button type=\"button\" class=\"btn btn-primary pull-right addmovie\">Add Movie</button></h3>\n		</div>\n		<div class=\"panel-body\">\n		";
+  buffer += "\n		</div>\n	</div>\n</section>\n\n<section class=\"container admin-management bookings-management hide\">\n	<div class=\"panel panel-default\">\n		<div class=\"panel-heading\">\n			<h3>Booking Management</h3>\n		</div>\n		<div class=\"panel-body\">\n		";
   stack1 = (helper = helpers.bookings || (depth0 && depth0.bookings),options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data},helper ? helper.call(depth0, (depth0 && depth0.bookings), options) : helperMissing.call(depth0, "bookings", (depth0 && depth0.bookings), options));
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n		</div>\n	</div>\n</section>";
+  buffer += "\n		</div>\n	</div>\n</section>\n\n<section class=\"container admin-management movies-management hide\">\n	<div class=\"panel panel-default\">\n		<div class=\"panel-heading\">\n			<h3>Movie Management<button type=\"button\" class=\"btn btn-primary pull-right addmovie\">Add Movie</button></h3>\n		</div>\n		<div class=\"panel-body\">\n		";
+  stack1 = (helper = helpers.movies || (depth0 && depth0.movies),options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data},helper ? helper.call(depth0, (depth0 && depth0.movies), options) : helperMissing.call(depth0, "movies", (depth0 && depth0.movies), options));
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n		</div>\n	</div>\n</section>\n\n<section class=\"container admin-management showtimes-management hide\">\n	<div class=\"panel panel-default\">\n		<div class=\"panel-heading\">\n			<h3>Showtimes Management<button type=\"button\" class=\"btn btn-primary pull-right addmovie\">Add Showtime</button></h3>\n		</div>\n		<div class=\"panel-body\">\n		\n		</div>\n	</div>\n</section>";
   return buffer;
   });
 if (typeof define === 'function' && define.amd) {
@@ -1963,6 +2440,40 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
 
 
   buffer += "<section class=\"container\">\n	<div class=\"jumbotron\">\n		<h1 class=\"text-right\">Success!</h1>\n		<div class=\"well userbooking-summary\">\n			<h2>Your Bookings</h2>\n			<table class=\"table table-hover\">\n				<thead>\n				</thead>\n				<tbody>\n					\n					\n				</tbody>\n			</table>\n		</div>\n		<div class=\"text-center\">\n			<a href=\"#/listing\">\n				<button type=\"button\" class=\"btn btn-lg btn-primary\">Home</button>\n			</a>\n		</div>\n	</div>\n</section>";
+  return buffer;
+  });
+if (typeof define === 'function' && define.amd) {
+  define([], function() {
+    return __templateData;
+  });
+} else if (typeof module === 'object' && module && module.exports) {
+  module.exports = __templateData;
+} else {
+  __templateData;
+}
+});
+
+;require.register("views/templates/editmovie", function(exports, require, module) {
+var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var buffer = "", stack1, helper, options, self=this, functionType="function", blockHelperMissing=helpers.blockHelperMissing, helperMissing=helpers.helperMissing;
+
+function program1(depth0,data) {
+  
+  var buffer = "";
+  return buffer;
+  }
+
+  options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data}
+  if (helper = helpers.navbar) { stack1 = helper.call(depth0, options); }
+  else { helper = (depth0 && depth0.navbar); stack1 = typeof helper === functionType ? helper.call(depth0, options) : helper; }
+  if (!helpers.navbar) { stack1 = blockHelperMissing.call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data}); }
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n<section class=\"container editmovie-panel\">\n	<div class=\"jumbotron text-center\">\n		<h1>Edit Movie</h1>\n		";
+  stack1 = (helper = helpers.editmovie || (depth0 && depth0.editmovie),options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data},helper ? helper.call(depth0, (depth0 && depth0.data), options) : helperMissing.call(depth0, "editmovie", (depth0 && depth0.data), options));
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n	</div>\n</section>";
   return buffer;
   });
 if (typeof define === 'function' && define.amd) {
@@ -2071,7 +2582,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   
 
 
-  return "<section class=\"container\">\n	<div class=\"jumbotron text-center\">\n		<h1>CS2102 Project</h1>\n		<h1>Movie Booking System</h1>\n\n		<div class=\"container login-form\">\n			<h4>Please login to continue</h4>\n			<form role=\"form\" class=\"col-sm-12 col-md-4 col-lg-4 col-md-offset-4 col-lg-offset-4\">\n				<h4 class=\"text-danger login-error\"></h4>\n				<input type=\"email\" class=\"form-control input-lg\" id=\"login-email\" placeholder=\"Email\" value=\"nick@test.com\">\n				<input type=\"password\" class=\"form-control input-lg\" id=\"login-password\" placeholder=\"Password\" value=\"1234\">\n				<button type=\"button\" class=\"btn btn-lg btn-block btn-primary login-submit\">Login</button>\n				<button type=\"button\" class=\"btn btn-lg btn-block btn-success login-register\">Register</button>\n			</form>\n		</div>\n	</div>\n<section>";
+  return "<section class=\"container\">\n	<div class=\"jumbotron text-center\">\n		<h1>CS2102 Project</h1>\n		<h1>Movie Booking System</h1>\n\n		<div class=\"container login-form\">\n			<h4>Please login to continue</h4>\n			<form role=\"form\" class=\"col-sm-12 col-md-4 col-lg-4 col-md-offset-4 col-lg-offset-4\">\n				<h4 class=\"text-danger login-error\"></h4>\n				<input type=\"email\" class=\"form-control input-lg\" id=\"login-email\" placeholder=\"Email\" value=\"nick@test.com\">\n				<input type=\"password\" class=\"form-control input-lg\" id=\"login-password\" placeholder=\"Password\" value=\"1234\">\n				<button type=\"button\" class=\"btn btn-lg btn-block btn-primary login-submit\">Login</button>\n				<button type=\"button\" class=\"btn btn-lg btn-block btn-success login-register\">Register</button>\n				<div class=\"col-sm-4 col-sm-offset-4 loginSpinner hide\">\n					<img src=\"img/spinner.gif\">\n				</div>\n			</form>\n		</div>\n	</div>\n<section>";
   });
 if (typeof define === 'function' && define.amd) {
   define([], function() {

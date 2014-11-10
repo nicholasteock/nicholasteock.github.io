@@ -126,5 +126,5 @@ describe("HomeView", function() {
 
 });
 
-;
+
 //# sourceMappingURL=test.js.map
