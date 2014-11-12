@@ -95,35 +95,39 @@ require.register("application", function(exports, require, module) {
 Application = {
     initialize: function() {
 
-        var ConfirmationView 	= require('views/confirmation_view'),
-            LoginView           = require('views/login_view'),
-        	RegisterView 		= require('views/register_view'),
-        	ListingView 		= require('views/listing_view'),
-        	MovieView 			= require('views/movie_view'),
-            BookingView         = require('views/booking_view')
-            EditView            = require('views/edit_view')
-            AdminView           = require('views/admin_view')
-            AdduserView         = require('views/adduser_view')
-            EdituserView         = require('views/edituser_view')
-            AddmovieView        = require('views/addmovie_view')
-        	EditmovieView 		= require('views/editmovie_view')
-            Router   			= require('lib/router');
+        var ConfirmationView 	    = require('views/confirmation_view'),
+            LoginView               = require('views/login_view'),
+        	RegisterView 		    = require('views/register_view'),
+        	ListingView 		    = require('views/listing_view'),
+        	MovieView 			    = require('views/movie_view'),
+            BookingView             = require('views/booking_view'),
+            EditView                = require('views/edit_view'),
+            AdminView               = require('views/admin_view'),
+            BookingmanagementView   = require('views/bookingmanagement_view'),
+            EditbookingView         = require('views/editbooking_view'),
+            AdduserView             = require('views/adduser_view'),
+            EdituserView            = require('views/edituser_view'),
+            AddmovieView            = require('views/addmovie_view'),
+        	EditmovieView 		    = require('views/editmovie_view'),
+            Router   			    = require('lib/router');
         
-        this.api                = "http://ec2-54-69-16-201.us-west-2.compute.amazonaws.com/api/";
+        this.api                    = "http://ec2-54-69-16-201.us-west-2.compute.amazonaws.com/api/";
 
-        this.confirmationView 	= new ConfirmationView();
-        this.loginView          = new LoginView();
-        this.registerView 		= new RegisterView();
-        this.listingView 		= new ListingView();
-        this.movieView 			= new MovieView();
-        this.bookingView        = new BookingView();
-        this.editView           = new EditView();
-        this.adminView          = new AdminView();
-        this.adduserView        = new AdduserView();
-        this.edituserView       = new EdituserView();
-        this.addmovieView       = new AddmovieView();
-        this.editmovieView 		= new EditmovieView();
-        this.router   			= new Router();
+        this.confirmationView 	    = new ConfirmationView();
+        this.loginView              = new LoginView();
+        this.registerView 		    = new RegisterView();
+        this.listingView 		    = new ListingView();
+        this.movieView 			    = new MovieView();
+        this.bookingView            = new BookingView();
+        this.editView               = new EditView();
+        this.adminView              = new AdminView();
+        this.bookingmanagementView  = new BookingmanagementView();
+        this.editbookingView        = new EditbookingView();
+        this.adduserView            = new AdduserView();
+        this.edituserView           = new EdituserView();
+        this.addmovieView           = new AddmovieView();
+        this.editmovieView 		    = new EditmovieView();
+        this.router   			    = new Router();
                 
         if (typeof Object.freeze === 'function') Object.freeze(this)
         
@@ -149,19 +153,21 @@ var application = require('application')
 
 module.exports 	= Backbone.Router.extend({
     routes: {
-        '' 				: 'login',
-        'login'         : 'login',
-        'register' 		: 'register',
-        'listing' 		: 'listing',
-        'movie' 		: 'movie',
-        'booking' 		: 'booking',
-        'confirmation' 	: 'confirmation',
-        'edit'          : 'edit',
-        'admin'         : 'admin',
-        'adduser'       : 'adduser',
-        'edituser'      : 'edituser',
-        'addmovie'      : 'addmovie',
-        'editmovie'     : 'editmovie'
+        '' 				    : 'login',
+        'login'             : 'login',
+        'register' 		    : 'register',
+        'listing' 		    : 'listing',
+        'movie' 		    : 'movie',
+        'booking' 		    : 'booking',
+        'confirmation' 	    : 'confirmation',
+        'edit'              : 'edit',
+        'admin'             : 'admin',
+        'bookingmanagement' : 'bookingmanagement',
+        'editbooking'       : 'editbooking',
+        'adduser'           : 'adduser',
+        'edituser'          : 'edituser',
+        'addmovie'          : 'addmovie',
+        'editmovie'         : 'editmovie'
     },
     
     login: function() {
@@ -194,6 +200,14 @@ module.exports 	= Backbone.Router.extend({
 
     admin: function() {
         $('body').html(application.adminView.render())
+    },
+
+    bookingmanagement: function() {
+        $('body').html(application.bookingmanagementView.render())
+    },
+
+    editbooking: function() {
+        $('body').html(application.editbookingView.render())
     },
 
     adduser: function() {
@@ -234,6 +248,7 @@ Handlebars.registerHelper( 'navbar', function(options) {
 		else {
 			output += 	'<ul class="nav navbar-nav">'+
 						'<li><a href="#/listing"><button type="button" class="btn btn-default navbar-btn"><span class="glyphicon glyphicon-home"></span></button></li>'+
+						'<li><a><button type="button" class="btn btn-default navbar-btn editpanel">Your Bookings</button></a></li>'+
 						'</ul>';
 		}
 		
@@ -564,7 +579,7 @@ Handlebars.registerHelper('bookings', function(bookinglist, options) {
 					'<td>'+bookinglist[i].seatnum+'</td>'+
 					'<td>'+bookinglist[i].ticketnum+'</td>'+
 					'<td><button id="editbooking-'+bookinglist[i].ticketnum+'" type="button" class="btn btn-sm btn-warning editbooking">Edit</button></td>'+
-					'<td><button id="removebooking-'+bookinglist[i].ticketnum+'" type="button" class="btn btn-sm btn-danger removebooking">Remove</button></td></tr>';
+					'<td><button id="removebooking-'+bookinglist[i].ticketnum+'" type="button" class="btn btn-sm btn-danger removebooking">Cancel Booking</button></td></tr>';
 
 		output += booking;
 	}
@@ -1564,7 +1579,104 @@ module.exports = View.extend({
 
 });
 
-;require.register("views/confirmation_view", function(exports, require, module) {
+;require.register("views/bookingmanagement_view", function(exports, require, module) {
+var View     = require('./view'),
+	template = require('./templates/bookingmanagement');
+
+var getRenderData = function() {
+	if(localStorage.userId == undefined || localStorage.name == undefined) {
+		alert("Please log in to continue");
+		Application.router.navigate('login', {trigger: true});
+		return false;
+	}
+
+	var	dfdResult = $.Deferred();
+
+	var onSuccess = function( response ) {
+		return dfdResult.resolve( response.data );
+	};
+	
+	var onError = function( response ) {
+		return dfdResult.reject( response.data );
+	};
+
+	var params = { userId : localStorage.userId };
+
+	$.ajax({
+			url 		: Application.api+"userbookings",
+			type 		: "POST",
+			dataType	: 'json',
+			data 		: params,
+			success		: onSuccess,
+			error		: onError
+	});
+	
+	return dfdResult;
+};
+
+var logout = function() {
+	localStorage.removeItem('userId');
+	localStorage.removeItem('name');
+	localStorage.removeItem('userType');
+	localStorage.removeItem('booking');
+	Application.router.navigate('login', {trigger: true});
+	return false;
+};
+
+var editpanel = function() {
+	Application.router.navigate('bookingmanagement', {trigger: true});
+	return false;
+};
+
+var editbooking = function(ev) {
+	var temp 		= ev.target.id,
+		ticketnum 	= temp.substring(12);
+
+	Application.router.navigate('editbooking?tid='+ticketnum, {trigger: true});
+};
+
+var removebooking = function(ev) {
+	var temp 		= ev.target.id,
+		ticketnum 	= temp.substring(14);
+		params 		= { ticketnum: ticketnum };
+
+	$.ajax({
+			url 		: Application.api+"removebooking",
+			type 		: "POST",
+			dataType	: 'json',
+			data 		: params,
+			success		: function(response) {
+				$(ev.target).parent().parent().remove();
+				return;
+			},
+			error		: function(response) {
+				console.log("Error in removebooking, response :", response);
+				return;
+			}
+	});
+};
+
+var afterRender = function(){
+	$(".loadingSpinner").addClass("hide");
+	$(".logout").click(logout);
+	$(".editbooking").click(editbooking);
+	$(".removebooking").click(removebooking);
+};
+
+var events = {
+};
+
+module.exports = View.extend({
+    id 				: 'bookingmanagement-view',
+    events 			: events,
+    getRenderData 	: getRenderData,
+    afterRender 	: afterRender,
+    template 		: template
+});
+
+});
+
+require.register("views/confirmation_view", function(exports, require, module) {
 var View     = require('./view'),
 	template = require('./templates/confirmation');
 
@@ -1590,9 +1702,15 @@ var adminpanel = function() {
 	return false;
 };
 
+var editpanel = function() {
+	Application.router.navigate('bookingmanagement', {trigger: true});
+	return false;
+};
+
 var afterRender = function() {
 	$(".logout").click(logout);
 	$(".adminpanel").click(adminpanel);
+	$(".editpanel").click(editpanel);
 }
 
 module.exports = View.extend({
@@ -1658,6 +1776,7 @@ var adminpanel = function() {
 var afterRender = function(){
 	$(".logout").click(logout);
 	$(".adminpanel").click(adminpanel);
+	$(".editpanel").click(editpanel);
 };
 
 var events = {
@@ -1673,7 +1792,267 @@ module.exports = View.extend({
 
 });
 
-require.register("views/editmovie_view", function(exports, require, module) {
+require.register("views/editbooking_view", function(exports, require, module) {
+var View     = require('./view'),
+	template = require('./templates/editbooking');
+
+var events = {
+  // 'click .seat'  : 'seatClicked'
+  // 'click .submitbooking'  : 'submitBooking'
+};
+
+var bookedSeats;
+
+var editingSeat;
+
+var movieDetails;
+
+var getRenderData = function() {
+  if(localStorage.userId == undefined || localStorage.name == undefined) {
+    alert("Please log in to continue");
+    Application.router.navigate('login', {trigger: true});
+    return false;
+  }
+
+  var hash    = window.location.hash,
+      temp    = hash.indexOf('?tid='),
+      tid     = hash.substring(temp+5),
+      sid     = tid.substr(0,10),
+      seat    = tid.substring(10),
+      params  = {sid: sid};
+  
+  editingSeat = seat[0] + "-" + seat[1] + seat[2];
+
+  var dfdResult = $.Deferred();
+
+  var onSuccess = function( response ) {
+    var seats       = response.data;
+    var responseObj = {};
+    bookedSeats     = [];
+
+    for(var i=0; i<seats.length; i++) {
+      bookedSeats.push(seats[i].SEATNUM);
+    }
+
+    $.ajax({
+        url       : Application.api+"movie?sid="+sid,
+        type      : "GET",
+        dataType  : 'json',
+        success   : function(response) {
+          var details = response.data;
+          movieDetails = details[0];
+          responseObj.details  = details[0];
+          responseObj.seats    = seats;
+          return dfdResult.resolve( responseObj );
+        },
+        error     : function(response) {
+          console.log("Error in ajax call.");
+          return dfdResult.reject( responseObj );
+        }
+    });
+  };
+  
+  var onError = function( response ) {
+    return dfdResult.reject( response );
+  };
+  
+  $.ajax({
+      url       : Application.api+"seats",
+      type      : "GET",
+      dataType  : 'json',
+      data      : params,
+      success   : onSuccess,
+      error     : onError
+  });
+  
+  return dfdResult;
+};
+
+var logout = function() {
+  localStorage.removeItem('userId');
+  localStorage.removeItem('name');
+  localStorage.removeItem('userType');
+  localStorage.removeItem('booking');
+  Application.router.navigate('login', {trigger: true});
+  return false;
+};
+
+var afterRender = function() {
+	setTimeout( function() {
+		// init([ "A-1", "B-10", "C-5" ]);
+    init(bookedSeats);
+	}, 1000);
+};
+
+var settings = {
+   rows: 11,
+   cols: 20,
+   rowCssPrefix: 'row-',
+   colCssPrefix: 'col-',
+   seatWidth: 35,
+   seatHeight: 35,
+   seatCss: 'seat',
+   selectedSeatCss: 'selectedSeat',
+   selectingSeatCss: 'selectingSeat',
+   editingSeatCss: 'editingSeat'
+};
+
+var rowArr = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"];
+
+var init = function (reservedSeat) {
+    var str = [], seatNo, className, rowChar;
+
+    for( var i=0, iLen=settings.rows; i<iLen; i++) {
+    	rowChar = rowArr[i];
+
+        for (var j = 0, jLen=settings.cols; j<jLen; j++) {
+            seatNo = j + 1;
+            if(seatNo < 10) {
+              seatNo = "0"+seatNo.toString();
+            }
+            className = settings.seatCss + ' ' + settings.rowCssPrefix + rowChar + ' ' + settings.colCssPrefix + seatNo.toString();
+            
+            if( $.isArray(reservedSeat)  )
+            if ($.isArray(reservedSeat) && $.inArray(rowChar + "-" + seatNo, reservedSeat) != -1) {
+                if(rowChar+"-"+seatNo == editingSeat) {
+                  className += ' ' + settings.editingSeatCss;
+                }
+                else {
+                  className += ' ' + settings.selectedSeatCss;
+                }
+            }
+            
+            str.push('<li class="' + className + '"' +
+                      'style="top:' + (i * settings.seatHeight).toString() + 'px;left:' + (j * settings.seatWidth).toString() + 'px">' +
+                      '<a title="' + seatNo + '">' + seatNo + '</a>' +
+                      '</li>');
+        }
+    }
+    $('#place').html(str.join(''));
+
+    $(".seat").click(seatClicked);
+    $(".editbooking-submit").click(editBooking);
+    $(".editbooking-cancel").click(editcancel);
+};
+
+var seatClicked = function( ev ) {
+	var $seat = $(ev.target),
+		targetClasses = "",
+		seatRow = "",
+		seatCol = "",
+		charPos,
+		spacePos;
+
+	if( $seat.hasClass("selectedSeat") ) { return; }
+
+  if( $seat.hasClass("editingSeat") ) { return; }
+
+  $(".editingSeat").removeClass("editingSeat");
+  $(".selectingSeat").removeClass("selectingSeat");
+	$seat.toggleClass( "selectingSeat" );
+	targetClasses = $seat.attr("class");
+	
+	// Get row character
+	charPos = targetClasses.indexOf("row-");
+	spacePos = targetClasses.indexOf(" ", charPos);
+	seatRow = targetClasses.substring( charPos+4, spacePos );
+
+	// Get column number
+	charPos = targetClasses.indexOf("col-");
+	spacePos = targetClasses.indexOf(" ", charPos);
+	if( spacePos === -1 ) { spacePos = targetClasses.length; }
+	seatCol = targetClasses.substring( charPos+4, spacePos );
+};
+
+var editBooking = function() {
+  var that = this;
+
+  var selectedSeats = $(".selectingSeat"),
+      editingSeat   = $(".editingSeat"),
+      bookedSeats   = [],
+      params        = {};
+
+  // No seats selected.
+  if(selectedSeats.length === 0 && editingSeat.length === 0) {
+    alert("Please select at least one seat.");
+    return;
+  }
+
+  for( var i=0, iLen=selectedSeats.length; i<iLen; i++ ) {
+    var classArray = $(selectedSeats[i]).attr('class').split(" ");
+    var row = classArray[1].substring(4);
+    var col = classArray[2].substring(4);
+    var seat = "";
+
+    if(Number(row) < 10) {
+      row = "0" + row;
+    }
+
+    seat = row + "-" + col;
+    bookedSeats.push(seat);
+  }
+
+  var hash    = window.location.hash,
+      temp    = hash.indexOf('?tid='),
+      tid     = hash.substring(temp+5),
+      sid     = tid.substr(0,10),
+      c_id    = Number(localStorage.userId);
+
+  params = {
+    sid   : sid,
+    tid   : tid,
+    seats : bookedSeats,
+    c_id  : c_id
+  };
+console.log("PARAMS : ", params);
+  // $.ajax({
+  //     url       : Application.api+"editBooking",
+  //     type      : "POST",
+  //     dataType  : 'json',
+  //     data      : params,
+  //     success   : function(response) {
+  //       var tempObj = {
+  //         movieDetails  : movieDetails,
+  //         bookedSeats   : params.seats
+  //       };
+  //       localStorage.booking = "";
+  //       localStorage.booking = JSON.stringify(tempObj);
+  //       Application.router.navigate('confirmation', {trigger: true});
+  //     },
+  //     error     : function(response) {
+  //       console.log("in error : ", response);
+  //     }
+  // });
+};
+
+var editcancel = function() {
+  if(localStorage.userType == undefined) {
+    logout();
+    return false;
+  }
+  else if(localStorage.userType == 0) {
+    Application.router.navigate('admin', {trigger: true});
+  }
+  else {
+    Application.router.navigate('bookingmanagement', {trigger: true});
+    return false;
+  }
+};
+
+module.exports = View.extend({
+    id            : 'booking-view',
+    events        : events,
+    getRenderData : getRenderData,
+    afterRender   : afterRender,
+    template      : template,
+    seatClicked   : seatClicked,
+    editBooking   : editBooking,
+    bookedSeats   : bookedSeats
+})
+
+});
+
+;require.register("views/editmovie_view", function(exports, require, module) {
 var View     = require('./view'),
 	template = require('./templates/editmovie');
 
@@ -1806,6 +2185,7 @@ var afterRender = function() {
 	$(".editmovie-panel").removeClass("hide");
 	$(".logout").click(logout);
 	$(".adminpanel").click(adminpanel);
+	$(".editpanel").click(editpanel);
 	$(".editmovie-submit").click(editmovie);
 	$(".editmovie-cancel").click(editcancel);
 }
@@ -1928,6 +2308,7 @@ var afterRender = function() {
 	$(".edituser-panel").removeClass("hide");
 	$(".logout").click(logout);
 	$(".adminpanel").click(adminpanel);
+	$(".editpanel").click(editpanel);
 	$(".edituser-submit").click(edituser);
 	$(".edituser-cancel").click(editcancel);
 };
@@ -2007,6 +2388,11 @@ var logout = function() {
 
 var adminpanel = function() {
 	Application.router.navigate('admin', {trigger: true});
+	return false;
+};
+
+var editpanel = function() {
+	Application.router.navigate('bookingmanagement', {trigger: true});
 	return false;
 };
 
@@ -2123,6 +2509,7 @@ var afterRender = function(){
 	$(".movielistingContainer").removeClass("hide");
 	$(".logout").click(logout);
 	$(".adminpanel").click(adminpanel);
+	$(".editpanel").click(editpanel);
 	$("#filterReset").click(resetFilter);
 	$("#filterSubmit").click(submitFilter);
 	$(".languageDropdown li").click(languageSelected);
@@ -2290,6 +2677,7 @@ var getRenderData = function() {
 var afterRender = function() {
 	$(".logout").click(logout);
 	$(".adminpanel").click(adminpanel);
+	$(".editpanel").click(editpanel);
 };
 
 var logout = function() {
@@ -2303,6 +2691,11 @@ var logout = function() {
 
 var adminpanel = function() {
 	Application.router.navigate('admin', {trigger: true});
+	return false;
+};
+
+var editpanel = function() {
+	Application.router.navigate('bookingmanagement', {trigger: true});
 	return false;
 };
 
@@ -2491,7 +2884,41 @@ function program1(depth0,data) {
   buffer += "<section class=\"container\">\n	<div class=\"panel panel-default booking-movie-info\">\n		<div class=\"panel-heading\">\n			Movie Information\n	  	</div>\n	  	";
   stack1 = (helper = helpers.moviebookingdetails || (depth0 && depth0.moviebookingdetails),options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data},helper ? helper.call(depth0, (depth0 && depth0.details), options) : helperMissing.call(depth0, "moviebookingdetails", (depth0 && depth0.details), options));
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n	</div>\n</section>\n<section class=\"container\">\n	<div class=\"panel panel-default booking-movie-seats\">\n		<div class=\"panel-body\">\n			<div class=\"booking-seats-container\">\n				<div class=\"center-block text-center booking-screen\">\n					Screen\n				</div>\n				<div class=\"booking-seats\">\n					<div id=\"seats\" class=\"center-block\">\n				        <ul id=\"place\">\n				        </ul>\n				    </div>\n				</div>\n			</div>\n		</div>\n	</div>\n</section>\n<section class=\"container\">\n	<div class=\"panel panel-default booking-movie-control\">\n	  	<div class=\"panel-body text-center\">\n		  	<a class=\"submitbooking\">\n			  	<button type=\"button\" class=\"btn btn-lg btn-danger\">SUBMIT BOOKING</button>\n			</a>\n		  	<a href=\"#/listing\">\n		  		<button type=\"button\" class=\"btn btn-lg btn-info\">BACK TO MOVIE SELECTION</button>\n		  	</a>\n		</div>\n	</div>\n</section>";
+  buffer += "\n	</div>\n</section>\n<section class=\"container\">\n	<div class=\"panel panel-default booking-movie-seats\">\n		<div class=\"panel-body\">\n			<div class=\"booking-seats-container\">\n				<div class=\"center-block text-center booking-screen\">\n					Screen\n				</div>\n				<div class=\"booking-seats\">\n					<div id=\"seats\" class=\"center-block\">\n				        <ul id=\"place\">\n				        </ul>\n				    </div>\n				</div>\n			</div>\n		</div>\n	</div>\n</section>\n<section class=\"container\">\n	<div class=\"panel panel-default booking-movie-control\">\n	  	<div class=\"panel-body text-center\">\n		  	<span>\n		  		<img src=\"img/seat/available_seat_img.jpg\"><strong> - Seat Available</strong>&nbsp;&nbsp;&nbsp;\n		  	</span>\n		  	<span>\n		  		<img src=\"img/seat/booked_seat_img.jpg\"><strong> - Seat Booked</strong>&nbsp;&nbsp;&nbsp;\n		  	</span>\n		  	<span>\n		  		<img src=\"img/seat/selected_seat_img.jpg\"><strong> - Seat Selected</strong>&nbsp;&nbsp;&nbsp;\n		  	</span>\n		</div>\n	</div>\n</section>\n<section class=\"container\">\n	<div class=\"panel panel-default booking-movie-control\">\n	  	<div class=\"panel-body text-center\">\n		  	<a class=\"submitbooking\">\n			  	<button type=\"button\" class=\"btn btn-lg btn-danger\">Submit Booking</button>\n			</a>\n		  	<a href=\"#/listing\">\n		  		<button type=\"button\" class=\"btn btn-lg btn-info\">Back</button>\n		  	</a>\n		</div>\n	</div>\n</section>";
+  return buffer;
+  });
+if (typeof define === 'function' && define.amd) {
+  define([], function() {
+    return __templateData;
+  });
+} else if (typeof module === 'object' && module && module.exports) {
+  module.exports = __templateData;
+} else {
+  __templateData;
+}
+});
+
+;require.register("views/templates/bookingmanagement", function(exports, require, module) {
+var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var buffer = "", stack1, helper, options, self=this, functionType="function", blockHelperMissing=helpers.blockHelperMissing, helperMissing=helpers.helperMissing;
+
+function program1(depth0,data) {
+  
+  var buffer = "";
+  return buffer;
+  }
+
+  options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data}
+  if (helper = helpers.navbar) { stack1 = helper.call(depth0, options); }
+  else { helper = (depth0 && depth0.navbar); stack1 = typeof helper === functionType ? helper.call(depth0, options) : helper; }
+  if (!helpers.navbar) { stack1 = blockHelperMissing.call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data}); }
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n\n<section class=\"container bookings-management\">\n	<div class=\"panel panel-default\">\n		<div class=\"panel-heading\">\n			<h3>Booking Management</h3>\n		</div>\n		<div class=\"panel-body\">\n		";
+  stack1 = (helper = helpers.bookings || (depth0 && depth0.bookings),options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data},helper ? helper.call(depth0, (depth0 && depth0.bookings), options) : helperMissing.call(depth0, "bookings", (depth0 && depth0.bookings), options));
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n		</div>\n	</div>\n</section>";
   return buffer;
   });
 if (typeof define === 'function' && define.amd) {
@@ -2545,6 +2972,35 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
 
 
   buffer += "<section class=\"container\">\n	<div class=\"jumbotron\">\n		<h1 class=\"text-right\">Success!</h1>\n		<div class=\"well userbooking-summary\">\n			<h2>Your Bookings</h2>\n			<table class=\"table table-hover\">\n				<thead>\n				</thead>\n				<tbody>\n					\n					\n				</tbody>\n			</table>\n		</div>\n		<div class=\"text-center\">\n			<a href=\"#/listing\">\n				<button type=\"button\" class=\"btn btn-lg btn-primary\">Home</button>\n			</a>\n		</div>\n	</div>\n</section>";
+  return buffer;
+  });
+if (typeof define === 'function' && define.amd) {
+  define([], function() {
+    return __templateData;
+  });
+} else if (typeof module === 'object' && module && module.exports) {
+  module.exports = __templateData;
+} else {
+  __templateData;
+}
+});
+
+;require.register("views/templates/editbooking", function(exports, require, module) {
+var __templateData = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var buffer = "", stack1, helper, options, self=this, helperMissing=helpers.helperMissing;
+
+function program1(depth0,data) {
+  
+  var buffer = "";
+  return buffer;
+  }
+
+  buffer += "<section class=\"container\">\n	<div class=\"panel panel-default booking-movie-info\">\n		<div class=\"panel-heading\">\n			Movie Information\n	  	</div>\n	  	";
+  stack1 = (helper = helpers.moviebookingdetails || (depth0 && depth0.moviebookingdetails),options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data},helper ? helper.call(depth0, (depth0 && depth0.details), options) : helperMissing.call(depth0, "moviebookingdetails", (depth0 && depth0.details), options));
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n	</div>\n</section>\n<section class=\"container\">\n	<div class=\"panel panel-default booking-movie-seats\">\n		<div class=\"panel-body\">\n			<div class=\"booking-seats-container\">\n				<div class=\"center-block text-center booking-screen\">\n					Screen\n				</div>\n				<div class=\"booking-seats\">\n					<div id=\"seats\" class=\"center-block\">\n				        <ul id=\"place\">\n				        </ul>\n				    </div>\n				</div>\n			</div>\n		</div>\n	</div>\n</section>\n<section class=\"container\">\n	<div class=\"panel panel-default booking-movie-control\">\n	  	<div class=\"panel-body text-center\">\n		  	<span>\n		  		<img src=\"img/seat/available_seat_img.jpg\"><strong> - Seat Available</strong>&nbsp;&nbsp;&nbsp;\n		  	</span>\n		  	<span>\n		  		<img src=\"img/seat/booked_seat_img.jpg\"><strong> - Seat Booked</strong>&nbsp;&nbsp;&nbsp;\n		  	</span>\n		  	<span>\n		  		<img src=\"img/seat/selected_seat_img.jpg\"><strong> - Seat Selected</strong>&nbsp;&nbsp;&nbsp;\n		  	</span>\n		  	<span>\n		  		<img src=\"img/seat/editing_seat_img.jpg\"><strong> - Editing Seat</strong>\n		  	</span>\n		</div>\n	</div>\n</section>\n<section class=\"container\">\n	<div class=\"panel panel-default booking-movie-control\">\n	  	<div class=\"panel-body text-center\">\n		  	<a class=\"editbooking-submit\">\n			  	<button type=\"button\" class=\"btn btn-lg btn-danger\">Update Booking</button>\n			</a>\n		  	<a class=\"editbooking-cancel\">\n		  		<button type=\"button\" class=\"btn btn-lg btn-info\">Cancel</button>\n		  	</a>\n		</div>\n	</div>\n</section>";
   return buffer;
   });
 if (typeof define === 'function' && define.amd) {

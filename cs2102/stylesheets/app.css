@@ -5998,13 +5998,13 @@ body {
   display: none;
 }
 #place .seat:hover {
-  -webkit-filter: saturate(50);
-  filter: saturate(50);
+  background-image: url("../img/seat/hover_seat_img.jpg");
 }
 #place .selectedSeat {
   background-image: url("../img/seat/booked_seat_img.jpg");
 }
 #place .selectedSeat:hover {
+  background-image: url("../img/seat/booked_seat_img.jpg");
   cursor: default;
   -webkit-filter: none;
   filter: none;
@@ -6013,6 +6013,14 @@ body {
   background-image: url("../img/seat/selected_seat_img.jpg");
 }
 #place .selectingSeat:hover {
+  -webkit-filter: none;
+  filter: none;
+}
+#place .editingSeat {
+  background-image: url("../img/seat/editing_seat_img.jpg");
+}
+#place .editingSeat:hover {
+  cursor: default;
   -webkit-filter: none;
   filter: none;
 }
