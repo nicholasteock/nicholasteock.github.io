@@ -5832,6 +5832,7 @@ body {
 }
 .listing-item {
   margin-top: 50px;
+  max-height: 216px;
 }
 .listing-item .listing-book {
   margin-top: 15px;
