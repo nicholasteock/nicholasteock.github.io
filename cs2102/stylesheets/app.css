@@ -5893,6 +5893,9 @@ body {
 .movie-showtimes {
   background-color: #ffffff;
 }
+.movie-showtimes h3 {
+  border-bottom: 2px solid #7f8c8d;
+}
 .movie-showtimes .movie-showtime-container .movie-showtime-venue {
   border-top: 2px solid #2c3e50;
   border-bottom: 1px solid #2c3e50;

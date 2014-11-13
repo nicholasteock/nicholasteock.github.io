@@ -320,6 +320,10 @@ Handlebars.registerHelper('showtimeslist', function(showtimesObject, options) {
 		formedArray.push(formedObject);
 	});
 
+	if(formedArray.length === 0) {
+		output = "<h4>No showtimes available for this title.</h4>"
+	}
+
 	for( var i=0, iLen=formedArray.length; i<iLen; i++ ) {
 		var itemHtml = "";
 
@@ -1300,9 +1304,12 @@ var removemovie = function(ev) {
 	});
 };
 
-var editbooking = function() {
-	
-}
+var editbooking = function(ev) {
+	var temp 		= ev.target.id,
+		ticketnum 	= temp.substring(12);
+
+	Application.router.navigate('editbooking?tid='+ticketnum, {trigger: true});
+};
 
 var removebooking = function(ev) {
 	var temp 		= ev.target.id,
@@ -2308,7 +2315,7 @@ var afterRender = function() {
 	$(".edituser-panel").removeClass("hide");
 	$(".logout").click(logout);
 	$(".adminpanel").click(adminpanel);
-	$(".editpanel").click(editpanel);
+	// $(".editpanel").click(editpanel);
 	$(".edituser-submit").click(edituser);
 	$(".edituser-cancel").click(editcancel);
 };
@@ -2439,6 +2446,8 @@ var resetFilter = function(ev) {
 	$("#filterLanguage").html("All Languages");
 	$("#filterSubtitles").html("All Subtitles");
 	$("#filtermdarating").html("All MDA Ratings");
+	$("#ratingDropdown").val("None");
+	$("#alphaDropdown").val("None");
 	$("#filterSubmit").click();
 	return;
 }
@@ -2520,7 +2529,7 @@ var afterRender = function(){
 			else if(dataArray[i].indexOf("ratingorder") >= 0) {
 				temp = dataArray[i];
 				temp = temp.substring(temp.indexOf("=")+1);
-				$("#ratingOrder").val(temp);
+				$("#ratingDropdown").val(temp);
 				if(temp == "ASC" || temp =="DESC") {
 					$("#alphaDropdown").val("None").prop("disabled", "disabled");
 				}
@@ -2885,7 +2894,7 @@ function program1(depth0,data) {
   else { helper = (depth0 && depth0.navbar); stack1 = typeof helper === functionType ? helper.call(depth0, options) : helper; }
   if (!helpers.navbar) { stack1 = blockHelperMissing.call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data}); }
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n\n<section class=\"container admin-nav\">\n	<ul class=\"nav nav-tabs nav-justified\" role=\"tablist\">\n	  <li role=\"presentation\" class=\"active\"><a id=\"admin-users\">Users</a></li>\n	  <li role=\"presentation\"><a id=\"admin-bookings\">Bookings</a></li>\n	  <li role=\"presentation\"><a id=\"admin-movies\">Movies</a></li>\n	  <li role=\"presentation\"><a id=\"admin-showtimes\">Showtimes</a></li>\n	</ul>\n</section>\n\n<section class=\"container admin-management users-management hide\">\n	<div class=\"panel panel-default\">\n		<div class=\"panel-heading\">\n			<h3>User Management<button type=\"button\" class=\"btn btn-primary pull-right adduser\">Add User</button></h3>\n		</div>\n		<div class=\"panel-body\">\n		";
+  buffer += "\n\n<section class=\"container admin-nav\">\n	<ul class=\"nav nav-tabs nav-justified\" role=\"tablist\">\n	  <li role=\"presentation\" class=\"active\"><a id=\"admin-users\">Users</a></li>\n	  <li role=\"presentation\"><a id=\"admin-bookings\">Bookings</a></li>\n	  <li role=\"presentation\"><a id=\"admin-movies\">Movies</a></li>\n	</ul>\n</section>\n\n<section class=\"container admin-management users-management hide\">\n	<div class=\"panel panel-default\">\n		<div class=\"panel-heading\">\n			<h3>User Management<button type=\"button\" class=\"btn btn-primary pull-right adduser\">Add User</button></h3>\n		</div>\n		<div class=\"panel-body\">\n		";
   stack1 = (helper = helpers.users || (depth0 && depth0.users),options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data},helper ? helper.call(depth0, (depth0 && depth0.users), options) : helperMissing.call(depth0, "users", (depth0 && depth0.users), options));
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\n		</div>\n	</div>\n</section>\n\n<section class=\"container admin-management bookings-management hide\">\n	<div class=\"panel panel-default\">\n		<div class=\"panel-heading\">\n			<h3>Booking Management</h3>\n		</div>\n		<div class=\"panel-body\">\n		";
