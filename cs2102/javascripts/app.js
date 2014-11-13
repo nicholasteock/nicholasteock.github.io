@@ -2408,16 +2408,37 @@ var mdaratingSelected = function(ev) {
 	$("#filtermdarating").html(ev.target.text);
 };
 
-var ratingSelected = function(ev) {
-	$("#filterRating").html(ev.target.text);
+var ratingChanged = function() {
+	var ratingSelected = $("#ratingDropdown").val();
+
+	if(ratingSelected != "None") {
+		$("#alphaDropdown").val("None").prop('disabled', 'disabled');
+	}
+	else {
+		$("#alphaDropdown").prop('disabled', false);
+	}
 };
+
+var alphaChanged = function() {
+	var alphaSelected = $("#alphaDropdown").val();
+
+	if(alphaSelected != "None") {
+		$("#ratingDropdown").val("None").prop('disabled', 'disabled');
+	}
+	else {
+		$("#ratingDropdown").prop('disabled', false);
+	}
+};
+
+// var ratingSelected = function(ev) {
+// 	$("#filterRating").html(ev.target.text);
+// };
 
 var resetFilter = function(ev) {
 	$("#filterTitle").val("");
 	$("#filterLanguage").html("All Languages");
 	$("#filterSubtitles").html("All Subtitles");
 	$("#filtermdarating").html("All MDA Ratings");
-	$("#filterRating").html("Sort by Rating");
 	$("#filterSubmit").click();
 	return;
 }
@@ -2427,7 +2448,8 @@ var submitFilter = function() {
 	var language 	= $("#filterLanguage").text();
 	var subtitles 	= $("#filterSubtitles").text();
 	var mdarating 	= $("#filtermdarating").text();
-	var ratingorder = $("#filterRating").text();
+	var ratingorder = $("#ratingDropdown").val();
+	var alphaorder 	= $("#alphaDropdown").val();
 
 	var temp = "";
 	var queryParams = [];
@@ -2453,8 +2475,13 @@ var submitFilter = function() {
 		queryParams.push(temp);
 	}
 
-	if(ratingorder != "Sort by Rating") {
+	if(ratingorder != "None") {
 		temp="ratingorder="+encodeURI(ratingorder);
+		queryParams.push(temp);
+	}
+
+	if(alphaorder != "None") {
+		temp="alphaorder="+encodeURI(alphaorder);
 		queryParams.push(temp);
 	}
 
@@ -2493,7 +2520,18 @@ var afterRender = function(){
 			else if(dataArray[i].indexOf("ratingorder") >= 0) {
 				temp = dataArray[i];
 				temp = temp.substring(temp.indexOf("=")+1);
-				$("#filterRating").html(temp);
+				$("#ratingOrder").val(temp);
+				if(temp == "ASC" || temp =="DESC") {
+					$("#alphaDropdown").val("None").prop("disabled", "disabled");
+				}
+			}
+			else if(dataArray[i].indexOf("alphaorder") >= 0) {
+				temp = dataArray[i];
+				temp = temp.substring(temp.indexOf("=")+1);
+				$("#alphaDropdown").val(temp);
+				if(temp == "ASC" || temp =="DESC") {
+					$("#ratingDropdown").val("None").prop("disabled", "disabled");
+				}
 			}
 			else if(dataArray[i].indexOf("title") >= 0) {
 				temp = dataArray[i];
@@ -2515,7 +2553,8 @@ var afterRender = function(){
 	$(".languageDropdown li").click(languageSelected);
 	$(".subtitlesDropdown li").click(subtitlesSelected);
 	$(".mdaratingDropdown li").click(mdaratingSelected);
-	$(".ratingDropdown li").click(ratingSelected);
+	$("#ratingDropdown").change(ratingChanged);
+	$("#alphaDropdown").change(alphaChanged);
 };
 
 var events = {
@@ -2855,7 +2894,7 @@ function program1(depth0,data) {
   buffer += "\n		</div>\n	</div>\n</section>\n\n<section class=\"container admin-management movies-management hide\">\n	<div class=\"panel panel-default\">\n		<div class=\"panel-heading\">\n			<h3>Movie Management<button type=\"button\" class=\"btn btn-primary pull-right addmovie\">Add Movie</button></h3>\n		</div>\n		<div class=\"panel-body\">\n		";
   stack1 = (helper = helpers.movies || (depth0 && depth0.movies),options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data},helper ? helper.call(depth0, (depth0 && depth0.movies), options) : helperMissing.call(depth0, "movies", (depth0 && depth0.movies), options));
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n		</div>\n	</div>\n</section>\n\n<section class=\"container admin-management showtimes-management hide\">\n	<div class=\"panel panel-default\">\n		<div class=\"panel-heading\">\n			<h3>Showtimes Management<button type=\"button\" class=\"btn btn-primary pull-right addmovie\">Add Showtime</button></h3>\n		</div>\n		<div class=\"panel-body\">\n		\n		</div>\n	</div>\n</section>";
+  buffer += "\n		</div>\n	</div>\n</section>";
   return buffer;
   });
 if (typeof define === 'function' && define.amd) {
@@ -3119,7 +3158,7 @@ function program1(depth0,data) {
   else { helper = (depth0 && depth0.navbar); stack1 = typeof helper === functionType ? helper.call(depth0, options) : helper; }
   if (!helpers.navbar) { stack1 = blockHelperMissing.call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data}); }
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n<section class=\"container filterContainer hide\">\n	<div class=\"col-md-12 col-lg-12\">\n		<div class=\"panel panel-default\">\n			<div class=\"panel-heading\">\n				<h2 class=\"panel-title\">Filters / Sorting</h2>\n			</div>\n			<div class=\"panel-body\">\n				<form class=\"form-inline filters\" role=\"form\">\n					<div class=\"form-group\">\n						<div class=\"col-sm-12\">\n							<input type=\"text\" class=\"form-control\" id=\"filterTitle\" placeholder=\"Search Movie Title\">\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<div class=\"col-sm-12 dropdown\">\n							<button type=\"button\" class=\"form-control dropdown-toggle\" id=\"filterLanguage\" data-toggle=\"dropdown\">All Languages</button>\n							<ul class=\"dropdown-menu languageDropdown\" role=\"menu\">\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">All Languages</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">English</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">Chinese</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">Japanese</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">Spanish</a></li>\n							</ul>\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<div class=\"col-sm-12 dropdown\">\n							<button type=\"button\" class=\"form-control dropdown-toggle\" id=\"filterSubtitles\" data-toggle=\"dropdown\">All Subtitles</button>\n						<ul class=\"dropdown-menu subtitlesDropdown\" role=\"menu\">\n							<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">All Subtitles</a></li>\n							<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">None</a></li>\n							<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">English</a></li>\n							<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">Chinese</a></li>\n						</ul>\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<div class=\"col-sm-12\">\n							<button type=\"button\" class=\"form-control dropdown-toggle\" id=\"filtermdarating\" data-toggle=\"dropdown\">All MDA Ratings</button>\n							<ul class=\"dropdown-menu mdaratingDropdown\" role=\"menu\">\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">All MDA Ratings</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">UR</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">PG13</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">NC16</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">M18</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">R21</a></li>\n							</ul>\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<div class=\"col-sm-12\">\n							<button type=\"button\" class=\"form-control dropdown-toggle\" id=\"filterRating\" data-toggle=\"dropdown\">Sort by Rating</button>\n							<ul class=\"dropdown-menu ratingDropdown\" role=\"menu\">\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">Ascending</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">Descending</a></li>\n							</ul>\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<div class=\"col-sm-12\">\n							<button type=\"button\" class=\"btn btn-danger\" id=\"filterReset\">Reset</button>\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<div class=\"col-sm-12\">\n							<button type=\"button\" class=\"btn btn-primary\" id=\"filterSubmit\">Filter</button>\n						</div>\n					</div>\n				</form>\n			</div>\n		</div>\n	</div>\n</section>\n<section class=\"container movielistingContainer hide\">\n	<div class=\"col-sm-12\">\n		<div class=\"panel panel-default\">\n			<div class=\"panel-body\">\n			";
+  buffer += "\n<section class=\"container filterContainer hide\">\n	<div class=\"col-md-12 col-lg-12\">\n		<div class=\"panel panel-default\">\n			<div class=\"panel-heading\">\n				<h2 class=\"panel-title\">Filter By</h2>\n			</div>\n			<div class=\"panel-body\">\n				<form class=\"form-inline filters\" role=\"form\">\n					<div class=\"form-group\">\n						<label for=\"filter1\" class=\"col-sm-3\">\n							Title\n						</label>\n						<div id=\"filter1\" class=\"col-sm-9\">\n							<input type=\"text\" class=\"form-control\" id=\"filterTitle\" placeholder=\"Search Movie Title\">\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<label for=\"filter2\" class=\"col-sm-5\">\n							Language\n						</label>\n						<div id=\"filter2\" class=\"col-sm-7 dropdown\">\n							<button type=\"button\" class=\"form-control dropdown-toggle\" id=\"filterLanguage\" data-toggle=\"dropdown\">All Languages</button>\n							<ul class=\"dropdown-menu languageDropdown\" role=\"menu\">\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">All Languages</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">English</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">Chinese</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">Japanese</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">Spanish</a></li>\n							</ul>\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<label for=\"filter3\" class=\"col-sm-5\">\n							Subtitles\n						</label>\n						<div id=\"filter3\" class=\"col-sm-7 dropdown\">\n							<button type=\"button\" class=\"form-control dropdown-toggle\" id=\"filterSubtitles\" data-toggle=\"dropdown\">All Subtitles</button>\n							<ul class=\"dropdown-menu subtitlesDropdown\" role=\"menu\">\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">All Subtitles</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">None</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">English</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">Chinese</a></li>\n							</ul>\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<label for=\"filter4\" class=\"col-sm-5\">\n							MDA Rating\n						</label>\n						<div id=\"filter4\" class=\"col-sm-7\">\n							<button type=\"button\" class=\"form-control dropdown-toggle\" id=\"filtermdarating\" data-toggle=\"dropdown\">All MDA Ratings</button>\n							<ul class=\"dropdown-menu mdaratingDropdown\" role=\"menu\">\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">All MDA Ratings</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">UR</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">PG13</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">NC16</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">M18</a></li>\n								<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\">R21</a></li>\n							</ul>\n						</div>\n					</div>\n				</form>\n			</div>\n		</div>\n	</div>\n</section>\n\n<section class=\"container sortContainer\">\n	<div class=\"col-md-12 col-lg-12\">\n		<div class=\"panel panel-default\">\n			<div class=\"panel-heading\">\n				<h2 class=\"panel-title\">Sort By</h2>\n			</div>\n			<div class=\"panel-body\">\n				<form class=\"form-inline sortForm\" role=\"form\">\n					<div class=\"form-group\">\n						<label for=\"ratingDropdown\" class=\"col-sm-4\">\n							Rating\n						</label>\n						<div class=\"col-sm-7\">\n							<select id=\"ratingDropdown\" class=\"form-control\">\n								<option role=\"presentation\" value=\"None\" selected=\"selected\">-</option>\n								<option role=\"presentation\" value=\"ASC\">Ascending</option>\n								<option role=\"presentation\" value=\"DESC\">Descending</option>\n							</select>\n						</div>\n					</div>\n					<div class=\"form-group\">\n						<label for=\"alphaDropdown\" class=\"col-sm-5\">\n							Alphabetical\n						</label>\n						<div class=\"col-sm-7\">\n							<select id=\"alphaDropdown\" class=\"form-control\">\n								<option role=\"presentation\" value=\"None\" selected=\"selected\">-</option>\n								<option role=\"presentation\" value=\"ASC\">Ascending</option>\n								<option role=\"presentation\" value=\"DESC\">Descending</option>\n							</select>\n						</div>\n					</div>\n					<div class=\"form-group pull-right\">\n						<div class=\"col-sm-12\">\n							<button type=\"button\" class=\"btn btn-primary\" id=\"filterSubmit\">Submit</button>\n						</div>\n					</div>\n					<div class=\"form-group pull-right\">\n						<div class=\"col-sm-12\">\n							<button type=\"button\" class=\"btn btn-danger\" id=\"filterReset\">Reset</button>\n						</div>\n					</div>\n				</form>\n			</div>\n		</div>\n	</div>\n</section>\n\n<section class=\"container movielistingContainer hide\">\n	<div class=\"col-sm-12\">\n		<div class=\"panel panel-default\">\n			<div class=\"panel-body\">\n			";
   stack1 = (helper = helpers.movielisting || (depth0 && depth0.movielisting),options={hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data},helper ? helper.call(depth0, (depth0 && depth0.data), options) : helperMissing.call(depth0, "movielisting", (depth0 && depth0.data), options));
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\n			</div>\n		</div>\n	</div>\n</section>";

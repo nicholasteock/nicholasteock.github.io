@@ -5825,7 +5825,7 @@ body {
 *	LISTING PAGE STYLES
 ******************************************************************************/
 .filters {
-  color: #FFF;
+  color: #000;
 }
 #listing-view {
   margin-top: -70px;
