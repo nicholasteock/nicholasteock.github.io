@@ -1,4 +1,4 @@
-var nodePath 		= "http://192.168.1.30:8080/api/";
+var nodePath 		= "http://ec2-54-69-16-201.us-west-2.compute.amazonaws.com/api/";
 var firebaseRootUrl = "https://codelaborate-ace.firebaseio.com/";
 var firebaseUrl 	= "";
 var firebaseRef 	= null;
