@@ -13,6 +13,10 @@
 	color: #ecf0f1;
 }
 
+.loadingstage img {
+	height: 70%;
+}
+
 .navbar {
 	background-image: url(../img/navBg.jpg);
 	background-repeat: repeat-x;
