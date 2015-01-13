@@ -1,1 +1,7 @@
-<div class="col-md-24 card-heading-container"> <div class="col-md-19 info"> <div class="avatarThumb"> <img src="images/common/avatar.c283ba9d.png"> </div> <div class="name"> {{employee.name}} </div> </div> <div class="col-md-5 top-gap options"> <button type="button" class="btn btn-oas" ng-click="createEntry()"><span class="glyphicon glyphicon-plus"></span> CREATE ENTRY</button> <div class="icon-oas calendaricon"> <img src="images/attendance/calendar_icon.b4f8f02d.png"> </div> </div> </div> <div class="col-md-24 attendance-details"> <div attendance-entry ng-class="entry.entryClasses" ng-style="{'width':entry.entryWidth, 'margin-left':entry.leftMargin}" ng-repeat="entry in entries" ng-controller="AttendanceentryCtrl">{{entry.project_name}}</div> </div>
+<div class="col-md-24 card-heading-container"> <div class="col-md-20 info"> <div class="avatarThumb"> <img src="images/common/avatar.c283ba9d.png" ng-src="{{employee.avatar_thumb_url}}"> </div> <div class="name"> {{employee.name}} </div> </div> <div class="col-md-4 top-gap options"> <button type="button" class="btn btn-oas" ng-click="createEntry()"><span class="glyphicon glyphicon-plus"></span> CREATE ENTRY</button> <div class="icon-oas calendaricon"> <img src="images/attendance/calendar_icon.b4f8f02d.png"> </div> </div> </div> <div class="col-md-24 attendance-details"> <attendance-entry ng-repeat="entry in entries" ng-controller="AttendanceentryCtrl"></attendance-entry> </div> <!-- <div class="col-md-24">
+	<attendance-options ng-repeat="entryOptions in entries">
+		<div class="attendance-options">
+			test
+		</div>
+	</attendance-options>
+</div> -->
