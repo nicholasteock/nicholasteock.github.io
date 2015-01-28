@@ -91,11 +91,15 @@
   globals.require.brunch = true;
 })();
 require.register("application", function(exports, require, module) {
+// Hosted on: http://bitly.com/1z99Dhc
 var ingredientCount 		= 4;
 var currentIngredientIdx 	= 0;
 var currentStageIdx 		= 0;
 var tossIdx 				= 0;
+var maxTosses 				= 3;
 var stageNames 				= ['main', 'ingredients', 'toss', 'share'];
+var url 					= encodeURIComponent('http://bitly.com/1z99Dhc');
+var shareMessage 			= "Hi there! Let's Lou Hei together at: " + url;
 
 var initialize = function() {
 	$('.stage').addClass('hide');
@@ -125,27 +129,27 @@ var plateClickHandler = function() {
 	var i = 0;
 	var lastIngredient = 6;
 
-    var showIngredients = function () {
-    	var lastIngredient = 6;
+	var showIngredients = function () {
+		var lastIngredient = 6;
 
-    	// Transit to next stage (adding ingredients)
-        if (i >= lastIngredient) {
-        	setTimeout( function() {
-        		nextStage();
+		// Transit to next stage (adding ingredients)
+		if (i >= lastIngredient) {
+			setTimeout( function() {
+				nextStage();
 				showIngredient();
-        	}, 1400);
+			}, 1400);
 			return;
 		}
 
 		setTimeout(function () {
 			$('.js-plate-'+i).addClass('hide');
-            i++;
+			i++;
 			$('.js-plate-'+i).removeClass('hide');
-            showIngredients();
-        }, 400);
-    };
+			showIngredients();
+		}, 400);
+	};
 
-    showIngredients();
+	showIngredients();
 };
 
 var showIngredient = function() {
@@ -178,28 +182,41 @@ var showIngredientDesc = function() {
 
 var showShareButtons = function() {
 	var $plate = $(".chunk-plate-container");
-	var chunkIdx = 0;
-	var totalChunks = 5;
 
-    var hideChunks = function () {
+	var hideChunks = function (chunkIdx, totalChunks) {
+		setTimeout(function () {
+			if (chunkIdx === totalChunks) {
+				$('.js-message-0').addClass('hide');
+				$('.js-message-1').removeClass('hide').addClass('bounce');
+				$('.share-container').addClass('in');
+				$('.credits').addClass('in');
+				return;
+			}
+			$plate.find('.js-chunk-'+chunkIdx).addClass('hide');
+			hideChunks(chunkIdx+1, totalChunks);
+		}, 222);
+	};
+	hideChunks(1,5); // Start from 1, total 5 chunks
+};
 
-        setTimeout(function () {
-        	if (chunkIdx > totalChunks) {
-        		$('.share-container').addClass('in');
-        		$('.credits').addClass('in');
-        		return;
-        	}
-        	$plate.find('.js-chunk-'+chunkIdx).addClass('hide');
-            chunkIdx++;
-        	if (chunkIdx === totalChunks) {
-        		$('.js-message-0').addClass('hide');
-        		$('.js-message-1').removeClass('hide').addClass('bounce');
-        	}
-            hideChunks();
-        }, 200);
-    };
-    hideChunks();
-}
+var doToss = function() {
+	var $plate = $(".toss-plate-container");
+
+	var toss = function(frameIdx, totalFrames) {
+		setTimeout(function() {
+			if(frameIdx === (totalFrames-1)) {
+				$plate.find('.js-toss-'+(totalFrames-1)).addClass('hide');
+				$plate.find('.js-toss-0').removeClass('hide');
+				return;
+			}
+			$plate.find('.js-toss-'+frameIdx).addClass('hide');
+            $plate.find('.js-toss-'+(frameIdx+1)).removeClass('hide');
+			toss(frameIdx+1, totalFrames);
+		}, 246);
+	};
+
+	toss(0,4); // Start from frame 0 with total 4 frames.
+};
 
 var isLastIngredient = function() {
 	return currentIngredientIdx === ingredientCount;
@@ -217,41 +234,40 @@ var nextStage = function() {
 };
 
 var shareLink = function(type) {
-	var url = '';
-	var messageBody = "Hi there! Let's Lou Hei together at: ";
-
+	// Prefix message with url scheme.
 	switch (type) {
 		case 'whatsapp':
-			url = "whatsapp://send?text=" + messageBody + encodeURIComponent(location.href);
+			url = "whatsapp://send?text=" + shareMessage;
 			break;
 		case 'sms':
 			if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-				url = "sms:;body=" + messageBody + encodeURIComponent(location.href);
+				url = "sms:;body=" + shareMessage;
 			}
 			else if (/Android/i.test(navigator.userAgent)) {
-				url = "sms:?body=" + messageBody + encodeURIComponent(location.href);
+				url = "sms:?body=" + shareMessage;
 			}
 			break;
 		default:
 			break;
 	};
-
 	location.href = url;
 };
 
 var toss = function() {
 	console.log('Play animation.');
-	// Play animation...
+	doToss();
 	tossIdx += 1;
-	$("#tossStatus").html(tossIdx + '/2');
+	$("#tossStatus").html(tossIdx+'/'+maxTosses);
 
-	if(tossIdx > 2) {
+	if(tossIdx > maxTosses) {
 		$("#tossStatus").html('Going to next stage...');
 		$(document).trigger('disable_shaker');
 		nextStage();
 	}
 	else {
-		$(document).trigger('enable_shaker');
+		setTimeout( function() {
+			$(document).trigger('enable_shaker');
+		}, 1000);
 	}
 };
 
@@ -266,6 +282,7 @@ module.exports = {
 	showShareButtons 	: showShareButtons,
 	shareLink			: shareLink
 };
+
 });
 
 require.register("initialize", function(exports, require, module) {
@@ -385,6 +402,10 @@ module.exports = function(callback) {
 			'images/miniplate_1.png',
 			'images/miniplate_2.png',
 			'images/miniplate_3.png',
+			'images/tossing/tossing_01.png',
+			'images/tossing/tossing_02.png',
+			'images/tossing/tossing_03.png',
+			'images/tossing/tossing_04.png',
 			'images/bg_text_short_07.png',
 			'images/bg_text_short_08.png',
 			'images/mainplate_eaten_last.png',
@@ -467,7 +488,7 @@ var disable = function() {
 var androidTiltHandler = function(evt) {
 	var zAcceleration = Math.round(evt.accelerationIncludingGravity.z);
 
-	$("#debug2").html("<h3>Android Acceleration</h3><ul><li>X: "+Math.round(evt.accelerationIncludingGravity.x)+"</li><li>Y: "+Math.round(evt.accelerationIncludingGravity.y)+"</li><li>Z: "+Math.round(evt.accelerationIncludingGravity.z)+"</li></ul>");
+	// $("#debug2").html("<h3>Android Acceleration</h3><ul><li>X: "+Math.round(evt.accelerationIncludingGravity.x)+"</li><li>Y: "+Math.round(evt.accelerationIncludingGravity.y)+"</li><li>Z: "+Math.round(evt.accelerationIncludingGravity.z)+"</li></ul>");
 	// $("#debug3").html("<h3>Rotation</h3><ul><li>X: "+Math.round(evt.rotationRate.alpha)+"</li><li>Y: "+Math.round(evt.rotationRate.beta)+"</li><li>Z: "+Math.round(evt.rotationRate.gamma)+"</li></ul>");
 	// $("#debug4").html("<h3>Prevent Toss</h3><ul><li>"+preventToss+"</li></ul>");
 
@@ -487,7 +508,7 @@ var androidTiltHandler = function(evt) {
 var iosTiltHandler = function(evt) {
 	var zAcceleration = Math.round(evt.accelerationIncludingGravity.z);
 
-	$("#debug2").html("<h3>IOS Acceleration</h3><ul><li>X: "+Math.round(evt.accelerationIncludingGravity.x)+"</li><li>Y: "+Math.round(evt.accelerationIncludingGravity.y)+"</li><li>Z: "+Math.round(evt.accelerationIncludingGravity.z)+"</li></ul>");
+	// $("#debug2").html("<h3>IOS Acceleration</h3><ul><li>X: "+Math.round(evt.accelerationIncludingGravity.x)+"</li><li>Y: "+Math.round(evt.accelerationIncludingGravity.y)+"</li><li>Z: "+Math.round(evt.accelerationIncludingGravity.z)+"</li></ul>");
 	// $("#debug3").html("<h3>Rotation</h3><ul><li>X: "+Math.round(evt.rotationRate.alpha)+"</li><li>Y: "+Math.round(evt.rotationRate.beta)+"</li><li>Z: "+Math.round(evt.rotationRate.gamma)+"</li></ul>");
 	// $("#debug4").html("<h3>Prevent Toss</h3><ul><li>"+preventToss+"</li></ul>");
 
