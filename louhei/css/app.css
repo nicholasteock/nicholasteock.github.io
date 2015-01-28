@@ -118,9 +118,14 @@ body {
   margin-left: -15%;
 }
 .toss-plate {
-  -webkit-transform: translate3d(0, 0, 0);
-  height: 100%;
-  margin-top: 0;
+  width: 130%;
+  margin-top: -20%;
+  margin-left: -15%;
+  position: absolute;
+  top: 0;
+}
+.toss-plate-base .toss-plate {
+  margin-top: 40%;
 }
 .ingredient-name-container {
   width: 70%;
@@ -361,9 +366,14 @@ body {
   margin-left: -15%;
 }
 .toss-plate {
-  -webkit-transform: translate3d(0, 0, 0);
-  height: 100%;
-  margin-top: 0;
+  width: 130%;
+  margin-top: -20%;
+  margin-left: -15%;
+  position: absolute;
+  top: 0;
+}
+.toss-plate-base .toss-plate {
+  margin-top: 40%;
 }
 .ingredient-name-container {
   width: 70%;

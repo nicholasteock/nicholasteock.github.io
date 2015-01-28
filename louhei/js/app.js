@@ -92,11 +92,12 @@
 })();
 require.register("application", function(exports, require, module) {
 // Hosted on: http://bitly.com/1z99Dhc
+var freeze 					= false;
 var ingredientCount 		= 4;
 var currentIngredientIdx 	= 0;
 var currentStageIdx 		= 0;
-var tossIdx 				= 0;
-var maxTosses 				= 3;
+var tossCount 				= 0;
+var maxTosses 				= 2;
 var stageNames 				= ['main', 'ingredients', 'toss', 'share'];
 var url 					= encodeURIComponent('http://bitly.com/1z99Dhc');
 var shareMessage 			= "Hi there! Let's Lou Hei together at: " + url;
@@ -117,6 +118,7 @@ var initialize = function() {
 	// $('.toss-stage').removeClass('hide');
 	$('.js-plate-0').removeClass('hide');
 	$('.js-main-0').removeClass('hide');
+	$('.js-toss-0').removeClass('hide');
 
 	currentIngredientIdx 	= 0;
 	currentStageIdx 		= 0;
@@ -126,6 +128,10 @@ var initialize = function() {
 };
 
 var plateClickHandler = function() {
+	if(freeze) return;
+
+	freeze = true;
+
 	var i = 0;
 	var lastIngredient = 6;
 
@@ -135,6 +141,7 @@ var plateClickHandler = function() {
 		// Transit to next stage (adding ingredients)
 		if (i >= lastIngredient) {
 			setTimeout( function() {
+				freeze = false;
 				nextStage();
 				showIngredient();
 			}, 1400);
@@ -153,6 +160,9 @@ var plateClickHandler = function() {
 };
 
 var showIngredient = function() {
+	if(freeze) return;
+	freeze = true;
+
 	$('.ingredient-banner').addClass('hide');
 	$('.js-ingredient-'+currentIngredientIdx).removeClass('hide');
 	
@@ -165,9 +175,17 @@ var showIngredient = function() {
 	$('.ingredient-name-container').addClass('in');
 	$('.ingredient-desc-container').addClass('hide');
 	$('.mini-plate-container').addClass('in');
+
+	setTimeout(function() {
+		freeze = false;
+		return;
+	}, 1200);
 };
 
 var showIngredientDesc = function() {
+	if(freeze) return;
+	freeze = true;
+
 	$('.ingredient-name-container').removeClass('in');
 	$('.ingredient-desc-container').removeClass('hide');
 	$('.main-plate').addClass('hide');
@@ -176,6 +194,7 @@ var showIngredientDesc = function() {
 
 	currentIngredientIdx++;
 	setTimeout(function() {
+		freeze = false;
 		isLastIngredient() ? nextStage() : showIngredient();
 	}, 2400);
 };
@@ -184,38 +203,41 @@ var showShareButtons = function() {
 	var $plate = $(".chunk-plate-container");
 
 	var hideChunks = function (chunkIdx, totalChunks) {
-		setTimeout(function () {
-			if (chunkIdx === totalChunks) {
+		$plate.find('.js-chunk-'+chunkIdx).addClass('hide');
+		setTimeout(function() {
+			if (chunkIdx === totalChunks-1) {
 				$('.js-message-0').addClass('hide');
 				$('.js-message-1').removeClass('hide').addClass('bounce');
 				$('.share-container').addClass('in');
 				$('.credits').addClass('in');
 				return;
 			}
-			$plate.find('.js-chunk-'+chunkIdx).addClass('hide');
-			hideChunks(chunkIdx+1, totalChunks);
-		}, 222);
+			else {
+				hideChunks(chunkIdx+1, totalChunks);
+			}
+		}, 250);
 	};
-	hideChunks(1,5); // Start from 1, total 5 chunks
+	hideChunks(0,5); // Start from 1, total 5 chunks
 };
 
 var doToss = function() {
 	var $plate = $(".toss-plate-container");
 
-	var toss = function(frameIdx, totalFrames) {
+	var toss = function(initialFrameIdx, currentFrameIdx, totalFrames) {
+		$plate.find('.js-toss-'+currentFrameIdx).addClass('hide');
+        $plate.find('.js-toss-'+(currentFrameIdx+1)).removeClass('hide');
 		setTimeout(function() {
-			if(frameIdx === (totalFrames-1)) {
-				$plate.find('.js-toss-'+(totalFrames-1)).addClass('hide');
-				$plate.find('.js-toss-0').removeClass('hide');
-				return;
+			if(currentFrameIdx !== totalFrames-1) {
+				toss(initialFrameIdx, currentFrameIdx+1, totalFrames);
 			}
-			$plate.find('.js-toss-'+frameIdx).addClass('hide');
-            $plate.find('.js-toss-'+(frameIdx+1)).removeClass('hide');
-			toss(frameIdx+1, totalFrames);
-		}, 246);
+			else {
+				$plate.find('.js-toss-'+(totalFrames)).addClass('hide');
+				$plate.find('.js-toss-'+(initialFrameIdx)).removeClass('hide');
+			}
+		}, 100);
 	};
 
-	toss(0,4); // Start from frame 0 with total 4 frames.
+	toss(0,0,8); // Start from frame 0 with total 9 frames.
 };
 
 var isLastIngredient = function() {
@@ -255,20 +277,28 @@ var shareLink = function(type) {
 
 var toss = function() {
 	console.log('Play animation.');
-	doToss();
-	tossIdx += 1;
-	$("#tossStatus").html(tossIdx+'/'+maxTosses);
+	$(document).trigger('disable_shaker'); // Disable shaker while tossing.
 
-	if(tossIdx > maxTosses) {
-		$("#tossStatus").html('Going to next stage...');
-		$(document).trigger('disable_shaker');
-		nextStage();
+	if(tossCount === 0) {
+		$('.js-tossmessage-0').addClass('hide');
 	}
 	else {
-		setTimeout( function() {
-			$(document).trigger('enable_shaker');
-		}, 1000);
+		$('.js-tossmessage-1').addClass('hide');
 	}
+
+	doToss(); // Animate
+	
+	tossCount += 1;
+
+	setTimeout(function() {
+		if(tossCount >= maxTosses) {
+			nextStage();
+		}
+		else {
+				$('.js-tossmessage-1').removeClass('hide');
+				$(document).trigger('enable_shaker');
+		}
+	}, 900);
 };
 
 module.exports = {
@@ -288,6 +318,7 @@ module.exports = {
 require.register("initialize", function(exports, require, module) {
 var shaker 			= require('shaker');
 var application 	= require('application');
+// require('swiper');
 
 $(function() {
 	$('.loading-overlay').addClass('hide');
@@ -389,11 +420,11 @@ module.exports = function(callback) {
 			'images/bg_text_short_03.png',
 			'images/bg_text_short_04.png',
 			'images/bg_text_short.png',
-			'images/mainplate_ingredients_00.png',
 			'images/mainplate_ingredients_01.png',
 			'images/mainplate_ingredients_02.png',
 			'images/mainplate_ingredients_03.png',
 			'images/mainplate_ingredients_04.png',
+			'images/mainplate_ingredients_05.png',
 			'images/fish_text.png',
 			'images/pepper_text.png',
 			'images/sauce_text.png',
@@ -402,6 +433,7 @@ module.exports = function(callback) {
 			'images/miniplate_1.png',
 			'images/miniplate_2.png',
 			'images/miniplate_3.png',
+			'images/tossing/tossing_base.png',
 			'images/tossing/tossing_01.png',
 			'images/tossing/tossing_02.png',
 			'images/tossing/tossing_03.png',
@@ -492,13 +524,13 @@ var androidTiltHandler = function(evt) {
 	// $("#debug3").html("<h3>Rotation</h3><ul><li>X: "+Math.round(evt.rotationRate.alpha)+"</li><li>Y: "+Math.round(evt.rotationRate.beta)+"</li><li>Z: "+Math.round(evt.rotationRate.gamma)+"</li></ul>");
 	// $("#debug4").html("<h3>Prevent Toss</h3><ul><li>"+preventToss+"</li></ul>");
 
-	if(zAcceleration > -10) {
+	if(zAcceleration > 0) {
 		if(!highpointReached) {
 			highpointReached = true;
 		}
 		return;
 	}
-	if(zAcceleration < 16 && highpointReached) {
+	if(zAcceleration < 10 && highpointReached) {
 		highpointReached = false;
 		disable(); // Disable further tosses while showing toss.
 		$(document).trigger('protoss'); // Trigger tossing
@@ -512,13 +544,13 @@ var iosTiltHandler = function(evt) {
 	// $("#debug3").html("<h3>Rotation</h3><ul><li>X: "+Math.round(evt.rotationRate.alpha)+"</li><li>Y: "+Math.round(evt.rotationRate.beta)+"</li><li>Z: "+Math.round(evt.rotationRate.gamma)+"</li></ul>");
 	// $("#debug4").html("<h3>Prevent Toss</h3><ul><li>"+preventToss+"</li></ul>");
 
-	if(zAcceleration >= 5) {
+	if(zAcceleration >= 2) {
 		if(!highpointReached) {
 			highpointReached = true;
 		}
 		return;
 	}
-	if(zAcceleration <= -15 && highpointReached) {
+	if(zAcceleration <= -12 && highpointReached) {
 		highpointReached = false;
 		disable(); // Disable further tosses while showing toss.
 		$(document).trigger('protoss'); // Trigger tossing
@@ -544,6 +576,87 @@ module.exports = {
 	enable 		: enable,
 	disable 	: disable
 };
+});
+
+require.register("swiper", function(exports, require, module) {
+var reqAnimationFrame = (function () {
+    return window[Hammer.prefixed(window, 'requestAnimationFrame')] || function (callback) {
+        window.setTimeout(callback, 1000 / 60);
+    };
+})();
+
+var screen = document.querySelector(".ingredients-stage");
+var el = document.getElementById('mini-plate-container');
+
+// var START_X = Math.round(el.offsetWidth);
+// var START_Y = Math.round(el.offsetHeight);
+
+var START_X = 0;
+var START_Y = -1100;
+
+var miniPlateContainer = new Hammer(el);
+
+miniPlateContainer.get('swipe').set({ direction: Hammer.DIRECTION_VERTICAL });
+
+miniPlateContainer.on('swipe', onSwipe);
+
+var ticking = false;
+var transform;
+var timer;
+
+function resetElement() {
+    el.className = 'animate';
+    transform = {
+        translate: { x: START_X, y: START_Y },
+        scale: 1,
+        angle: 0,
+        rx: 0,
+        ry: 0,
+        rz: 0
+    };
+    requestElementUpdate();
+};
+
+function updateElementTransform() {
+    var value = [
+        'translate3d(' + transform.translate.x + 'px, ' + transform.translate.y + 'px, 0)',
+        'scale(' + transform.scale + ', ' + transform.scale + ')',
+        'rotate3d('+ transform.rx +','+ transform.ry +','+ transform.rz +','+  transform.angle + 'deg)'
+    ];
+
+    value = value.join(" ");
+    el.style.webkitTransform = value;
+    el.style.mozTransform = value;
+    el.style.transform = value;
+    ticking = false;
+};
+
+function requestElementUpdate() {
+    if(!ticking) {
+        reqAnimationFrame(updateElementTransform);
+        ticking = true;
+    }
+};
+
+function onSwipe(ev) {
+    var angle = 50;
+    transform.ry = (ev.direction & Hammer.DIRECTION_HORIZONTAL) ? 1 : 0;
+    transform.rx = (ev.direction & Hammer.DIRECTION_VERTICAL) ? 1 : 0;
+    transform.angle = (ev.direction & (Hammer.DIRECTION_RIGHT | Hammer.DIRECTION_UP)) ? angle : -angle;
+
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+        resetElement();
+    }, 300);
+
+    requestElementUpdate();
+};
+
+resetElement();
+
+
+
+
 });
 
 
