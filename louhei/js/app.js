@@ -110,8 +110,8 @@ var initialize = function() {
 	// $('.main-stage').removeClass('hide');
 	// $('.ingredients-stage').removeClass('hide');
 	// $('.tossing-stage').removeClass('hide');
-	$('.main-stage').addClass('hide');
-	$('.share-stage').removeClass('hide');
+	// $('.main-stage').addClass('hide');
+	// $('.share-stage').removeClass('hide');
 
 	currentIngredientIdx 	= 0;
 	currentStageIdx 		= 0;
