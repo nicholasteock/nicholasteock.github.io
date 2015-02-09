@@ -329,20 +329,14 @@ $(function() {
 	});
 
 	$('.js-share-whatsapp').click(function() {
+		$(".audio-player")[0].pause();
 		setTimeout( function() {
 			application.shareLink('whatsapp');
 		}, 100);
 	});
 
-	$('.js-share-sms').click(function(el) {
-		setTimeout( function() {
-			application.shareLink('sms');
-		}, 100);
-	});
-
 	$('.share-link').click(function(el) {
-   		// $(this).focus();
-   		// $(this).select();
+		$(".audio-player")[0].pause();
    		this.setSelectionRange(0, 25);
 	});
 
