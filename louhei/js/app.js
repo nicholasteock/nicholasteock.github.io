@@ -103,6 +103,8 @@ var url 					= encodeURIComponent('http://bitly.com/1z99Dhc');
 var shareMessage 			= "Hi there! Let's Lou Hei together at: " + url;
 
 var initialize = function() {
+
+	$('.app-stage').click();
 	$('.stage').addClass('hide');
 	$('.in').removeClass('in');
 	$('.bounce').removeClass('bounce');
@@ -314,6 +316,7 @@ $(function() {
 	application.initialize();
 
 	$('.main-stage .js-plate-0').click(function() {
+		$(".audio-player")[0].play();
 		application.plateClickHandler();
 	});
 
