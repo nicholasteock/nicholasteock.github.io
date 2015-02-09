@@ -97,7 +97,7 @@ var ingredientCount 		= 5;
 var currentIngredientIdx 	= 0;
 var currentStageIdx 		= 0;
 var tossCount 				= 0;
-var maxTosses 				= 4;
+var maxTosses 				= 3;
 var stageNames 				= ['main', 'ingredients', 'tossing', 'share'];
 var url 					= encodeURIComponent('http://bitly.com/1z99Dhc');
 var shareMessage 			= "Hi there! Let's Lou Hei together at: " + url;
@@ -185,7 +185,7 @@ var showIngredientDesc = function() {
 	setTimeout(function() {
 		freeze = false;
 		isLastIngredient() ? nextStage() : showIngredient();
-	}, 2400);
+	}, 4200);
 };
 
 var showShareButtons = function() {
@@ -198,13 +198,13 @@ var showShareButtons = function() {
 				$('.js-message-0').addClass('hide');
 				$('.js-message-1').removeClass('hide').addClass('bounce');
 				$('.share-container').addClass('in');
-				$('.credits').addClass('in');
+				$('.credits-container').addClass('in');
 				return;
 			}
 			else {
 				hideChunks(chunkIdx+1, totalChunks);
 			}
-		}, 250);
+		}, 388);
 	};
 	hideChunks(0,6); // Start from 1, total 5 chunks
 };
@@ -220,7 +220,8 @@ var doToss = function() {
 			else {
 				$('.js-tossbase').addClass('hide');
 			}
-		}, 110);
+		}, 88);
+		// }, 110);
 	};
 
 	$('.js-tossbase').removeClass('hide');
@@ -242,53 +243,36 @@ var nextStage = function() {
 	return;
 };
 
-var shareLink = function(type) {
+var shareLink = function() {
 	// Prefix message with url scheme.
-	switch (type) {
-		case 'whatsapp':
-			url = "whatsapp://send?text=" + shareMessage;
-			break;
-		case 'sms':
-			if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-				url = "sms:;body=" + shareMessage;
-			}
-			else if (/Android/i.test(navigator.userAgent)) {
-				url = "sms:?body=" + shareMessage;
-			}
-			break;
-		default:
-			break;
-	};
+	url = "whatsapp://send?text=" + shareMessage;
 	location.href = url;
 };
 
 var toss = function() {
 	$(document).trigger('disable_shaker'); // Disable shaker while tossing.
 
-	if(tossCount === 0) {
-		$('.js-tossmessage-0').addClass('hide');
-		$('.js-tossbase-0').addClass('hide');
-		$('.js-tossbase-1').removeClass('hide');
-	}
-	else {
-		$('.js-tossmessage-1').addClass('hide');
-	}
+	$('.toss-banner').addClass('hide');
+	$('.toss-base').addClass('hide');
 
 	doToss(); // Animate
 	
 	tossCount += 1;
 
 	setTimeout(function() {
-		if(tossCount >= maxTosses) {
-			$('.js-tossbase-2').removeClass('hide');
-			nextStage();
-		}
-		else {
-			$('.js-tossmessage-1').removeClass('hide');
+		if(tossCount < maxTosses) {
+			$('.js-tossmessage-'+tossCount).removeClass('hide');
 			$('.js-tossbase-1').removeClass('hide');
 			$(document).trigger('enable_shaker');
 		}
-	}, 2000);
+		else {
+			$('.js-tossbase-2').removeClass('hide');
+			setTimeout(function() {
+				nextStage();
+			}, 800);
+		}
+	}, 1500);
+	// }, 1800);
 };
 
 module.exports = {
@@ -331,7 +315,7 @@ $(function() {
 	$('.js-share-whatsapp').click(function() {
 		$(".audio-player")[0].pause();
 		setTimeout( function() {
-			application.shareLink('whatsapp');
+			application.shareLink();
 		}, 100);
 	});
 

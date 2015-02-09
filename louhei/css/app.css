@@ -90,11 +90,8 @@ body {
 .grey {
   color: #343434;
 }
-.util-font-22 {
-  font-size: 22px;
-}
-.util-font-25 {
-  font-size: 25px;
+.util-font-20 {
+  font-size: 20px;
 }
 .util-top-gap {
   margin-top: 3vh;
@@ -110,13 +107,13 @@ body {
   padding-left: 0;
 }
 .banner-container {
-  height: 30vh;
-  padding-top: 2vh;
+  height: 35vh;
+  overflow: hidden;
 }
 .ingredient-banner {
   position: relative;
   top: -25vh;
-  margin-top: 2vh;
+  margin-top: 3vh;
 }
 .ingredient-banner.in {
   -webkit-transform: translate3d(0, 0, 0);
@@ -125,13 +122,16 @@ body {
 }
 .desc-banner {
   display: none;
-  margin-top: 2vh;
+  margin-top: 3vh;
 }
 .desc-banner.bounce {
   display: block;
   -webkit-transform: translate3d(0, 0, 0);
   -webkit-animation: bounce 0.8s ease forwards infinite;
   animation: bounce 0.8s ease forwards infinite;
+}
+.toss-banner {
+  margin-top: 3vh;
 }
 .toss-frame-container {
   height: 101vh;
@@ -142,7 +142,7 @@ body {
 }
 .toss-base {
   max-width: 130vmin;
-  margin-left: -18vmin;
+  margin-left: -19vmin;
   z-index: 2;
 }
 .toss-frame {
@@ -152,7 +152,7 @@ body {
 }
 .main-plate {
   max-width: 130vmin;
-  margin-left: -18vmin;
+  margin-left: -19vmin;
   z-index: 1;
 }
 .small-plate {
@@ -169,18 +169,24 @@ body {
 }
 .chunks-container {
   position: absolute;
-  top: 33vh;
+  top: 35vh;
 }
 .credits-container {
   position: absolute;
-  top: 50vh;
+  top: 54vh;
+  opacity: 0;
+}
+.credits-container.in {
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-animation: fade-in 0.8s ease forwards;
+  animation: fade-in 0.8s ease forwards;
 }
 .share-logo {
   width: 33vw;
 }
 .chunk-plate {
   max-width: 130vmin;
-  margin-left: -18vmin;
+  margin-left: -19vmin;
   z-index: 1;
   position: absolute;
   top: 0;
@@ -224,12 +230,12 @@ body {
 }
 @-webkit-keyframes top-in {
   100% {
-    top: 0;
+    top: 2vh;
   }
 }
 @keyframes top-in {
   100% {
-    top: 0;
+    top: 2vh;
   }
 }
 @-webkit-keyframes bottom-in {
@@ -277,6 +283,16 @@ body {
     -webkit-transform: scale(1, 1);
     /* Chrome, Safari, Opera */
     transform: scale(1, 1);
+  }
+}
+@-webkit-keyframes fade-in {
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes fade-in {
+  100% {
+    opacity: 1;
   }
 }
 
@@ -311,11 +327,8 @@ body {
 .grey {
   color: #343434;
 }
-.util-font-22 {
-  font-size: 22px;
-}
-.util-font-25 {
-  font-size: 25px;
+.util-font-20 {
+  font-size: 20px;
 }
 .util-top-gap {
   margin-top: 3vh;
@@ -331,13 +344,13 @@ body {
   padding-left: 0;
 }
 .banner-container {
-  height: 30vh;
-  padding-top: 2vh;
+  height: 35vh;
+  overflow: hidden;
 }
 .ingredient-banner {
   position: relative;
   top: -25vh;
-  margin-top: 2vh;
+  margin-top: 3vh;
 }
 .ingredient-banner.in {
   -webkit-transform: translate3d(0, 0, 0);
@@ -346,13 +359,16 @@ body {
 }
 .desc-banner {
   display: none;
-  margin-top: 2vh;
+  margin-top: 3vh;
 }
 .desc-banner.bounce {
   display: block;
   -webkit-transform: translate3d(0, 0, 0);
   -webkit-animation: bounce 0.8s ease forwards infinite;
   animation: bounce 0.8s ease forwards infinite;
+}
+.toss-banner {
+  margin-top: 3vh;
 }
 .toss-frame-container {
   height: 101vh;
@@ -363,7 +379,7 @@ body {
 }
 .toss-base {
   max-width: 130vmin;
-  margin-left: -18vmin;
+  margin-left: -19vmin;
   z-index: 2;
 }
 .toss-frame {
@@ -373,7 +389,7 @@ body {
 }
 .main-plate {
   max-width: 130vmin;
-  margin-left: -18vmin;
+  margin-left: -19vmin;
   z-index: 1;
 }
 .small-plate {
@@ -390,18 +406,24 @@ body {
 }
 .chunks-container {
   position: absolute;
-  top: 33vh;
+  top: 35vh;
 }
 .credits-container {
   position: absolute;
-  top: 50vh;
+  top: 54vh;
+  opacity: 0;
+}
+.credits-container.in {
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-animation: fade-in 0.8s ease forwards;
+  animation: fade-in 0.8s ease forwards;
 }
 .share-logo {
   width: 33vw;
 }
 .chunk-plate {
   max-width: 130vmin;
-  margin-left: -18vmin;
+  margin-left: -19vmin;
   z-index: 1;
   position: absolute;
   top: 0;
@@ -445,12 +467,12 @@ body {
 }
 @-webkit-keyframes top-in {
   100% {
-    top: 0;
+    top: 2vh;
   }
 }
 @keyframes top-in {
   100% {
-    top: 0;
+    top: 2vh;
   }
 }
 @-webkit-keyframes bottom-in {
@@ -498,6 +520,16 @@ body {
     -webkit-transform: scale(1, 1);
     /* Chrome, Safari, Opera */
     transform: scale(1, 1);
+  }
+}
+@-webkit-keyframes fade-in {
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes fade-in {
+  100% {
+    opacity: 1;
   }
 }
 
