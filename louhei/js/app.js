@@ -104,15 +104,14 @@ var shareMessage 			= "Hi there! Let's Lou Hei together at: " + url;
 
 var initialize = function() {
 
-	$('.app-stage').click();
 	$('.stage').addClass('hide');
 	$('.in').removeClass('in');
 	$('.bounce').removeClass('bounce');
 
 	// $('.main-stage').removeClass('hide');
 	// $('.ingredients-stage').removeClass('hide');
-	// $('.tossing-stage').removeClass('hide');
-	// $('.main-stage').addClass('hide');
+	$('.tossing-stage').removeClass('hide');
+	$('.main-stage').addClass('hide');
 	// $('.share-stage').removeClass('hide');
 
 	currentIngredientIdx 	= 0;
@@ -193,39 +192,20 @@ var showShareButtons = function() {
 
 	var hideChunks = function (chunkIdx, totalChunks) {
 		$plate.find('.js-chunk-'+chunkIdx).addClass('hide');
-		setTimeout(function() {
-			if (chunkIdx === totalChunks-1) {
-				$('.js-message-0').addClass('hide');
-				$('.js-message-1').removeClass('hide').addClass('bounce');
-				$('.share-container').addClass('in');
-				$('.credits-container').addClass('in');
-				return;
-			}
-			else {
+		if(chunkIdx < totalChunks-1) {
+			setTimeout(function() {
 				hideChunks(chunkIdx+1, totalChunks);
-			}
-		}, 388);
+			}, 288);
+		}
+		else {
+			$('.js-message-0').addClass('hide');
+			$('.js-message-1').removeClass('hide').addClass('bounce');
+			$('.share-container').addClass('in');
+			$('.credits-container').addClass('in');
+			return;
+		}
 	};
 	hideChunks(0,6); // Start from 1, total 5 chunks
-};
-
-var doToss = function() {
-	var toss = function(currentFrameIdx, totalFrames) {
-		$('.js-toss-'+currentFrameIdx).addClass('hide');
-        $('.js-toss-'+(currentFrameIdx+1)).removeClass('hide');
-		setTimeout(function() {
-			if(currentFrameIdx !== totalFrames-1) {
-				toss(currentFrameIdx+1, totalFrames);
-			}
-			else {
-				$('.js-tossbase').addClass('hide');
-			}
-		}, 88);
-		// }, 110);
-	};
-
-	$('.js-tossbase').removeClass('hide');
-	toss(-1,17); // Start from frame 0 with total 16 frames.
 };
 
 var isLastIngredient = function() {
@@ -251,15 +231,13 @@ var shareLink = function() {
 
 var toss = function() {
 	$(document).trigger('disable_shaker'); // Disable shaker while tossing.
-
 	$('.toss-banner').addClass('hide');
-	$('.toss-base').addClass('hide');
+	$('.js-tossbase').removeClass('hide');
 
-	doToss(); // Animate
-	
-	tossCount += 1;
-
+	$('.toss-frame-container').addClass('toss').delay(2000).removeClass('toss');
 	setTimeout(function() {
+		tossCount += 1;
+
 		if(tossCount < maxTosses) {
 			$('.js-tossmessage-'+tossCount).removeClass('hide');
 			$('.js-tossbase-1').removeClass('hide');
@@ -267,12 +245,12 @@ var toss = function() {
 		}
 		else {
 			$('.js-tossbase-2').removeClass('hide');
-			setTimeout(function() {
-				nextStage();
-			}, 800);
 		}
-	}, 1500);
-	// }, 1800);
+
+		if(tossCount === maxTosses) {
+			nextStage();
+		}
+	}, 2100);
 };
 
 module.exports = {
@@ -298,6 +276,21 @@ $(function() {
 	$('.loading-overlay').addClass('hide');
 	
 	application.initialize();
+
+	$('.app-stage').click(function() {
+		if (!document.fullscreenElement &&    // alternative standard method
+      !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement ) {
+			if (document.documentElement.requestFullscreen) {
+		      document.documentElement.requestFullscreen();
+		    } else if (document.documentElement.msRequestFullscreen) {
+		      document.documentElement.msRequestFullscreen();
+		    } else if (document.documentElement.mozRequestFullScreen) {
+		      document.documentElement.mozRequestFullScreen();
+		    } else if (document.documentElement.webkitRequestFullscreen) {
+		      document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+		    }
+		}
+	});
 
 	$('.main-stage .js-plate-0').click(function() {
 		$(".audio-player")[0].play();
@@ -336,11 +329,38 @@ $(function() {
 		application.toss();
 	});
 
-	// Temp event to test transitions (gray box)
-	// $('.nextStage').click(function() {
-	// 	$('.toss-stage').addClass('hide');
-	// 	$('.share-stage').removeClass('hide');
-	// });
+	/********************************************************
+	* Page visibility API 
+	********************************************************/
+	
+	var hidden, state, visibilityChange; 
+	if (typeof document.hidden !== "undefined") {
+		hidden = "hidden";
+		visibilityChange = "visibilitychange";
+		state = "visibilityState";
+	} else if (typeof document.mozHidden !== "undefined") {
+		hidden = "mozHidden";
+		visibilityChange = "mozvisibilitychange";
+		state = "mozVisibilityState";
+	} else if (typeof document.msHidden !== "undefined") {
+		hidden = "msHidden";
+		visibilityChange = "msvisibilitychange";
+		state = "msVisibilityState";
+	} else if (typeof document.webkitHidden !== "undefined") {
+		hidden = "webkitHidden";
+		visibilityChange = "webkitvisibilitychange";
+		state = "webkitVisibilityState";
+	}
+
+	document.addEventListener(visibilityChange, function() {
+		if (document[hidden]) {
+			$(".audio-player")[0].pause();
+		}
+		else {
+			$(".audio-player")[0].play();
+		}
+	}, false);
+	/********************************************************/
 });
 
 });
