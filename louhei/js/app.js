@@ -104,14 +104,15 @@ var shareMessage 			= "Hi there! Let's Lou Hei together at: " + url;
 
 var initialize = function() {
 
+	$('.app-stage').click();
 	$('.stage').addClass('hide');
 	$('.in').removeClass('in');
 	$('.bounce').removeClass('bounce');
 
 	// $('.main-stage').removeClass('hide');
 	// $('.ingredients-stage').removeClass('hide');
-	$('.tossing-stage').removeClass('hide');
-	$('.main-stage').addClass('hide');
+	// $('.tossing-stage').removeClass('hide');
+	// $('.main-stage').addClass('hide');
 	// $('.share-stage').removeClass('hide');
 
 	currentIngredientIdx 	= 0;
@@ -126,31 +127,32 @@ var plateClickHandler = function() {
 	if(freeze) return; // Event lock
 	freeze = true; // Enable lock
 
-	var i = 0;
-	var lastIngredient = 6;
+	function showIngredients(currentIdx, lastIdx) {
 
-	var showIngredients = function () {
-		var lastIngredient = 6;
-
-		// Transit to next stage (adding ingredients)
-		if (i >= lastIngredient) {
+		if(currentIdx < lastIdx) {
+			$('.js-plate-'+currentIdx).addClass('hide');
+			$('.js-plate-'+(currentIdx+1)).removeClass('hide');
+			setTimeout(function() {
+				window.requestAnimFrame(function() {
+					showIngredients(currentIdx+1, lastIdx);
+				});
+			}, 1000/6);
+		}
+		else {
 			setTimeout( function() {
 				freeze = false; // Release lock
 				nextStage();
 				showIngredient();
-			}, 1000);
-			return;
+			}, 500);
 		}
+	}
 
-		setTimeout(function () {
-			$('.js-plate-'+i).addClass('hide');
-			i++;
-			$('.js-plate-'+i).removeClass('hide');
-			showIngredients();
-		}, 400);
-	};
+	window.requestAnimFrame(function() {
+		showIngredients(0, 6);
+	});
 
-	showIngredients();
+
+
 };
 
 var showIngredient = function() {
@@ -188,24 +190,51 @@ var showIngredientDesc = function() {
 };
 
 var showShareButtons = function() {
-	var $plate = $(".chunks-container");
 
 	var hideChunks = function (chunkIdx, totalChunks) {
-		$plate.find('.js-chunk-'+chunkIdx).addClass('hide');
+		$('.js-chunk-'+chunkIdx).addClass('hide');
 		if(chunkIdx < totalChunks-1) {
 			setTimeout(function() {
-				hideChunks(chunkIdx+1, totalChunks);
-			}, 288);
+				window.requestAnimFrame(function() {
+					hideChunks(chunkIdx+1, totalChunks);
+				});
+		    }, 1000 / 3);
 		}
 		else {
 			$('.js-message-0').addClass('hide');
 			$('.js-message-1').removeClass('hide').addClass('bounce');
 			$('.share-container').addClass('in');
 			$('.credits-container').addClass('in');
-			return;
 		}
 	};
-	hideChunks(0,6); // Start from 1, total 5 chunks
+
+	window.requestAnimFrame(function() {
+		hideChunks(0,6); // Start from 1, total 5 chunks
+	});
+};
+
+var doToss = function( callback ) {
+	
+	function animateToss(currentFrameIdx, totalFrames) {
+		console.log('tossing : ', currentFrameIdx);
+		$('.js-toss-'+currentFrameIdx).addClass('hide');
+		$('.js-toss-'+(currentFrameIdx+1)).removeClass('hide');
+
+		if(currentFrameIdx < totalFrames-1) {
+				window.requestAnimFrame(function() {
+					animateToss(currentFrameIdx+1, totalFrames);
+				});
+		}
+		else {
+			$('.js-toss-'+(currentFrameIdx+1)).addClass('hide');
+			$('.js-tossbase').addClass('hide');
+			callback();
+		}
+	}
+
+	window.requestAnimFrame(function() {
+		animateToss(-1, 18);
+	});
 };
 
 var isLastIngredient = function() {
@@ -231,26 +260,28 @@ var shareLink = function() {
 
 var toss = function() {
 	$(document).trigger('disable_shaker'); // Disable shaker while tossing.
+
 	$('.toss-banner').addClass('hide');
+	$('.toss-base').addClass('hide');
 	$('.js-tossbase').removeClass('hide');
 
-	$('.toss-frame-container').addClass('toss').delay(2000).removeClass('toss');
-	setTimeout(function() {
+	var tossCallback = function() {
 		tossCount += 1;
+		console.log('In callback', tossCount);
 
+		$('.js-tossmessage-'+tossCount).removeClass('hide');
+		$('.js-tossbase-'+tossCount).removeClass('hide');
+		
 		if(tossCount < maxTosses) {
-			$('.js-tossmessage-'+tossCount).removeClass('hide');
-			$('.js-tossbase-1').removeClass('hide');
 			$(document).trigger('enable_shaker');
 		}
 		else {
-			$('.js-tossbase-2').removeClass('hide');
-		}
-
-		if(tossCount === maxTosses) {
 			nextStage();
 		}
-	}, 2100);
+	};
+
+	doToss(tossCallback);
+	
 };
 
 module.exports = {
@@ -268,13 +299,14 @@ module.exports = {
 });
 
 require.register("initialize", function(exports, require, module) {
+var reqAnimFrame = require('reqAnimFramePolyfill');
 var shaker 			= require('shaker');
 var application 	= require('application');
 // require('swiper');
 
 $(function() {
 	$('.loading-overlay').addClass('hide');
-	
+	nick = application;
 	application.initialize();
 
 	$('.app-stage').click(function() {
@@ -464,6 +496,19 @@ module.exports = function(callback) {
 
 	preload.start();
 };
+});
+
+require.register("reqAnimFramePolyfill", function(exports, require, module) {
+window.requestAnimFrame = (function(){
+  return  window.requestAnimationFrame       || 
+		  window.webkitRequestAnimationFrame || 
+		  window.mozRequestAnimationFrame    || 
+		  window.oRequestAnimationFrame      || 
+		  window.msRequestAnimationFrame     || 
+		  function(/* function */ callback, /* DOMElement */ element){
+			window.setTimeout(callback, 1000 / 60);
+		  };
+})();
 });
 
 require.register("shaker", function(exports, require, module) {
