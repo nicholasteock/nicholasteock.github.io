@@ -299,7 +299,8 @@ module.exports = {
 });
 
 require.register("initialize", function(exports, require, module) {
-var reqAnimFrame = require('reqAnimFramePolyfill');
+var viewportUnitsBuggyfill 		= require('viewport-units-buggyfill');
+var reqAnimFrame 	= require('reqAnimFramePolyfill');
 var shaker 			= require('shaker');
 var application 	= require('application');
 // require('swiper');
@@ -307,6 +308,8 @@ var application 	= require('application');
 $(function() {
 	$('.loading-overlay').addClass('hide');
 	nick = application;
+
+	viewportUnitsBuggyfill.init();
 	application.initialize();
 
 	$('.app-stage').click(function() {
