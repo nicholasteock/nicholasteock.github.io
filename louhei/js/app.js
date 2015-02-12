@@ -129,9 +129,9 @@ var plateClickHandler = function() {
 
 	function showIngredients(currentIdx, lastIdx) {
 
+		$('.js-plate-'+currentIdx).addClass('hide');
+		$('.js-plate-'+(currentIdx+1)).removeClass('hide');
 		if(currentIdx < lastIdx) {
-			$('.js-plate-'+currentIdx).addClass('hide');
-			$('.js-plate-'+(currentIdx+1)).removeClass('hide');
 			setTimeout(function() {
 				window.requestAnimFrame(function() {
 					showIngredients(currentIdx+1, lastIdx);
@@ -186,7 +186,7 @@ var showIngredientDesc = function() {
 	setTimeout(function() {
 		freeze = false;
 		isLastIngredient() ? nextStage() : showIngredient();
-	}, 4200);
+	}, 3700);
 };
 
 var showShareButtons = function() {
@@ -216,7 +216,6 @@ var showShareButtons = function() {
 var doToss = function( callback ) {
 	
 	function animateToss(currentFrameIdx, totalFrames) {
-		console.log('tossing : ', currentFrameIdx);
 		$('.js-toss-'+currentFrameIdx).addClass('hide');
 		$('.js-toss-'+(currentFrameIdx+1)).removeClass('hide');
 
@@ -233,7 +232,8 @@ var doToss = function( callback ) {
 	}
 
 	window.requestAnimFrame(function() {
-		animateToss(-1, 18);
+		animateToss(0, 17);
+		// animateToss(-1, 32);
 	});
 };
 
