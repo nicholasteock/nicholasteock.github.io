@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>		<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>		 <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>		 <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html> <!--<![endif]-->
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title>CNY Lou Hei</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width,user-scalable=no,minimal-ui">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="mobile-web-app-capable" content="yes">
+
+	<link rel="stylesheet" href="css/app.css">
+
+	<script src="js/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+
+	<script src="js/vendor.js"></script>
+	<script src="js/app.js"></script>
+	<script>
+		require('preloader')(function() {
+			require('initialize');
+		});
+			// require('initialize');
+	</script>
+</head>
+<body>
+	<audio class="audio-player" src="bg_music.mp3" loop></audio>
+
+	<!-- Landscape prompt message -->
+	<div class="container-fluid text-center portraitonly-message">
+		<img src="images/rotate_device.png">
+		<h2>Landscape not supported</h2>
+		<h2>Please rotate to portrait</h2>
+	</div>
+
+	<!-- Preloader loading overlay -->
+	<div class="loading-overlay">
+		<div class="jumbotron">
+			<h1 class="text-center">Loading...</h1>
+		</div>
+	</div>
+
+	<!-- Application Body -->
+	<div class="app-stage container-fluid hide">
+
+		<!-- First screen -->
+		<div class="row main-stage util-bottom-gap">
+			
+			<!-- Intro text -->
+			<div class="col-xs-10 col-xs-offset-1 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1">
+				<img class="img-responsive banner" src="images/firstpage/firstpage_welcome_text.png">
+			</div> <!-- End intro text -->
+
+			<!-- Intro plate -->
+			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 base-layer plate-container util-top-gap">
+				<img class="img-responsive plate js-plate-0" src="images/firstpage/loadingplates_01.png">
+				<img class="img-responsive plate js-plate-1 hide" src="images/firstpage/loadingplates_02.png">
+				<img class="img-responsive plate js-plate-2 hide" src="images/firstpage/loadingplates_03.png">
+				<img class="img-responsive plate js-plate-3 hide" src="images/firstpage/loadingplates_04.png">
+				<img class="img-responsive plate js-plate-4 hide" src="images/firstpage/loadingplates_05.png">
+				<img class="img-responsive plate js-plate-5 hide" src="images/firstpage/loadingplates_06.png">
+				<img class="img-responsive plate js-plate-6 hide" src="images/firstpage/loadingplates_07.png">
+			</div> <!-- End intro plate -->
+
+			<!-- Credits -->
+			<div class="col-xs-7 col-sm-7 col-md-7 col-lg-7 text-right util-top-gap credits-text">
+				Proudly created by
+			</div>
+			<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 credits-logo">
+				<img class="img-responsive" src="images/firstpage/logo.png"/>
+			</div> <!-- End credits -->
+		</div> <!-- End first screen -->
+
+		<!-- Add ingredients screen -->
+		<div class="row stage ingredients-stage">
+		
+			<!-- Top banner (Ingredient names/Auspicious messages) -->
+			<div class="col-xs-10 col-xs-offset-1 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1 banner-container">
+			
+				<!-- Ingredient names -->
+				<img class="img-responsive banner ingredient-banner js-ingredient-0" src="images/ingredients/add_fish_text.png">
+				<img class="img-responsive banner ingredient-banner js-ingredient-1 hide" src="images/ingredients/add_lime_text.png">
+				<img class="img-responsive banner ingredient-banner js-ingredient-2 hide" src="images/ingredients/add_peppercinnamon_text.png">
+				<img class="img-responsive banner ingredient-banner js-ingredient-3 hide" src="images/ingredients/add_sauce_text.png">
+				<img class="img-responsive banner ingredient-banner js-ingredient-4 hide" src="images/ingredients/add_crackers_text.png">
+				<!-- End ingredient names -->
+
+				<!-- Auspicious messages -->
+				<img class="img-responsive banner desc-banner js-desc-0" src="images/ingredients/fish_text.png">
+				<img class="img-responsive banner desc-banner js-desc-1" src="images/ingredients/lime_text.png">
+				<img class="img-responsive banner desc-banner js-desc-2" src="images/ingredients/peppercinnamon_text.png">
+				<img class="img-responsive banner desc-banner js-desc-3" src="images/ingredients/sauce_text.png">
+				<img class="img-responsive banner desc-banner js-desc-4" src="images/ingredients/crackers_text.png">
+				<!-- End auspicious messages -->
+			</div> <!-- End top banner -->
+
+			<!-- Plates -->
+			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 base-layer plates-container">
+				
+				<!-- Big plates -->
+				<img class="main-plate js-main-0" src="images/ingredients/mainplate_ingredients_0.png">
+				<img class="main-plate js-main-1 hide" src="images/ingredients/mainplate_ingredients_1.png">
+				<img class="main-plate js-main-2 hide" src="images/ingredients/mainplate_ingredients_2.png">
+				<img class="main-plate js-main-3 hide" src="images/ingredients/mainplate_ingredients_3.png">
+				<img class="main-plate js-main-4 hide" src="images/ingredients/mainplate_ingredients_4.png">
+				<img class="main-plate js-main-5 hide" src="images/ingredients/mainplate_ingredients_5.png">
+				<!-- End big plates -->
+
+				<!-- Small plates -->
+				<img class="small-plate js-ingredient-0" src="images/ingredients/miniplate_0.png">
+				<img class="small-plate js-ingredient-1" src="images/ingredients/miniplate_1.png">
+				<img class="small-plate js-ingredient-2" src="images/ingredients/miniplate_2.png">
+				<img class="small-plate js-ingredient-3" src="images/ingredients/miniplate_3.png">
+				<img class="small-plate js-ingredient-4" src="images/ingredients/miniplate_4.png">
+				<!-- End small plates -->
+			</div> <!-- End plates -->
+		</div> <!-- End add ingredients screen -->
+
+		<!-- Tossing screen -->
+		<div class="row stage tossing-stage">
+
+			<!-- Top banner (Toss instructions) -->
+			<div class="col-xs-10 col-xs-offset-1 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1 banner-container">
+				<!-- Toss instructions -->
+				<img class="img-responsive banner toss-banner js-tossmessage-0" src="images/tossing/tossing_start_text.png">
+				<img class="img-responsive banner toss-banner js-tossmessage-1 hide" src="images/tossing/tossing_halfway_text.png">
+				<img class="img-responsive banner toss-banner js-tossmessage-2 hide" src="images/tossing/tossing_final_text.png">
+				<img class="img-responsive banner toss-banner js-tossmessage-3 hide" src="images/tossing/tossing_final_text.png">
+				<!-- End toss instructions -->
+			</div>
+			
+			<!-- Base Plates -->
+			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 base-layer toss-base-container">
+				<img class="toss-base js-tossbase-0" src="images/tossing/mainplate_tossed_start.png">
+				<img class="toss-base js-tossbase-1 hide" src="images/tossing/mainplate_tossed_halfway.png">
+				<img class="toss-base js-tossbase-2 hide" src="images/tossing/mainplate_tossed_halfway.png">
+				<img class="toss-base js-tossbase-3 hide" src="images/tossing/mainplate_tossed_completely.png">
+				<img class="toss-base js-tossbase hide" src="images/tossing/mainplate_tossed_base.png">
+			</div>
+			<!-- End base plates -->
+
+			<!-- Toss frames -->
+			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 base-layer toss-frame-container">
+				<img class="toss-frame js-toss-0 hide" src="images/tossing/tossing_0.png">
+				<img class="toss-frame js-toss-1 hide" src="images/tossing/tossing_1.png">
+				<img class="toss-frame js-toss-2 hide" src="images/tossing/tossing_2.png">
+				<img class="toss-frame js-toss-3 hide" src="images/tossing/tossing_3.png">
+				<img class="toss-frame js-toss-4 hide" src="images/tossing/tossing_4.png">
+				<img class="toss-frame js-toss-5 hide" src="images/tossing/tossing_5.png">
+				<img class="toss-frame js-toss-6 hide" src="images/tossing/tossing_6.png">
+				<img class="toss-frame js-toss-7 hide" src="images/tossing/tossing_7.png">
+				<img class="toss-frame js-toss-8 hide" src="images/tossing/tossing_8.png">
+				<img class="toss-frame js-toss-9 hide" src="images/tossing/tossing_8.png">
+				<img class="toss-frame js-toss-10 hide" src="images/tossing/tossing_7.png">
+				<img class="toss-frame js-toss-11 hide" src="images/tossing/tossing_6.png">
+				<img class="toss-frame js-toss-12 hide" src="images/tossing/tossing_5.png">
+				<img class="toss-frame js-toss-13 hide" src="images/tossing/tossing_4.png">
+				<img class="toss-frame js-toss-14 hide" src="images/tossing/tossing_3.png">
+				<img class="toss-frame js-toss-15 hide" src="images/tossing/tossing_2.png">
+				<img class="toss-frame js-toss-16 hide" src="images/tossing/tossing_1.png">
+				<img class="toss-frame js-toss-17 hide" src="images/tossing/tossing_0.png">
+			</div> <!-- End toss images -->
+		</div> <!-- End toss screen -->
+
+		<div class="row stage share-stage">
+
+			<!-- Top banner (Final messages) -->
+			<div class="col-xs-10 col-xs-offset-1 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1 banner-container">
+			
+				<!-- Final messages -->
+				<img class="img-responsive banner js-message-0" src="images/sharing/share_start_text.png">
+				<img class="img-responsive banner bob js-message-1 hide" src="images/sharing/share_end_text.png">
+				<!-- End final messages -->
+			</div> <!-- End top banner (Final messages) -->
+
+			<!-- Base Plates -->
+			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 base-layer plates-container">
+				<img class="main-plate" src="images/sharing/mainplate_eaten.png">
+			</div>
+
+			<!-- Chunks -->
+			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 top-layer chunks-container util-top-gap">
+				<img class="chunk-plate js-chunk-0" src="images/sharing/mainplate_eatenpiece_0.png">
+				<img class="chunk-plate js-chunk-1" src="images/sharing/mainplate_eatenpiece_1.png">
+				<img class="chunk-plate js-chunk-2" src="images/sharing/mainplate_eatenpiece_2.png">
+				<img class="chunk-plate js-chunk-3" src="images/sharing/mainplate_eatenpiece_3.png">
+				<img class="chunk-plate js-chunk-4" src="images/sharing/mainplate_eatenpiece_4.png">
+				<img class="chunk-plate js-chunk-5" src="images/sharing/mainplate_eatenpiece_5.png">
+			</div>
+
+			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 middle-layer credits-container util-top-gap">
+				<div class="text-center util-font-20 grey">PROUDLY CREATED BY</div>
+				<a href="http://2359media.com/our-work/" target="_blank"><img class="center-block share-logo" src="images/sharing/logo.png"></a>
+				<div class="text-center util-font-20 grey bold">Share this with your friends!</div>
+				<div class="share-buttons-container">
+					<input type="text" class="input-lg grey share-link" value="http://bitly.com/1z99Dhc" readonly>
+					<button type="button" class="btn btn-block share-button share-whatsapp js-share-whatsapp">
+						<img class="share-icon" src="images/sharing/icon_wa.png">
+						<span class="text-left share-type"> WhatsApp</span>
+					</button>
+				</div>
+			</div>
+
+		</div>
+	</div> <!-- End application body -->
+</body>
+</html>
