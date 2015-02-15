@@ -46,6 +46,7 @@ body {
   font-family: Overlock;
   color: #ffffff;
   position: relative;
+  height: 100%;
 }
 @media only screen and (orientation: portrait) {
   .portraitonly-message {
@@ -57,63 +58,47 @@ body {
     display: none;
   }
 }
-.loading-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 102vh;
-  width: 100vw;
-  overflow-x: hidden !important;
-  z-index: 10;
-  background: url('../images/bg.png');
-  background-size: cover;
-}
-.stage {
-  height: 101vh;
-  overflow: hidden;
-  position: relative;
-}
-.main-stage {
-  height: 101vh;
-}
-.base-layer {
-  z-index: 1;
+.top-layer {
+  z-index: 3;
 }
 .middle-layer {
   z-index: 2;
 }
-.top-layer {
-  z-index: 3;
-}
-.bold {
-  font-weight: bold;
-}
-.grey {
-  color: #343434;
-}
-.util-font-20 {
-  font-size: 20px;
+.base-layer {
+  z-index: 1;
 }
 .util-top-gap {
-  margin-top: 3vh;
+  margin-top: 3%;
 }
 .util-bottom-gap {
-  margin-bottom: 3vh;
+  margin-bottom: 3%;
 }
-.credits-text {
-  font-size: 18px;
-  line-height: 18px;
-}
-.credits-logo {
-  padding-left: 0;
+.stage {
+  height: 100%;
+  overflow: hidden;
 }
 .banner-container {
-  height: 35vh;
+  height: 30%;
   overflow: hidden;
+}
+.credits-text {
+  font-size: 16px;
+  padding-right: 10px;
+}
+.credits-logo {
+  padding: 0px;
+}
+.banner-container {
+  height: 35%;
+  overflow: hidden;
+}
+.banner {
+  max-width: 100%;
 }
 .ingredient-banner {
   position: relative;
-  top: -25vh;
+  margin-bottom: 16.8%;
+  top: -150px;
 }
 .ingredient-banner.in {
   -webkit-transform: translate3d(0, 0, 0);
@@ -129,78 +114,92 @@ body {
   -webkit-animation: bounce 0.8s ease forwards infinite;
   animation: bounce 0.8s ease forwards infinite;
 }
-.banner {
-  margin-top: 3vh;
-}
-.toss-frame-container {
-  height: 101vh;
-  width: 100vw;
-  position: absolute;
-  top: 0;
+.plates-container,
+.toss-base-container,
+.chunks-container {
+  height: 62%;
   overflow: hidden;
 }
+.main-plate,
 .toss-base {
-  max-width: 130vmin;
-  margin-left: -19vmin;
-  z-index: 2;
-}
-.toss-frame {
-  max-width: 110vmin;
-  margin-left: -8vmin;
-  z-index: 3;
-}
-.main-plate {
-  max-width: 130vmin;
-  margin-left: -19vmin;
-  z-index: 1;
+  max-width: 120%;
+  -webkit-transform: translate(-8%, 10%);
 }
 .small-plate {
-  z-index: 2;
+  max-width: 50%;
   position: absolute;
-  bottom: -40vh;
-  max-width: 60vw;
-  margin-left: 16vw;
+  bottom: -40%;
+  left: 25%;
+  display: none;
 }
 .small-plate.in {
+  display: block;
   -webkit-transform: translate3d(0, 0, 0);
   -webkit-animation: bottom-in 1.2s ease forwards;
   animation: bottom-in 1.2s ease forwards;
 }
-.chunks-container {
-  position: absolute;
-  top: 32vh;
+.toss-banner {
+  margin-bottom: 10%;
 }
-.credits-container {
-  position: absolute;
-  top: 52vh;
+.toss-banner.opaque {
   opacity: 0;
 }
-.credits-container.in {
-  -webkit-transform: translate3d(0, 0, 0);
-  -webkit-animation: fade-in 0.8s ease forwards;
-  animation: fade-in 0.8s ease forwards;
+.toss-frame-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0;
 }
-.share-logo {
-  width: 33vw;
-}
-.chunk-plate {
-  max-width: 130vmin;
-  margin-left: -19vmin;
-  z-index: 1;
+.toss-frame {
+  max-width: 100%;
   position: absolute;
   top: 0;
 }
-.bob {
-  -webkit-transform: translate3d(0, 0, 0);
-  -webkit-animation: bounce 0.7s ease forwards infinite;
-  animation: bounce 0.7s ease forwards infinite;
+.final-banner {
+  margin-bottom: 10%;
+}
+.chunks-container {
+  position: absolute;
+  top: 0;
+  -webkit-transform: translate(0, 59%);
+  transform: translate(0, 59%);
+}
+.chunk-plate {
+  max-width: 110%;
+  -webkit-transform: translate(-9%);
+  transform: translate(-9%);
+  position: absolute;
+  top: 0;
+}
+.credits-container {
+  height: 45%;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  -webkit-transform: translate(0, 110%);
+  opacity: 0;
+}
+.credits-container.in {
+  -webkit-animation: fade-in 2.3s ease forwards;
+  animation: fade-in 2.3s ease forwards;
+}
+.share-text {
+  font-size: 20px;
+  color: #343434;
+  font-weight: bold;
+}
+.share-logo {
+  max-width: 40%;
 }
 .share-link {
   width: 100%;
-  margin-bottom: 1vh;
+  color: #343434;
 }
 .share-buttons-container {
-  padding: 0 15vw;
+  padding: 0 15%;
 }
 .share-button {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -221,30 +220,53 @@ body {
   box-shadow: 0px 4px 0px #54ABA8;
 }
 .share-icon {
-  height: 4vh;
+  max-width: 15%;
 }
 .share-type {
   display: inline-block;
   min-width: 100px;
 }
+.bob {
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-animation: bounce 0.7s ease forwards infinite;
+  animation: bounce 0.7s ease forwards infinite;
+}
+@media screen and (min-height: 500px) {
+  .credits-text {
+    font-size: 19px;
+  }
+  .ingredient-banner {
+    margin-bottom: 14%;
+  }
+  .desc-banner {
+    max-width: 95%;
+  }
+  .chunk-plate {
+    max-width: 111%;
+    -webkit-transform: translate(-8%);
+  }
+  .share-text {
+    font-size: 21px;
+  }
+}
 @-webkit-keyframes top-in {
   100% {
-    top: 2vh;
+    top: 0;
   }
 }
 @keyframes top-in {
   100% {
-    top: 2vh;
+    top: 0;
   }
 }
 @-webkit-keyframes bottom-in {
   100% {
-    bottom: 5vh;
+    bottom: 1.5%;
   }
 }
 @keyframes bottom-in {
   100% {
-    bottom: 5vh;
+    bottom: 1.5%;
   }
 }
 @-webkit-keyframes bounce {
@@ -295,63 +317,47 @@ body {
   }
 }
 
-.loading-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 102vh;
-  width: 100vw;
-  overflow-x: hidden !important;
-  z-index: 10;
-  background: url('../images/bg.png');
-  background-size: cover;
-}
-.stage {
-  height: 101vh;
-  overflow: hidden;
-  position: relative;
-}
-.main-stage {
-  height: 101vh;
-}
-.base-layer {
-  z-index: 1;
+.top-layer {
+  z-index: 3;
 }
 .middle-layer {
   z-index: 2;
 }
-.top-layer {
-  z-index: 3;
-}
-.bold {
-  font-weight: bold;
-}
-.grey {
-  color: #343434;
-}
-.util-font-20 {
-  font-size: 20px;
+.base-layer {
+  z-index: 1;
 }
 .util-top-gap {
-  margin-top: 3vh;
+  margin-top: 3%;
 }
 .util-bottom-gap {
-  margin-bottom: 3vh;
+  margin-bottom: 3%;
 }
-.credits-text {
-  font-size: 18px;
-  line-height: 18px;
-}
-.credits-logo {
-  padding-left: 0;
+.stage {
+  height: 100%;
+  overflow: hidden;
 }
 .banner-container {
-  height: 35vh;
+  height: 30%;
   overflow: hidden;
+}
+.credits-text {
+  font-size: 16px;
+  padding-right: 10px;
+}
+.credits-logo {
+  padding: 0px;
+}
+.banner-container {
+  height: 35%;
+  overflow: hidden;
+}
+.banner {
+  max-width: 100%;
 }
 .ingredient-banner {
   position: relative;
-  top: -25vh;
+  margin-bottom: 16.8%;
+  top: -150px;
 }
 .ingredient-banner.in {
   -webkit-transform: translate3d(0, 0, 0);
@@ -367,78 +373,92 @@ body {
   -webkit-animation: bounce 0.8s ease forwards infinite;
   animation: bounce 0.8s ease forwards infinite;
 }
-.banner {
-  margin-top: 3vh;
-}
-.toss-frame-container {
-  height: 101vh;
-  width: 100vw;
-  position: absolute;
-  top: 0;
+.plates-container,
+.toss-base-container,
+.chunks-container {
+  height: 62%;
   overflow: hidden;
 }
+.main-plate,
 .toss-base {
-  max-width: 130vmin;
-  margin-left: -19vmin;
-  z-index: 2;
-}
-.toss-frame {
-  max-width: 110vmin;
-  margin-left: -8vmin;
-  z-index: 3;
-}
-.main-plate {
-  max-width: 130vmin;
-  margin-left: -19vmin;
-  z-index: 1;
+  max-width: 120%;
+  -webkit-transform: translate(-8%, 10%);
 }
 .small-plate {
-  z-index: 2;
+  max-width: 50%;
   position: absolute;
-  bottom: -40vh;
-  max-width: 60vw;
-  margin-left: 16vw;
+  bottom: -40%;
+  left: 25%;
+  display: none;
 }
 .small-plate.in {
+  display: block;
   -webkit-transform: translate3d(0, 0, 0);
   -webkit-animation: bottom-in 1.2s ease forwards;
   animation: bottom-in 1.2s ease forwards;
 }
-.chunks-container {
-  position: absolute;
-  top: 32vh;
+.toss-banner {
+  margin-bottom: 10%;
 }
-.credits-container {
-  position: absolute;
-  top: 52vh;
+.toss-banner.opaque {
   opacity: 0;
 }
-.credits-container.in {
-  -webkit-transform: translate3d(0, 0, 0);
-  -webkit-animation: fade-in 0.8s ease forwards;
-  animation: fade-in 0.8s ease forwards;
+.toss-frame-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0;
 }
-.share-logo {
-  width: 33vw;
-}
-.chunk-plate {
-  max-width: 130vmin;
-  margin-left: -19vmin;
-  z-index: 1;
+.toss-frame {
+  max-width: 100%;
   position: absolute;
   top: 0;
 }
-.bob {
-  -webkit-transform: translate3d(0, 0, 0);
-  -webkit-animation: bounce 0.7s ease forwards infinite;
-  animation: bounce 0.7s ease forwards infinite;
+.final-banner {
+  margin-bottom: 10%;
+}
+.chunks-container {
+  position: absolute;
+  top: 0;
+  -webkit-transform: translate(0, 59%);
+  transform: translate(0, 59%);
+}
+.chunk-plate {
+  max-width: 110%;
+  -webkit-transform: translate(-9%);
+  transform: translate(-9%);
+  position: absolute;
+  top: 0;
+}
+.credits-container {
+  height: 45%;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  -webkit-transform: translate(0, 110%);
+  opacity: 0;
+}
+.credits-container.in {
+  -webkit-animation: fade-in 2.3s ease forwards;
+  animation: fade-in 2.3s ease forwards;
+}
+.share-text {
+  font-size: 20px;
+  color: #343434;
+  font-weight: bold;
+}
+.share-logo {
+  max-width: 40%;
 }
 .share-link {
   width: 100%;
-  margin-bottom: 1vh;
+  color: #343434;
 }
 .share-buttons-container {
-  padding: 0 15vw;
+  padding: 0 15%;
 }
 .share-button {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -459,30 +479,53 @@ body {
   box-shadow: 0px 4px 0px #54ABA8;
 }
 .share-icon {
-  height: 4vh;
+  max-width: 15%;
 }
 .share-type {
   display: inline-block;
   min-width: 100px;
 }
+.bob {
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-animation: bounce 0.7s ease forwards infinite;
+  animation: bounce 0.7s ease forwards infinite;
+}
+@media screen and (min-height: 500px) {
+  .credits-text {
+    font-size: 19px;
+  }
+  .ingredient-banner {
+    margin-bottom: 14%;
+  }
+  .desc-banner {
+    max-width: 95%;
+  }
+  .chunk-plate {
+    max-width: 111%;
+    -webkit-transform: translate(-8%);
+  }
+  .share-text {
+    font-size: 21px;
+  }
+}
 @-webkit-keyframes top-in {
   100% {
-    top: 2vh;
+    top: 0;
   }
 }
 @keyframes top-in {
   100% {
-    top: 2vh;
+    top: 0;
   }
 }
 @-webkit-keyframes bottom-in {
   100% {
-    bottom: 5vh;
+    bottom: 1.5%;
   }
 }
 @keyframes bottom-in {
   100% {
-    bottom: 5vh;
+    bottom: 1.5%;
   }
 }
 @-webkit-keyframes bounce {
