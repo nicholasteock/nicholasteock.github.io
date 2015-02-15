@@ -109,7 +109,7 @@ var initialize = function() {
 	$('.in').removeClass('in');
 	$('.bounce').removeClass('bounce');
 
-	$('.main-stage').removeClass('hide');
+	// $('.main-stage').removeClass('hide');
 	// $('.ingredients-stage').removeClass('hide');
 	// showIngredient();
 	// $('.tossing-stage').removeClass('hide');

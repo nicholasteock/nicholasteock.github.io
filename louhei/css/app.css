@@ -139,7 +139,7 @@ body {
   animation: bottom-in 1.2s ease forwards;
 }
 .toss-banner {
-  margin-bottom: 10%;
+  margin-bottom: 13%;
 }
 .toss-banner.opaque {
   opacity: 0;
@@ -164,8 +164,8 @@ body {
 .chunks-container {
   position: absolute;
   top: 0;
-  -webkit-transform: translate(0, 59%);
-  transform: translate(0, 59%);
+  -webkit-transform: translate(0, 53%);
+  transform: translate(0, 53%);
 }
 .chunk-plate {
   max-width: 110%;
@@ -179,7 +179,7 @@ body {
   overflow: hidden;
   position: absolute;
   top: 0;
-  -webkit-transform: translate(0, 110%);
+  -webkit-transform: translate(0, 100%);
   opacity: 0;
 }
 .credits-container.in {
@@ -236,18 +236,21 @@ body {
     font-size: 19px;
   }
   .ingredient-banner {
-    margin-bottom: 14%;
+    margin-bottom: 13.8%;
   }
   .desc-banner {
     max-width: 95%;
+  }
+  .final-banner {
+    margin-bottom: 13.8%;
   }
   .chunk-plate {
     max-width: 111%;
     -webkit-transform: translate(-8%);
   }
   .chunks-container {
-    -webkit-transform: translate(0, 47%);
-    transform: translate(0, 47%);
+    -webkit-transform: translate(0, 56%);
+    transform: translate(0, 56%);
   }
   .share-text {
     font-size: 21px;
@@ -402,7 +405,7 @@ body {
   animation: bottom-in 1.2s ease forwards;
 }
 .toss-banner {
-  margin-bottom: 10%;
+  margin-bottom: 13%;
 }
 .toss-banner.opaque {
   opacity: 0;
@@ -427,8 +430,8 @@ body {
 .chunks-container {
   position: absolute;
   top: 0;
-  -webkit-transform: translate(0, 59%);
-  transform: translate(0, 59%);
+  -webkit-transform: translate(0, 53%);
+  transform: translate(0, 53%);
 }
 .chunk-plate {
   max-width: 110%;
@@ -442,7 +445,7 @@ body {
   overflow: hidden;
   position: absolute;
   top: 0;
-  -webkit-transform: translate(0, 110%);
+  -webkit-transform: translate(0, 100%);
   opacity: 0;
 }
 .credits-container.in {
@@ -499,18 +502,21 @@ body {
     font-size: 19px;
   }
   .ingredient-banner {
-    margin-bottom: 14%;
+    margin-bottom: 13.8%;
   }
   .desc-banner {
     max-width: 95%;
+  }
+  .final-banner {
+    margin-bottom: 13.8%;
   }
   .chunk-plate {
     max-width: 111%;
     -webkit-transform: translate(-8%);
   }
   .chunks-container {
-    -webkit-transform: translate(0, 47%);
-    transform: translate(0, 47%);
+    -webkit-transform: translate(0, 56%);
+    transform: translate(0, 56%);
   }
   .share-text {
     font-size: 21px;
