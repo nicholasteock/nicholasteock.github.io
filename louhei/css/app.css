@@ -245,6 +245,10 @@ body {
     max-width: 111%;
     -webkit-transform: translate(-8%);
   }
+  .chunks-container {
+    -webkit-transform: translate(0, 47%);
+    transform: translate(0, 47%);
+  }
   .share-text {
     font-size: 21px;
   }
@@ -503,6 +507,10 @@ body {
   .chunk-plate {
     max-width: 111%;
     -webkit-transform: translate(-8%);
+  }
+  .chunks-container {
+    -webkit-transform: translate(0, 47%);
+    transform: translate(0, 47%);
   }
   .share-text {
     font-size: 21px;
