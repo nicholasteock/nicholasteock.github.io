@@ -139,7 +139,7 @@ body {
   animation: bottom-in 1.2s ease forwards;
 }
 .toss-banner {
-  margin-bottom: 13%;
+  margin-bottom: 17%;
 }
 .toss-banner.opaque {
   opacity: 0;
@@ -159,13 +159,13 @@ body {
   top: 0;
 }
 .final-banner {
-  margin-bottom: 10%;
+  margin-bottom: 14%;
 }
 .chunks-container {
   position: absolute;
   top: 0;
-  -webkit-transform: translate(0, 53%);
-  transform: translate(0, 53%);
+  -webkit-transform: translate(0, 55%);
+  transform: translate(0, 55%);
 }
 .chunk-plate {
   max-width: 110%;
@@ -179,7 +179,7 @@ body {
   overflow: hidden;
   position: absolute;
   top: 0;
-  -webkit-transform: translate(0, 100%);
+  -webkit-transform: translate(0, 110%);
   opacity: 0;
 }
 .credits-container.in {
@@ -236,7 +236,7 @@ body {
     font-size: 19px;
   }
   .ingredient-banner {
-    margin-bottom: 13.8%;
+    margin-bottom: 14%;
   }
   .desc-banner {
     max-width: 95%;
@@ -405,7 +405,7 @@ body {
   animation: bottom-in 1.2s ease forwards;
 }
 .toss-banner {
-  margin-bottom: 13%;
+  margin-bottom: 17%;
 }
 .toss-banner.opaque {
   opacity: 0;
@@ -425,13 +425,13 @@ body {
   top: 0;
 }
 .final-banner {
-  margin-bottom: 10%;
+  margin-bottom: 14%;
 }
 .chunks-container {
   position: absolute;
   top: 0;
-  -webkit-transform: translate(0, 53%);
-  transform: translate(0, 53%);
+  -webkit-transform: translate(0, 55%);
+  transform: translate(0, 55%);
 }
 .chunk-plate {
   max-width: 110%;
@@ -445,7 +445,7 @@ body {
   overflow: hidden;
   position: absolute;
   top: 0;
-  -webkit-transform: translate(0, 100%);
+  -webkit-transform: translate(0, 110%);
   opacity: 0;
 }
 .credits-container.in {
@@ -502,7 +502,7 @@ body {
     font-size: 19px;
   }
   .ingredient-banner {
-    margin-bottom: 13.8%;
+    margin-bottom: 14%;
   }
   .desc-banner {
     max-width: 95%;
